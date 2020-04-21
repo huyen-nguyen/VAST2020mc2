@@ -96,6 +96,7 @@ d3.csv("data/data.csv", function (error, data) {
 
     let dropdown = d3.select(main)
         .insert("select", "svg")
+        .style("display", "block")
         .on("change", dropdownChange)
 
     dropdown.selectAll("option")
