@@ -37,9 +37,10 @@ svg.imageDist {
 }
 
 .redBorder {
-    border: 3px solid #ac1c0a;
+    border: 3px solid #ba0c00;
 }
 
 .imgBorder {
-    outline: 2px solid #ac1c0a;
+    outline-offset: 1px;
+    outline: 2px solid #ba0c00;
 }

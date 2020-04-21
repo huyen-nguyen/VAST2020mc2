@@ -91,27 +91,30 @@ d3.csv("data/newData.csv", function (error, data) {
     ;
 
 
+    let prevClick
     let rects = groups.selectAll(".thumbnail")
         .data(d => d)
         .enter()
         .append('image')
         .attr("class", "thumbnail")
-        .attr('xlink:href', (d,i) =>  {
-            console.log(d)
+        .attr('xlink:href', (d) =>  {
             return "MC2-Image-Data/" + d.Person + "/" + d.Image + ".jpg"
         })
         .attr("x", 1)
         .attr("y", (d, i) => height - y(i))
         .attr("width", d => {
-            return 20
+            return 21
         })
-        .attr("height", 20)
+        .attr("height", 21)
         .on("click", function(d) {
             console.log("--------------------")
             console.log(d)
             imageZoomed.attr('xlink:href', "MC2-Image-Data/" + d.Person + "/" + d.Image + ".jpg")
             d3.select("#zoomPanel").classed("redBorder", true)
+
             d3.select(this).classed("imgBorder", true)
+            d3.select(prevClick).classed("imgBorder", false)
+            prevClick = this;
 
         })
 
