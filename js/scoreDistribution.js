@@ -19,4 +19,7 @@ d3.csv("data/data.csv", function (error, data) {
     if (error) throw error;
 
     console.log(data);
+    let topic = "birdCall"
+
+    console.log(data.filter(d => d.Label === topic))
 })
