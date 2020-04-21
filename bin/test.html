@@ -126,7 +126,7 @@
         var dropdownChange = function() {
             var newCereal = d3.select(this).property('value'),
                 newData   = cerealMap[newCereal];
-
+             console.log(newCereal)
             updateBars(newData);
         };
 

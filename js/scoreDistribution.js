@@ -90,13 +90,13 @@ d3.csv("data/data.csv", function (error, data) {
         let newTopic = d3.select(this).property('value')
 
         let newData = histogram(data.filter(d => d.Label === newTopic))
-
+        console.log(newTopic)
         updateBars(newData)
     }
 
     let dropdown = d3.select(main)
         .insert("select", "svg")
-        .on("change", dropdownChange())
+        .on("change", dropdownChange)
 
     dropdown.selectAll("option")
         .data(classes)
