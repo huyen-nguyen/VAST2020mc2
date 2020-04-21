@@ -68,20 +68,20 @@ d3.csv("data/data.csv", function (error, data) {
 
         let bars = svg.selectAll(".bar").data(data)
 
-        // add bars for new data
-        bars.enter()
-            .append("rect")
-            .attr("class", "bar")
-            .attr("x", 1)
-            .attr("transform", d => "translate(" + x(d.x0) + "," + y(d.length) + ")")
-            .attr("width", d => x(d.x1) > x (d.x0) ? x(d.x1) - x (d.x0) - 1: 0)
-            .attr("height", d => height - y(d.length))
-            .style("fill", "#1c6363")
-
-        bars.transition().duration(400)
-            .attr("height", d => height - y(d.length))
-
-        bars.exit().remove();
+        // // add bars for new data
+        // bars.enter()
+        //     .append("rect")
+        //     .attr("class", "bar")
+        //     .attr("x", 1)
+        //     .attr("transform", d => "translate(" + x(d.x0) + "," + y(d.length) + ")")
+        //     .attr("width", d => x(d.x1) > x (d.x0) ? x(d.x1) - x (d.x0) - 1: 0)
+        //     .attr("height", d => height - y(d.length))
+        //     .style("fill", "#1c6363")
+        //
+        // bars.transition().duration(400)
+        //     .attr("height", d => height - y(d.length))
+        //
+        // bars.exit().remove();
 
     }
 

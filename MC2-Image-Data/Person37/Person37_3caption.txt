@@ -1,0 +1,1 @@
+I found it very fun to play a LED spinner. It shines when rotating. I want to know the mechanism behind.
