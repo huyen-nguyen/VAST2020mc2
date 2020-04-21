@@ -2,20 +2,25 @@ main = "#main"
 
 // set the dimensions and margins of the graph
 let margin = {top: 10, right: 30, bottom: 30, left: 40},
-    width = 1500 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+    width = 2500 - margin.left - margin.right,
+    height = 800 - margin.top - margin.bottom;
+
+let zoomPanelMargin = {top: 20, right: 20, bottom: 20, left: 20},
+    zoomPanelWidth = 400 - zoomPanelMargin.left - zoomPanelMargin.right,
+    zoomPanelHeight =  400 - zoomPanelMargin.top - zoomPanelMargin.bottom;
 
 // append the svg object to the body of the page
 var svg = d3.select(main)
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
+    .attr("class", "imageDist")
     .append("g")
     .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
 
 
-d3.csv("data/data.csv", function (error, data) {
+d3.csv("data/newData.csv", function (error, data) {
     if (error) throw error;
 
     console.log(data);
@@ -56,9 +61,27 @@ d3.csv("data/data.csv", function (error, data) {
         .append("rect")
         .attr("x", 1)
         .attr("transform", d => "translate(" + x(d.x0) + "," + y(d.length) + ")")
-        .attr("width", d => x(d.x1) > x (d.x0) ? x(d.x1) - x (d.x0) - 3: 0)
+        .attr("width", d => x(d.x1) > x (d.x0) ? x(d.x1) - x (d.x0) - 3 : 0)
         .attr("height", d => height - y(d.length))
-        .style("fill", "#70d2cf")
+        .style("fill", "#e4f2f7")
+
+    // add sticky div
+    d3.select(main).append("div")
+        .attr("class", "sticky box")
+        .attr("id", "zoomPanel")
+
+    let zoomPanel = d3.select("#zoomPanel").append("svg")
+        .attr("width", zoomPanelWidth + zoomPanelMargin.left + zoomPanelMargin.right)
+        .attr("height", zoomPanelHeight + zoomPanelMargin.top + zoomPanelMargin.bottom)
+        .append("g")
+        .attr("transform",
+            "translate(" + zoomPanelMargin.left + "," + zoomPanelMargin.top + ")");
+
+    let imageZoomed = zoomPanel.append('image')
+        .attr("width", d => {
+            return zoomPanelWidth
+        })
+        .attr("height", zoomPanelHeight)
 
     let groups = svg.selectAll(null)
         .data(bins)
@@ -67,23 +90,32 @@ d3.csv("data/data.csv", function (error, data) {
             .attr("transform", d => "translate(" + x(d.x0) + "," + y(d.length) + ")")
     ;
 
-    let rects = groups.selectAll(".miniRect")
+
+    let rects = groups.selectAll(".thumbnail")
         .data(d => d)
         .enter()
-        .append("rect")
-        .attr("class", "miniRect")
+        .append('image')
+        .attr("class", "thumbnail")
+        .attr('xlink:href', (d,i) =>  {
+            console.log(d)
+            return "MC2-Image-Data/" + d.Person + "/" + d.Image + ".jpg"
+        })
         .attr("x", 1)
         .attr("y", (d, i) => height - y(i))
         .attr("width", d => {
-            console.log(d)
-            return 11
+            return 20
         })
-        .attr("height", 11)
-        .attr("fill", "#1c6363")
-        .on("click", d => {
+        .attr("height", 20)
+        .on("click", function(d) {
             console.log("--------------------")
             console.log(d)
+            imageZoomed.attr('xlink:href', "MC2-Image-Data/" + d.Person + "/" + d.Image + ".jpg")
+            d3.select("#zoomPanel").classed("redBorder", true)
+            d3.select(this).classed("imgBorder", true)
+
         })
+
+
 
     var updateBars = function (data) {
         // First update the y-axis domain to match data
@@ -122,6 +154,7 @@ d3.csv("data/data.csv", function (error, data) {
     let dropdown = d3.select(main)
         .insert("select", "svg")
         .style("display", "block")
+        .style("float", "left")
         .on("change", dropdownChange)
 
     dropdown.selectAll("option")

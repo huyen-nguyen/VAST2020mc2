@@ -1,0 +1,45 @@
+/* :::::::::::::::::::::: GENERAL :::::::::::::::::::::: */
+div.sticky {
+    position: sticky;
+    left: 0px;
+}
+
+.box {
+    position: absolute;
+    padding: 5px;
+    box-sizing: content-box;
+    /*box-shadow: 3px 3px 3px #44444452;*/
+    background-image: -webkit-linear-gradient(left, #f6f6f6, #f1f1f1);
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px ;
+    transform-origin: 100% 100% 0;
+    -webkit-transform-origin: 100% 100% 0;
+    -ms-transform-origin: 100% 100% 0;
+    z-index: 100;
+}
+
+/* :::::::::::::::::::::: image dist. :::::::::::::::::::::: */
+svg.imageDist {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+}
+
+/* ---------- zoom panel ---------*/
+#zoomPanel {
+    float: left;
+    margin-top: 20px;
+    width: 400px;
+    height: 400px;
+}
+
+.redBorder {
+    border: 3px solid #ac1c0a;
+}
+
+.imgBorder {
+    outline: 2px solid #ac1c0a;
+}
