@@ -2,7 +2,7 @@ main = "#main"
 
 // set the dimensions and margins of the graph
 let margin = {top: 10, right: 30, bottom: 30, left: 40},
-    width = 800 - margin.left - margin.right,
+    width = 1500 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
 
 // append the svg object to the body of the page
@@ -38,7 +38,7 @@ d3.csv("data/data.csv", function (error, data) {
         .domain(x.domain())
         .thresholds(x.ticks(120))
 
-    bins = histogram(data.filter(d => d.Label === topic))
+    bins = histogram(data.filter(d => d.Label === topic).sort((a ,b) => parseFloat(b.Score) - parseFloat(a.Score)))
 
     // y-axis
     let y = d3.scaleLinear()
@@ -50,15 +50,40 @@ d3.csv("data/data.csv", function (error, data) {
         .call(d3.axisLeft(y))
 
     // append rectangles
-    svg.selectAll("rect")
+    svg.selectAll(null)
         .data(bins)
         .enter()
         .append("rect")
         .attr("x", 1)
         .attr("transform", d => "translate(" + x(d.x0) + "," + y(d.length) + ")")
-        .attr("width", d => x(d.x1) > x (d.x0) ? x(d.x1) - x (d.x0) - 1: 0)
+        .attr("width", d => x(d.x1) > x (d.x0) ? x(d.x1) - x (d.x0) - 3: 0)
         .attr("height", d => height - y(d.length))
-        .style("fill", "#1c6363")
+        .style("fill", "#70d2cf")
+
+    let groups = svg.selectAll(null)
+        .data(bins)
+        .enter()
+        .append("g")
+            .attr("transform", d => "translate(" + x(d.x0) + "," + y(d.length) + ")")
+    ;
+
+    let rects = groups.selectAll(".miniRect")
+        .data(d => d)
+        .enter()
+        .append("rect")
+        .attr("class", "miniRect")
+        .attr("x", 1)
+        .attr("y", (d, i) => height - y(i))
+        .attr("width", d => {
+            console.log(d)
+            return 11
+        })
+        .attr("height", 11)
+        .attr("fill", "#1c6363")
+        .on("click", d => {
+            console.log("--------------------")
+            console.log(d)
+        })
 
     var updateBars = function (data) {
         // First update the y-axis domain to match data
