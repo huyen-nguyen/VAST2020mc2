@@ -32,15 +32,27 @@ svg.imageDist {
 #zoomPanel {
     float: left;
     margin-top: 20px;
+    width: 350px;
+    height: 350px;
+    /*position: sticky;*/
+    left: 800px;
+}
+
+#detailPanel {
+    position: absolute;
+    float: left;
+    margin-top: 20px;
     width: 400px;
     height: 400px;
+    /*position: sticky;*/
+    left: 1170px;
 }
 
 .redBorder {
-    border: 3px solid #ba0c00;
+    border: 3px solid #dd0e00;
 }
 
 .imgBorder {
     outline-offset: 1px;
-    outline: 2px solid #ba0c00;
+    outline: 2px solid #dd0e00;
 }
