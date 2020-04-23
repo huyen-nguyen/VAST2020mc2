@@ -4,7 +4,7 @@ let thumbImgWidth = 20, thumbImgHeight = 20
 let biggerImgWidth = 450, biggerImgHeight = 360
 
 // set the dimensions and margins of the graph
-let margin = {top: 10, right: 30, bottom: 30, left: 160},
+let margin = {top: 10, right: 30, bottom: 30, left: 170},
     width = 1650 - margin.left - margin.right,
     height = 800 - margin.top - margin.bottom;
 
@@ -114,7 +114,7 @@ d3.csv("data/newData2.csv", function (error, data) {
         groups.exit()
             .attr("opacity", 1)
             .transition()
-            .duration(300)
+            .duration(200)
             .attr("opacity", 0)
             .remove()
 
@@ -129,8 +129,7 @@ d3.csv("data/newData2.csv", function (error, data) {
             .append('image')
             .attr("opacity", 0)
 
-            rects.transition()
-            .duration(300)
+            rects
             .attr("opacity", 1)
             .attr("class", "thumbnail")
             .attr('xlink:href', (d) => {
@@ -183,16 +182,17 @@ d3.csv("data/newData2.csv", function (error, data) {
         .on("change", dropdownChange)
 
     dropdown.selectAll("option")
-        .data(classes)
+        .data(classesSeparate)
         .enter().append("option")
         .attr("value", function (d) {
             return d;
         })
         .text(function (d) {
-            return d[0].toUpperCase() + d.slice(1, d.length); // capitalize 1st letter
+            return d[0].toUpperCase() + d.slice(1, d.length) + (countClasses[d] ? " (" + countClasses[d] : " (0" ) + ")"; // capitalize
+            // 1st letter
         });
 
-    updateCharts("birdCall")
+    updateCharts("eyeball")
 })
 
 
