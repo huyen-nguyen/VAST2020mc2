@@ -25,11 +25,14 @@ let y = d3.scaleLinear()
     .domain([0, 43]) // getMaxBin() here
 
 // append the svg object to the body of the page
-var svg = d3.select(main)
+let mainSVG = d3.select(main)
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .attr("class", "imageDist")
+
+
+let svg = mainSVG
     .append("g")
     .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
@@ -39,7 +42,6 @@ var svg = d3.select(main)
 let zoomPanelDiv = d3.select(main).append("div")
     .attr("class", "box")
     .attr("id", "zoomPanel")
-    .style("opacity", 0)
 
 
 let zoomPanel = zoomPanelDiv.append("svg")
@@ -71,6 +73,7 @@ let biggerImage = wholeImagePanel.append('image')
     .attr("width", biggerImgWidth)
     .attr("height", biggerImgHeight)
 
+
 // draw x and y axis
 svg.append("g")
     .attr("transform", "translate(0, " + height + ")")
@@ -79,13 +82,16 @@ svg.append("g")
 svg.append("g")
     .call(d3.axisLeft(y))
 
+let g = svg.append("g")
 
+let rects, bins
 d3.csv("data/newData2.csv", function (error, data) {
     if (error) throw error;
 
     function updateCharts(topic) {
 
-        let bins = generateBins(topic, data)
+        bins = generateBins(topic, data)
+        bins.forEach((d,i) => d.id = topic + i)
 
         console.log(data);
         console.log(getMaxBin(data))
@@ -101,21 +107,31 @@ d3.csv("data/newData2.csv", function (error, data) {
         //     .attr("width", d => x(d.x1) > x(d.x0) ? x(d.x1) - x(d.x0) - 3 : 0)
         //     .attr("height", d => height - y(d.length))
         //     .style("fill", "#cdeee4")
+        let prevClick
+        let groups = g.selectAll("g.imgGroup")
+            .data(bins, d => d.id)
 
-        let groups = svg.selectAll(".imgGroup")
-            .data(bins)
+        groups.exit()
+            .attr("opacity", 1)
+            .transition()
+            .duration(300)
+            .attr("opacity", 0)
+            .remove()
+
+        rects = groups
             .enter()
             .append("g")
             .attr("class", "imgGroup")
             .attr("transform", d => "translate(" + x(d.x0) + "," + y(d.length) + ")")
-        ;
-        console.log(bins)
-
-        let prevClick
-        let rects = groups.selectAll(".thumbnail")
+            .selectAll(".thumbnail")
             .data(d => d)
             .enter()
             .append('image')
+            .attr("opacity", 0)
+
+            rects.transition()
+            .duration(300)
+            .attr("opacity", 1)
             .attr("class", "thumbnail")
             .attr('xlink:href', (d) => {
                 return "MC2-Image-Data/" + d.Person + "/" + d.ID + ".jpg"
@@ -125,12 +141,13 @@ d3.csv("data/newData2.csv", function (error, data) {
             .attr("width", barWidth)
             .attr("height", barWidth)
             .attr("opacity", d => (parseInt(d.x) < 0 ? 0.3 : 1))
-            .on("mouseover", mouseoverImage)
+
+            rects.on("mouseover", mouseoverImage)
+
+        biggerImage.attr("opacity", 0)
+        zoomPanelDiv.style("opacity", 0)
 
         function mouseoverImage(d) {
-            console.log("--------------------")
-            console.log(d)
-
             imageZoomed.attr('xlink:href', "MC2-Image-Data/" + d.Person + "/" + d.ID + ".jpg")
 
             zoomPanelDiv
@@ -138,8 +155,9 @@ d3.csv("data/newData2.csv", function (error, data) {
                 .classed("redBorder", true)
 
             biggerImage.attr('xlink:href', "MC2-Image-Data/" + d.Person + "/" + d.Image + "bbox.jpg")
+                .attr("opacity", 1)
 
-            textZoomed.html("<br>" + "Score: " + d.Score + "<br>" + " Label: " + d.Label + "<br>" + " Owner: " + d.Person
+            textZoomed.html("<br>" + "Score: " + d.Score + "<br>" + " Label: " + d.Label + "<br>" + " Owner: " + d.Person + "<br>" + "Image: " + d.Image
                 + (parseInt(d.x) < 0 ? "<br><span style='color: red'> Cannot locate bounding box for this" +
                     " object!</span>" : "")
             );
