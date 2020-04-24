@@ -66,6 +66,7 @@ let pin = zoomPanel.append('image')
 
 let textZoomed = zoomPanelDiv
     .append("div")
+    .style("font-size", "15px")
 
 // add div
 d3.select(main).append("div")
@@ -87,9 +88,18 @@ let biggerImage = wholeImagePanel.append('image')
 svg.append("g")
     .attr("transform", "translate(0, " + height + ")")
     .call(d3.axisBottom(x))
+    .append("text")
+    .attr("x", width/2 - 200)
+    .attr("y", margin.bottom * 0.9)
+    .attr("dx", "0.32em")
+    .attr("fill", "#000")
+    .attr("text-anchor", "start")
+    .attr("font-size", "13px")
+    .text("Confidence Score");
 
 svg.append("g")
     .call(d3.axisLeft(y))
+
 
 let g = svg.append("g")
 

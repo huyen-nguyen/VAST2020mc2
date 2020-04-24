@@ -76,6 +76,10 @@ svg.imageDist {
     padding: 10px
 }
 
+.ss-main .ss-single-selected {
+    font-weight: bold;
+}
+
 .text-option {
     margin-bottom: 5px;
 }
