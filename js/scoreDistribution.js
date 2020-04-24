@@ -5,7 +5,7 @@ let biggerImgWidth = 450, biggerImgHeight = 360
 
 // set the dimensions and margins of the graph
 let margin = {top: 10, right: 30, bottom: 30, left: 320},
-    width = 1900 - margin.left - margin.right,
+    width = 1860 - margin.left - margin.right,
     height = 800 - margin.top - margin.bottom;
 
 let zoomPanelMargin = {top: 20, right: 20, bottom: 20, left: 20},
@@ -240,7 +240,7 @@ function addImage() {
             let topic = tp[0].toLowerCase() + tp.slice(1, tp.length)
             console.log(this)
             let src = "MC2-Image-Data/TrainingImages/" + topic + "/" + topic + "_2.jpg"
-            return this.innerText + '<img style="width: 270px" src=' + src + '>'
+            return '<div class="text-option">' + this.innerText + '</div>' + '<img style="width: 270px" src=' + src + '>'
 
         });
 

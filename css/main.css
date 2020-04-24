@@ -4,6 +4,10 @@ div.sticky {
     left: 0px;
 }
 
+body {
+    font-family: sans-serif;
+}
+
 .box {
     position: absolute;
     padding: 5px;
@@ -24,7 +28,7 @@ div.sticky {
 svg.imageDist {
     position: absolute;
     left: 0;
-    top: 0;
+    top: 90px;
     z-index: -1;
 }
 
@@ -61,8 +65,63 @@ svg.imageDist {
 
 .ss-main{
     width: 290px;
+    font-family: sans-serif;
 }
 
 .ss-content .ss-list {
     max-height: 700px;
+}
+
+.ss-content .ss-list .ss-option {
+    padding: 10px
+}
+
+.text-option {
+    margin-bottom: 5px;
+}
+
+/* ------------ Nav Bar ------------  */
+/* Add a black background color to the top navigation */
+.topnav {
+    background-color: #ffffff;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.box-nav {
+    /*position: absolute;*/
+    padding-left: 30px;
+    box-sizing: content-box;
+    box-shadow: 3px 3px 3px #44444452;
+    /*background-image: -webkit-linear-gradient(left, #f6f6f6, #f1f1f1);*/
+    /*border: 1px solid #ccc;*/
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px ;
+    transform-origin: 100% 100% 0;
+    -webkit-transform-origin: 100% 100% 0;
+    -ms-transform-origin: 100% 100% 0;
+    z-index: 100;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+    background-color: #4CAF50;
+    color: white;
 }
