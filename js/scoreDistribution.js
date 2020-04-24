@@ -6,7 +6,7 @@ let biggerImgWidth = 450, biggerImgHeight = 360
 // set the dimensions and margins of the graph
 let margin = {top: 10, right: 30, bottom: 30, left: 320},
     width = 1860 - margin.left - margin.right,
-    height = 800 - margin.top - margin.bottom;
+    height = 830 - margin.top - margin.bottom;
 
 let zoomPanelMargin = {top: 20, right: 20, bottom: 20, left: 20},
     zoomPanelWidth = 350 - zoomPanelMargin.left - zoomPanelMargin.right,
@@ -54,6 +54,15 @@ let zoomPanel = zoomPanelDiv.append("svg")
 let imageZoomed = zoomPanel.append('image')
     .attr("width", zoomPanelWidth)
     .attr("height", zoomPanelHeight)
+
+let pin = zoomPanel.append('image')
+    .attr('xlink:href', "images/pin.png")
+    .attr("width", 50)
+    .attr("height", 50)
+    .attr("x", -25)
+    .attr("y", 285)
+    
+    
 
 let textZoomed = zoomPanelDiv
     .append("div")
@@ -107,7 +116,7 @@ d3.csv("data/newData2.csv", function (error, data) {
         //     .attr("width", d => x(d.x1) > x(d.x0) ? x(d.x1) - x(d.x0) - 3 : 0)
         //     .attr("height", d => height - y(d.length))
         //     .style("fill", "#cdeee4")
-        let prevClick
+        let prevOver
         let groups = g.selectAll("g.imgGroup")
             .data(bins, d => d.id)
 
@@ -142,9 +151,13 @@ d3.csv("data/newData2.csv", function (error, data) {
             .attr("opacity", d => (parseInt(d.x) < 0 ? 0.3 : 1))
 
             rects.on("mouseover", mouseoverImage)
+                .on("click", pinImage)
+        
+        pin.on("click", unpin)
 
         biggerImage.attr("opacity", 0)
         zoomPanelDiv.style("opacity", 0)
+        pin.attr("opacity", 0)
 
         function mouseoverImage(d) {
             imageZoomed.attr('xlink:href', "MC2-Image-Data/" + d.Person + "/" + d.ID + ".jpg")
@@ -162,8 +175,19 @@ d3.csv("data/newData2.csv", function (error, data) {
             );
 
             d3.select(this).classed("imgBorder", true)
-            d3.select(prevClick).classed("imgBorder", false)
-            prevClick = this;
+            d3.select(prevOver).classed("imgBorder", false)
+            prevOver = this;
+        }
+
+        function pinImage() {
+            rects.on("mouseover", () => "")
+        //    pin the image
+            pin.attr("opacity", 1)
+        }
+        
+        function unpin() {
+            rects.on("mouseover", mouseoverImage)
+            pin.attr("opacity", 0)
         }
     }
 
@@ -239,8 +263,8 @@ function addImage() {
             let tp = this.innerText.split(" ")[0];
             let topic = tp[0].toLowerCase() + tp.slice(1, tp.length)
             console.log(this)
-            let src = "MC2-Image-Data/TrainingImages/" + topic + "/" + topic + "_2.jpg"
-            return '<div class="text-option">' + this.innerText + '</div>' + '<img style="width: 270px" src=' + src + '>'
+            let src = "MC2-Image-Data/TrainingImages/" + topic + "/" + topic + "_3.jpg"
+            return '<div class="text-option">' + this.innerText + '</div>' + '<img style="width: 267px" src=' + src + '>'
 
         });
 
