@@ -4,8 +4,8 @@ let thumbImgWidth = 20, thumbImgHeight = 20
 let biggerImgWidth = 450, biggerImgHeight = 360
 
 // set the dimensions and margins of the graph
-let margin = {top: 10, right: 30, bottom: 30, left: 170},
-    width = 1650 - margin.left - margin.right,
+let margin = {top: 10, right: 30, bottom: 30, left: 320},
+    width = 1900 - margin.left - margin.right,
     height = 800 - margin.top - margin.bottom;
 
 let zoomPanelMargin = {top: 20, right: 20, bottom: 20, left: 20},
@@ -173,25 +173,35 @@ d3.csv("data/newData2.csv", function (error, data) {
         console.log(newTopic)
 
         updateCharts(newTopic)
+
+        setTimeout(addImage, 1000);
+
     }
+
 
     let dropdown = d3.select(main)
         .insert("select", "svg")
+        .attr("id", "single")
         .style("display", "block")
         .style("float", "left")
         .on("change", dropdownChange)
 
+
     dropdown.selectAll("option")
         .data(classesSeparate)
-        .enter().append("option")
-        .attr("value", function (d) {
-            return d;
+        .enter()
+        .append("option")
+        .attr("class", "option")
+        .attr("value", d => d)
+        .html(function (d) {
+            return d[0].toUpperCase() + d.slice(1, d.length) + (countClasses[d] ? " (" + countClasses[d] : " (0" ) + ")";
         })
-        .text(function (d) {
-            return d[0].toUpperCase() + d.slice(1, d.length) + (countClasses[d] ? " (" + countClasses[d] : " (0" ) + ")"; // capitalize
-            // 1st letter
-        });
 
+    new SlimSelect({
+        select: '#single',
+    });
+
+    addImage()
     updateCharts("eyeball")
 })
 
@@ -221,4 +231,17 @@ function getMaxBin(data) {
     })
 
     return max
+}
+
+function addImage() {
+    d3.selectAll(".ss-option")
+        .html(function () {
+            let tp = this.innerText.split(" ")[0];
+            let topic = tp[0].toLowerCase() + tp.slice(1, tp.length)
+            console.log(this)
+            let src = "MC2-Image-Data/TrainingImages/" + topic + "/" + topic + "_2.jpg"
+            return this.innerText + '<img style="width: 270px" src=' + src + '>'
+
+        });
+
 }
