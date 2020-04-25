@@ -108,14 +108,20 @@ svg.imageDist {
     z-index: 100;
 }
 
+.topnav h2 {
+    display: inline-block;
+}
+
 /* Style the links inside the navigation bar */
 .topnav a {
-    float: left;
-    color: #f2f2f2;
+    margin: 8px 0 8px 0;
+    float: right;
+    color: #071126;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
     font-size: 17px;
+    border-radius: 4px
 }
 
 /* Change the color of links on hover */
@@ -126,6 +132,10 @@ svg.imageDist {
 
 /* Add a color to the active/current link */
 .topnav a.active {
-    background-color: #4CAF50;
+    background-color: rgb(18, 93, 164);
     color: white;
+}
+
+#right-btn{
+    margin-right: 30px !important;
 }

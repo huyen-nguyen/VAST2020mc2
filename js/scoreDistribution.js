@@ -107,6 +107,8 @@ let rects, bins
 d3.csv("data/newData2.csv", function (error, data) {
     if (error) throw error;
 
+    // data = data.filter(d => d.Score >= 0.5)
+
     function updateCharts(topic) {
 
         bins = generateBins(topic, data)
@@ -222,13 +224,13 @@ d3.csv("data/newData2.csv", function (error, data) {
 
 
     dropdown.selectAll("option")
-        .data(classesSeparate)
+        .data(classesSorted)
         .enter()
         .append("option")
         .attr("class", "option")
         .attr("value", d => d)
         .html(function (d) {
-            return d[0].toUpperCase() + d.slice(1, d.length) + (countClasses[d] ? " (" + countClasses[d] : " (0" ) + ")";
+            return d[0].toUpperCase() + d.slice(1, d.length) + (classesCount[d] ? " (" + classesCount[d] : " (0" ) + ")";
         })
 
     new SlimSelect({
