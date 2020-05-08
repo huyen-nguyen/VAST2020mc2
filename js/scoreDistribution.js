@@ -1,32 +1,29 @@
-main = "#main"
+const main = "#main"
+let maxBin
+let topic = "eyeball"
 
-let thumbImgWidth = 20, thumbImgHeight = 20
-let biggerImgWidth = 450, biggerImgHeight = 360
+let thresholdValue = 0.3
+let histogramThreshold = d3.scaleThreshold().domain([0.3, 0.4, 0.5, 0.6, 0.7]).range([30, 25, 20, 20, 15, 10])
+let filteredData, allData;
+
+const biggerImgWidth = 450, biggerImgHeight = 360
 
 // set the dimensions and margins of the graph
-let margin = {top: 10, right: 30, bottom: 30, left: 340},
+const margin = {top: 10, right: 30, bottom: 40, left: 340},
     width = 1660 - margin.left - margin.right,
     height = 830 - margin.top - margin.bottom;
 
-let zoomPanelMargin = {top: 20, right: 20, bottom: 20, left: 20},
+const zoomPanelMargin = {top: 20, right: 20, bottom: 20, left: 20},
     zoomPanelWidth = 350 - zoomPanelMargin.left - zoomPanelMargin.right,
     zoomPanelHeight = 350 - zoomPanelMargin.top - zoomPanelMargin.bottom;
 
-let ticks = 100
-let maxBin = 43
-let topic = "birdCall"
-
-let thresholdValue = 0.3
-let filteredData, allData;
 //    x-axis
 let x = d3.scaleLinear()
     .range([0, width])
 
-
 // y-axis
 let y = d3.scaleLinear()
     .range([height, 0])
-
 
 // apply control panel
 let leftPanel = d3.select(main)
@@ -52,6 +49,7 @@ let svg = mainSVG
 let zoomPanelDiv = d3.select(main).append("div")
     .attr("class", "box")
     .attr("id", "zoomPanel")
+    .attr("class", "box floating")
 
 
 let zoomPanel = zoomPanelDiv.append("svg")
@@ -100,9 +98,10 @@ xAxisGroup = svg.append("g")
 xAxisGroup
     .attr("transform", "translate(0, " + height + ")")
     .append("text")
-    .attr("x", width / 2 - 200)
+    .attr("x", width / 2 - 100)
     .attr("y", margin.bottom * 0.9)
-    .attr("dx", "0.32em")
+    .attr("dx", "3.32em")
+    // .attr("dy", "0.3em")
     .attr("fill", "#000")
     .attr("text-anchor", "start")
     .attr("font-size", "13px")
@@ -119,6 +118,12 @@ d3.csv("data/newData2.csv", function (error, data_) {
     if (error) throw error;
 
     allData = data_;
+
+    d3.selectAll(".floating").call(d3.drag()
+        .on("start", boxDragStarted)
+        .on("drag", boxDragged)
+        .on("end", boxDragEnded));
+
     leftPanel.append("text")
         .text("Threshold: ")
 
@@ -127,8 +132,8 @@ d3.csv("data/newData2.csv", function (error, data_) {
         .attr("id", "thresholdValue")
         .attr("type", "number")
         .attr("value", thresholdValue)
-        .attr("step", "0.05")
-        .attr("min", "0.25")
+        .attr("step", "0.1")
+        .attr("min", "0.3")
         .attr("max", "1")
         // .on("change", thresholdChange);
 
@@ -158,7 +163,7 @@ d3.csv("data/newData2.csv", function (error, data_) {
         .on("change", dropdownChange)
 
     dropdown.selectAll("option")
-        .data(classes)
+        .data(classesSorted)
         .enter()
         .append("option")
         .attr("class", "option")
@@ -176,33 +181,33 @@ d3.csv("data/newData2.csv", function (error, data_) {
 })
 
 function updateCharts() {
-    filteredData = allData.filter(d => d.Score >= thresholdValue).filter(d => d.Label === topic)
+    filteredData = allData.filter(d => parseFloat(d.Score) >= thresholdValue).filter(d => d.Label === topic)
 
     bins = generateBins(filteredData)
     bins.forEach((d, i) => d.id = topic + (thresholdValue*100) + i)
     maxBin = d3.max(bins.map(d => d.length))
-    y.domain([0, maxBin])
+    console.log(maxBin)
+    y.domain([0, maxBin < 3 ? 3 : maxBin])
 
     let hasData = bins.filter(d => d.length > 0)
     x.domain([thresholdValue, 1])
 
-    console.log(bins)
+    console.log("bins: ", bins)
     console.log(thresholdValue, topic, filteredData.length);
-
 
     xAxisGroup
         .transition()
         .duration(1000)
-        .call(d3.axisBottom(x).ticks(5))
+        .call(d3.axisBottom(x).ticks(20))
 
     yAxisGroup
         .transition()
         .duration(1000)
-        .call(d3.axisLeft(y).ticks(5))
+        .call(d3.axisLeft(y).ticks(3))
         ;
 
-    let barWidth = x(bins[1].x1) - x(bins[1].x0) - 3
-    // // append rectangles
+    let barWidth = x(bins[1].x1) - x(bins[1].x0) - 10
+    // append rectangles
     // svg.selectAll(null)
     //     .data(bins)
     //     .enter()
@@ -291,10 +296,10 @@ function updateCharts() {
 
 function generateBins(data) {
     // set the parameters for histogram
-    let histogram = d3.histogram()
-        .value(d => d.Score)
+    const histogram = d3.histogram()
+        .value(d => parseFloat(d.Score))
         .domain([thresholdValue, 1])
-        .thresholds(x.ticks(50))
+        .thresholds(histogramThreshold(thresholdValue))
 
     return histogram(data.sort((a, b) => parseFloat(b.Score) - parseFloat(a.Score)))
 
