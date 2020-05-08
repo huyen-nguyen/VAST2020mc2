@@ -2,9 +2,10 @@ const main = "#main"
 let maxBin
 let topic = "eyeball"
 
-let thresholdValue = 0.3
+let thresholdValue = 0.4
 let histogramThreshold = d3.scaleThreshold().domain([0.3, 0.4, 0.5, 0.6, 0.7]).range([30, 25, 20, 20, 15, 10])
 let filteredData, allData;
+let rects, bins
 
 const biggerImgWidth = 450, biggerImgHeight = 360
 
@@ -45,7 +46,7 @@ let svg = mainSVG
         "translate(" + margin.left + "," + margin.top + ")");
 
 
-// add div
+// Zoom panel --------------
 let zoomPanelDiv = d3.select(main).append("div")
     .attr("class", "box")
     .attr("id", "zoomPanel")
@@ -75,7 +76,7 @@ let textZoomed = zoomPanelDiv
     .append("div")
     .style("font-size", "15px")
 
-// add div
+// Whole image ---------
 d3.select(main).append("div")
     .attr("id", "detailPanel")
 
@@ -91,7 +92,7 @@ let biggerImage = wholeImagePanel.append('image')
     .attr("height", biggerImgHeight)
 
 
-// draw x and y axis
+// X and Y axis ---------------
 
 xAxisGroup = svg.append("g")
 
@@ -108,11 +109,25 @@ xAxisGroup
     .text("Confidence Score");
 
 yAxisGroup = svg.append("g")
-
-
 let g = svg.append("g")
 
-let rects, bins
+// ----------- buttons for scoring ------------
+let div = d3.select("body").append("div")
+    .style("position", "absolute")
+    .style("opacity", 0);
+
+div.append("button").style("display", "inline")
+    .attr("type", "button")
+    .attr("class", "btn btn-success")
+    .html("TP")
+    .on("click", btnOnClick)
+
+
+div.append("button").style("display", "inline")
+    .attr("type", "button")
+    .attr("class", "btn btn-danger")
+    .html("FP")
+    .on("click", btnOnClick)
 
 d3.csv("data/newData2.csv", function (error, data_) {
     if (error) throw error;
@@ -207,16 +222,6 @@ function updateCharts() {
         ;
 
     let barWidth = x(bins[1].x1) - x(bins[1].x0) - 10
-    // append rectangles
-    // svg.selectAll(null)
-    //     .data(bins)
-    //     .enter()
-    //     .append("rect")
-    //     .attr("x", 1)
-    //     .attr("transform", d => "translate(" + x(d.x0) + "," + y(d.length) + ")")
-    //     .attr("width", d => x(d.x1) > x(d.x0) ? x(d.x1) - x(d.x0) - 3 : 0)
-    //     .attr("height", d => height - y(d.length))
-    //     .style("fill", "#cdeee4")
 
     let prevOver
     let groups = g.selectAll("g.imgGroup")
@@ -254,6 +259,18 @@ function updateCharts() {
 
     rects.on("mouseover", mouseoverImage)
         .on("click", pinImage)
+        .on('contextmenu', function () {
+            d3.event.preventDefault();
+            console.log("right click");
+
+            div.transition()
+                .duration(100)
+                .style("opacity", 1)
+
+            div
+                .style("left", (d3.event.pageX - 46) + "px")
+                .style("top", (d3.event.pageY - 50) + "px")
+        });
 
     pin.on("click", unpin)
 
@@ -292,6 +309,11 @@ function updateCharts() {
         rects.on("mouseover", mouseoverImage)
         pin.attr("opacity", 0)
     }
+}
+
+function btnOnClick(d) {
+    console.log(this.innerText)
+    div.style("opacity", 0);
 }
 
 function generateBins(data) {
