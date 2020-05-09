@@ -21,3 +21,14 @@ function boxDragged() {
 function boxDragEnded() {
     d3.event.sourceEvent.stopPropagation();
 }
+
+function mousemove() {
+    var m = d3.mouse(this);
+
+    rectDrawn.attr("width", Math.max(0, m[0] - +rectDrawn.attr("x")))
+        .attr("height", Math.max(0, m[1] - +rectDrawn.attr("y")));
+}
+
+function mouseup() {
+    mainSVG.on("mousemove", null);
+}

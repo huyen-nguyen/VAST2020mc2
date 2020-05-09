@@ -5,7 +5,7 @@ let topic = "eyeball"
 let thresholdValue = 0.4
 let histogramThreshold = d3.scaleThreshold().domain([0.3, 0.4, 0.5, 0.6, 0.7]).range([30, 25, 20, 20, 15, 10])
 let filteredData, allData;
-let rects, bins
+let rects, bins, rectDrawn
 
 const biggerImgWidth = 450, biggerImgHeight = 360
 
@@ -110,6 +110,7 @@ xAxisGroup
 
 yAxisGroup = svg.append("g")
 let g = svg.append("g")
+    .attr("id", "mainG")
 
 // ----------- buttons for scoring ------------
 let scoring
@@ -180,14 +181,30 @@ d3.csv("data/newData2.csv", function (error, data_) {
         .data(shapeData)
         .enter()
         .append("label")
-        .html(function(d) {return '<span style="padding-left: 20px">' + d})
+        .html(function (d) {
+            return '<span style="padding-left: 20px">' + d
+        })
         .insert("input")
         .attr("type", "radio")
         .attr("class", "shape")
         .attr("name", "mode")
         .attr("value", (d, i) => i)
         .on("change", (d, i) => {
-            console.log(d)
+            console.log(d.split(" ")[0].toLowerCase())
+            mainSVG.on("mousedown", function () {
+                var m = d3.mouse(this);
+
+                rectDrawn = mainSVG.append("rect")
+                    .attr("x", m[0])
+                    .attr("y", m[1])
+                    .attr("height", 0)
+                    .attr("width", 0)
+                    .attr("fill", d.split(" ")[0].toLowerCase())
+                    .attr("opacity", 0.4)
+
+                mainSVG.on("mousemove", mousemove);
+            })
+                .on("mouseup", mouseup)
         })
 
     // ------- categories on left panel ----------
@@ -258,6 +275,7 @@ function updateCharts() {
     let prevOver
     let groups = g.selectAll("g.imgGroup")
         .data(bins, d => d.id)
+
 
     groups.exit()
         .attr("opacity", 1)
