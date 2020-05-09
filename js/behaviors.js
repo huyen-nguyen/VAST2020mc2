@@ -30,5 +30,9 @@ function mousemove() {
 }
 
 function mouseup() {
+    console.log("x: ", +rectDrawn.attr("x") - 340, "y: ", +rectDrawn.attr("y"), "width: ", +rectDrawn.attr("width"),  "height: ", +rectDrawn.attr("height"))
+    shrinkBoundary(+rectDrawn.attr("x") - 340, +rectDrawn.attr("y"), +rectDrawn.attr("width"), +rectDrawn.attr("height"))
+    rectDrawn.transition().duration(200).attr("opacity", 0).remove()
+
     mainSVG.on("mousemove", null);
 }

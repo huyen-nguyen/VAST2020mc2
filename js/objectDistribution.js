@@ -6,6 +6,13 @@ let thresholdValue = 0.4
 let histogramThreshold = d3.scaleThreshold().domain([0.3, 0.4, 0.5, 0.6, 0.7]).range([30, 25, 20, 20, 15, 10])
 let filteredData, allData;
 let rects, bins, rectDrawn
+let xStep, barWidth
+let translate = {
+    x: [],
+    y: [],
+}
+
+let positive
 
 const biggerImgWidth = 450, biggerImgHeight = 360
 
@@ -132,6 +139,110 @@ scoringDiv.append("button").style("display", "inline")
     .html("FP")
     .on("click", () => btnOnClick(false))
 
+// ------- threshold on left panel ----------
+let thresholdDiv = leftPanel.append("div")
+    .attr("class", "panelSelection")
+
+thresholdDiv.append("text")
+    .text("Threshold: ")
+
+thresholdDiv.append("input")
+    .style("width", "50px")
+    .attr("id", "thresholdValue")
+    .attr("type", "number")
+    .attr("value", thresholdValue)
+    .attr("step", "0.1")
+    .attr("min", "0.3")
+    .attr("max", "1")
+// .on("change", thresholdChange);
+
+d3.select("#thresholdValue").on("input", function () {
+    thresholdValue = (+this.value)
+    console.log(thresholdValue)
+    updateCharts()
+});
+
+// ------- draw red or green ---------
+let boundaryDiv = leftPanel.append('div')
+    .attr("class", "panelSelection")
+
+boundaryDiv.append("text")
+    .text("Boundary color: ")
+
+var shapeData = ["Green (TP)", "Red (FP)"];
+
+// Create the shape selectors
+var form = boundaryDiv.append("form");
+
+form.selectAll("label")
+    .data(shapeData)
+    .enter()
+    .append("label")
+    .html(function (d) {
+        return '<span style="padding-left: 20px">' + d
+    })
+    .insert("input")
+    .attr("type", "radio")
+    .attr("class", "shape")
+    .attr("name", "mode")
+    .attr("value", (d, i) => i)
+    .on("change", (d, i) => {
+        console.log(!i)
+        positive = !i
+        mainSVG.on("mousedown", function () {
+            var m = d3.mouse(this);
+
+            rectDrawn = mainSVG.append("rect")
+                .attr("id", "temp")
+                .attr("x", m[0])
+                .attr("y", m[1])
+                .attr("height", 0)
+                .attr("width", 0)
+                .attr("fill", d.split(" ")[0].toLowerCase())
+                .attr("opacity", 0.4)
+
+            mainSVG.on("mousemove", mousemove);
+        })
+            .on("mouseup", mouseup)
+
+    })
+
+// ------- categories on left panel ----------
+
+leftPanel.append("text")
+    .text("Categories:")
+    .attr("class", "panelSelection")
+
+// Handler for dropdown value change
+function dropdownChange() {
+    topic = d3.select(this).property('value')
+    console.log(topic)
+    updateCharts()
+    setTimeout(addImage, 1000);
+}
+
+let dropdown = leftPanel
+    .insert("select", "svg")
+    .attr("id", "single")
+    .style("display", "block")
+    .style("float", "left")
+    .on("change", dropdownChange)
+
+dropdown.selectAll("option")
+    .data(classesSorted)
+    .enter()
+    .append("option")
+    .attr("class", "option")
+    .attr("value", d => d)
+    .html(function (d) {
+        return d[0].toUpperCase() + d.slice(1, d.length) + (classesCount[d] ? " (" + classesCount[d] : " (0") + ")";
+    })
+
+new SlimSelect({
+    select: '#single',
+});
+
+
 d3.csv("data/newData2.csv", function (error, data_) {
     if (error) throw error;
 
@@ -141,106 +252,6 @@ d3.csv("data/newData2.csv", function (error, data_) {
         .on("start", boxDragStarted)
         .on("drag", boxDragged)
         .on("end", boxDragEnded));
-
-    // ------- threshold on left panel ----------
-    let thresholdDiv = leftPanel.append("div")
-        .attr("class", "panelSelection")
-
-    thresholdDiv.append("text")
-        .text("Threshold: ")
-
-    thresholdDiv.append("input")
-        .style("width", "50px")
-        .attr("id", "thresholdValue")
-        .attr("type", "number")
-        .attr("value", thresholdValue)
-        .attr("step", "0.1")
-        .attr("min", "0.3")
-        .attr("max", "1")
-    // .on("change", thresholdChange);
-
-    d3.select("#thresholdValue").on("input", function () {
-        thresholdValue = (+this.value)
-        console.log(thresholdValue)
-        updateCharts()
-    });
-
-    // ------- draw red or green ---------
-    let boundaryDiv = leftPanel.append('div')
-        .attr("class", "panelSelection")
-
-    boundaryDiv.append("text")
-        .text("Boundary color: ")
-
-    var shapeData = ["Green (TP)", "Red (FP)"];
-
-    // Create the shape selectors
-    var form = boundaryDiv.append("form");
-
-    form.selectAll("label")
-        .data(shapeData)
-        .enter()
-        .append("label")
-        .html(function (d) {
-            return '<span style="padding-left: 20px">' + d
-        })
-        .insert("input")
-        .attr("type", "radio")
-        .attr("class", "shape")
-        .attr("name", "mode")
-        .attr("value", (d, i) => i)
-        .on("change", (d, i) => {
-            console.log(d.split(" ")[0].toLowerCase())
-            mainSVG.on("mousedown", function () {
-                var m = d3.mouse(this);
-
-                rectDrawn = mainSVG.append("rect")
-                    .attr("x", m[0])
-                    .attr("y", m[1])
-                    .attr("height", 0)
-                    .attr("width", 0)
-                    .attr("fill", d.split(" ")[0].toLowerCase())
-                    .attr("opacity", 0.4)
-
-                mainSVG.on("mousemove", mousemove);
-            })
-                .on("mouseup", mouseup)
-        })
-
-    // ------- categories on left panel ----------
-
-    leftPanel.append("text")
-        .text("Categories:")
-        .attr("class", "panelSelection")
-
-    // Handler for dropdown value change
-    function dropdownChange() {
-        topic = d3.select(this).property('value')
-        console.log(topic)
-        updateCharts()
-        setTimeout(addImage, 1000);
-    }
-
-    let dropdown = leftPanel
-        .insert("select", "svg")
-        .attr("id", "single")
-        .style("display", "block")
-        .style("float", "left")
-        .on("change", dropdownChange)
-
-    dropdown.selectAll("option")
-        .data(classesSorted)
-        .enter()
-        .append("option")
-        .attr("class", "option")
-        .attr("value", d => d)
-        .html(function (d) {
-            return d[0].toUpperCase() + d.slice(1, d.length) + (classesCount[d] ? " (" + classesCount[d] : " (0") + ")";
-        })
-
-    new SlimSelect({
-        select: '#single',
-    });
 
     addImage()
     updateCharts()
@@ -270,12 +281,12 @@ function updateCharts() {
         .call(d3.axisLeft(y).ticks(3))
     ;
 
-    let barWidth = x(bins[1].x1) - x(bins[1].x0) - 12
+    xStep = x(bins[1].x1) - x(bins[1].x0)
+    barWidth = xStep- 12
 
     let prevOver
     let groups = g.selectAll("g.imgGroup")
         .data(bins, d => d.id)
-
 
     groups.exit()
         .attr("opacity", 1)
@@ -284,11 +295,17 @@ function updateCharts() {
         .attr("opacity", 0)
         .remove()
 
+    translate.x = [];
+    translate.y = [];
+
     rects = groups
         .enter()
         .append("g")
         .attr("class", "imgGroup")
-        .attr("transform", d => "translate(" + x(d.x0) + "," + y(d.length) + ")")
+        .attr("id", (d,i) => "group_" + (i+1))
+        .attr("transform", d => {
+            return "translate(" + x(d.x0) + "," + y(d.length) + ")"
+        })
 
     let imgs = rects
         .selectAll(".thumbnail")
@@ -308,11 +325,20 @@ function updateCharts() {
 
     let overlayRect = rects
         .selectAll(".overlayRect")
-        .data(d => d)
+        .data((d) => d)
         .enter()
         .append('rect')
         .attr("class", "overlayRect")
         .attr('id', d => d.ID)
+        .attr("count", function(d, i, a) {
+            console.log(a.length)
+            let parentNode = (document.getElementById(d.ID).parentNode.id)
+            return "image_" + parentNode.split("_")[1] + "_" + (maxBin - a.length + i+1)
+        })
+        // .attr("translateCO", d => {
+        //     let parentNode = (document.getElementById(d.ID).parentNode)
+        //     return parentNode.transform.baseVal.getItem(0).matrix.e + ", " + parentNode.transform.baseVal.getItem(0).matrix.f
+        // })
         .attr("x", 1)
         .attr("y", (d, i) => height - y(i))
         .attr("width", barWidth)
@@ -401,4 +427,26 @@ function addImage() {
 
         });
 
+}
+
+function shrinkBoundary(x, y, width, height){
+    if (width < xStep){
+        return
+    }
+    else {
+        let xFirstOrder = Math.ceil(x/xStep) + 1
+        let xSecOrder = d3.max([xFirstOrder, (Math.floor((x+width)/xStep))])
+        let yFirstOrder = Math.ceil(y/barWidth)
+        let ySecOrder =  (Math.floor((y+height)/barWidth))
+
+        for (let i = xFirstOrder; i <= xSecOrder; i++){
+            for (let j = yFirstOrder; j <= ySecOrder; j ++){
+                d3.selectAll("rect[count='image_"+ i + "_" + j + "']")
+                    .attr("fill", positive ? "#28A745" : "#DC3545")
+                    .attr("opacity", 0.4)
+            }
+        }
+
+
+    }
 }
