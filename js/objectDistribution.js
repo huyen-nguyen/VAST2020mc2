@@ -141,10 +141,14 @@ d3.csv("data/newData2.csv", function (error, data_) {
         .on("drag", boxDragged)
         .on("end", boxDragEnded));
 
-    leftPanel.append("text")
+    // ------- threshold on left panel ----------
+    let thresholdDiv = leftPanel.append("div")
+        .attr("class", "panelSelection")
+
+    thresholdDiv.append("text")
         .text("Threshold: ")
 
-    leftPanel.append("input")
+    thresholdDiv.append("input")
         .style("width", "50px")
         .attr("id", "thresholdValue")
         .attr("type", "number")
@@ -160,9 +164,37 @@ d3.csv("data/newData2.csv", function (error, data_) {
         updateCharts()
     });
 
+    // ------- draw red or green ---------
+    let boundaryDiv = leftPanel.append('div')
+        .attr("class", "panelSelection")
+
+    boundaryDiv.append("text")
+        .text("Boundary color: ")
+
+    var shapeData = ["Green (TP)", "Red (FP)"];
+
+    // Create the shape selectors
+    var form = boundaryDiv.append("form");
+
+    form.selectAll("label")
+        .data(shapeData)
+        .enter()
+        .append("label")
+        .html(function(d) {return '<span style="padding-left: 20px">' + d})
+        .insert("input")
+        .attr("type", "radio")
+        .attr("class", "shape")
+        .attr("name", "mode")
+        .attr("value", (d, i) => i)
+        .on("change", (d, i) => {
+            console.log(d)
+        })
+
+    // ------- categories on left panel ----------
+
     leftPanel.append("text")
         .text("Categories:")
-        .style("display", "block")
+        .attr("class", "panelSelection")
 
     // Handler for dropdown value change
     function dropdownChange() {
@@ -312,13 +344,13 @@ function updateCharts() {
     }
 
     function pinImage() {
-        rects.on("mouseover", () => "")
+        overlayRect.on("mouseover", () => "")
         //    pin the image
         pin.attr("opacity", 1)
     }
 
     function unpin() {
-        rects.on("mouseover", mouseoverImage)
+        overlayRect.on("mouseover", mouseoverImage)
         pin.attr("opacity", 0)
     }
 }
