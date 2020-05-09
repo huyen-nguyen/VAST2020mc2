@@ -112,22 +112,24 @@ yAxisGroup = svg.append("g")
 let g = svg.append("g")
 
 // ----------- buttons for scoring ------------
-let div = d3.select("body").append("div")
-    .style("position", "absolute")
-    .style("opacity", 0);
+let scoring
+let clickID
 
-div.append("button").style("display", "inline")
+let scoringDiv = d3.select("body").append("div")
+    .style("position", "absolute")
+    .style("visibility", "hidden");
+
+scoringDiv.append("button").style("display", "inline")
     .attr("type", "button")
     .attr("class", "btn btn-success")
     .html("TP")
-    .on("click", btnOnClick)
+    .on("click", () => btnOnClick(true))
 
-
-div.append("button").style("display", "inline")
+scoringDiv.append("button").style("display", "inline")
     .attr("type", "button")
     .attr("class", "btn btn-danger")
     .html("FP")
-    .on("click", btnOnClick)
+    .on("click", () => btnOnClick(false))
 
 d3.csv("data/newData2.csv", function (error, data_) {
     if (error) throw error;
@@ -150,9 +152,9 @@ d3.csv("data/newData2.csv", function (error, data_) {
         .attr("step", "0.1")
         .attr("min", "0.3")
         .attr("max", "1")
-        // .on("change", thresholdChange);
+    // .on("change", thresholdChange);
 
-    d3.select("#thresholdValue").on("input", function() {
+    d3.select("#thresholdValue").on("input", function () {
         thresholdValue = (+this.value)
         console.log(thresholdValue)
         updateCharts()
@@ -199,12 +201,10 @@ function updateCharts() {
     filteredData = allData.filter(d => parseFloat(d.Score) >= thresholdValue).filter(d => d.Label === topic)
 
     bins = generateBins(filteredData)
-    bins.forEach((d, i) => d.id = topic + (thresholdValue*100) + i)
+    bins.forEach((d, i) => d.id = topic + (thresholdValue * 100) + i)
     maxBin = d3.max(bins.map(d => d.length))
-    console.log(maxBin)
-    y.domain([0, maxBin < 3 ? 3 : maxBin])
 
-    let hasData = bins.filter(d => d.length > 0)
+    y.domain([0, maxBin < 3 ? 3 : maxBin])
     x.domain([thresholdValue, 1])
 
     console.log("bins: ", bins)
@@ -219,9 +219,9 @@ function updateCharts() {
         .transition()
         .duration(1000)
         .call(d3.axisLeft(y).ticks(3))
-        ;
+    ;
 
-    let barWidth = x(bins[1].x1) - x(bins[1].x0) - 10
+    let barWidth = x(bins[1].x1) - x(bins[1].x0) - 12
 
     let prevOver
     let groups = g.selectAll("g.imgGroup")
@@ -239,13 +239,12 @@ function updateCharts() {
         .append("g")
         .attr("class", "imgGroup")
         .attr("transform", d => "translate(" + x(d.x0) + "," + y(d.length) + ")")
+
+    let imgs = rects
         .selectAll(".thumbnail")
         .data(d => d)
         .enter()
         .append('image')
-        .attr("opacity", 0)
-
-    rects
         .attr("opacity", 1)
         .attr("class", "thumbnail")
         .attr('xlink:href', (d) => {
@@ -257,23 +256,36 @@ function updateCharts() {
         .attr("height", barWidth)
         .attr("opacity", d => (parseInt(d.x) < 0 ? 0.3 : 1))
 
-    rects.on("mouseover", mouseoverImage)
+    let overlayRect = rects
+        .selectAll(".overlayRect")
+        .data(d => d)
+        .enter()
+        .append('rect')
+        .attr("class", "overlayRect")
+        .attr('id', d => d.ID)
+        .attr("x", 1)
+        .attr("y", (d, i) => height - y(i))
+        .attr("width", barWidth)
+        .attr("height", barWidth)
+        .attr("fill", "black")
+        .attr("opacity", 0)
+
+    overlayRect.on("mouseover", mouseoverImage)
         .on("click", pinImage)
-        .on('contextmenu', function () {
+        .on('contextmenu', function (d) {
             d3.event.preventDefault();
-            console.log("right click");
-
-            div.transition()
+            clickID = d.ID;
+            console.log(clickID)
+            scoringDiv.transition()
                 .duration(100)
-                .style("opacity", 1)
+                .style("visibility", "visible");
 
-            div
+            scoringDiv
                 .style("left", (d3.event.pageX - 46) + "px")
                 .style("top", (d3.event.pageY - 50) + "px")
         });
 
     pin.on("click", unpin)
-
     biggerImage.attr("opacity", 0)
     zoomPanelDiv.style("opacity", 0)
     pin.attr("opacity", 0)
@@ -311,9 +323,11 @@ function updateCharts() {
     }
 }
 
-function btnOnClick(d) {
-    console.log(this.innerText)
-    div.style("opacity", 0);
+function btnOnClick(status) {
+    d3.select("rect#" + clickID)
+        .attr("fill", status ? "#28A745" : "#DC3545")
+        .attr("opacity", 0.4)
+    scoringDiv.style("visibility", "hidden");
 }
 
 function generateBins(data) {
