@@ -1,8 +1,8 @@
 const main = "#main"
 let maxBin
-let topic = "eyeball"
+let topic = "cloudSign"
 
-let thresholdValue = 0.4
+let thresholdValue = 0.5
 let histogramThreshold = d3.scaleThreshold().domain([0.3, 0.4, 0.5, 0.6, 0.7]).range([30, 25, 20, 20, 15, 10])
 let filteredData, allData;
 let rects, bins, rectDrawn
@@ -116,7 +116,7 @@ xAxisGroup
     .text("Confidence Score");
 
 yAxisGroup = svg.append("g")
-let g = svg.append("g")
+let mainGroup = svg.append("g")
     .attr("id", "mainG")
 
 // ----------- buttons for scoring ------------
@@ -187,7 +187,6 @@ form.selectAll("label")
     .attr("name", "mode")
     .attr("value", (d, i) => i)
     .on("change", (d, i) => {
-        console.log(!i)
         positive = !i
         mainSVG.on("mousedown", function () {
             var m = d3.mouse(this);
@@ -268,7 +267,7 @@ function updateCharts() {
     x.domain([thresholdValue, 1])
 
     console.log("bins: ", bins)
-    console.log(thresholdValue, topic, filteredData.length);
+    console.log("maxbin: ", maxBin);
 
     xAxisGroup
         .transition()
@@ -285,7 +284,7 @@ function updateCharts() {
     barWidth = xStep- 12
 
     let prevOver
-    let groups = g.selectAll("g.imgGroup")
+    let groups = mainGroup.selectAll("g.imgGroup")
         .data(bins, d => d.id)
 
     groups.exit()
@@ -295,14 +294,14 @@ function updateCharts() {
         .attr("opacity", 0)
         .remove()
 
-    translate.x = [];
-    translate.y = [];
-
     rects = groups
         .enter()
         .append("g")
         .attr("class", "imgGroup")
-        .attr("id", (d,i) => "group_" + (i+1))
+        .attr("id", (d,i, a) => {
+            // console.log(d, i, a)
+            return "group_" + (i+1)
+        })
         .attr("transform", d => {
             return "translate(" + x(d.x0) + "," + y(d.length) + ")"
         })
@@ -325,26 +324,25 @@ function updateCharts() {
 
     let overlayRect = rects
         .selectAll(".overlayRect")
-        .data((d) => d)
+        .data(d => d)
         .enter()
         .append('rect')
         .attr("class", "overlayRect")
         .attr('id', d => d.ID)
-        .attr("count", function(d, i, a) {
-            console.log(a.length)
-            let parentNode = (document.getElementById(d.ID).parentNode.id)
-            return "image_" + parentNode.split("_")[1] + "_" + (maxBin - a.length + i+1)
-        })
-        // .attr("translateCO", d => {
-        //     let parentNode = (document.getElementById(d.ID).parentNode)
-        //     return parentNode.transform.baseVal.getItem(0).matrix.e + ", " + parentNode.transform.baseVal.getItem(0).matrix.f
-        // })
         .attr("x", 1)
         .attr("y", (d, i) => height - y(i))
         .attr("width", barWidth)
         .attr("height", barWidth)
         .attr("fill", "black")
         .attr("opacity", 0)
+        .attr("count", function(d, i, a) {
+        // let parentNode = (document.getElementById(d.ID).parentNode.id) // should not use this as this is not updated
+            let parentID = this.parentNode.getAttribute("id")
+            console.log(parentID)
+
+        return "image_" + parentID.split("_")[1] + "_" + (maxBin - a.length + i+1)
+    })
+
 
     overlayRect.on("mouseover", mouseoverImage)
         .on("click", pinImage)
@@ -385,6 +383,7 @@ function updateCharts() {
         d3.select(this).classed("imgBorder", true)
         d3.select(prevOver).classed("imgBorder", false)
         prevOver = this;
+
     }
 
     function pinImage() {
@@ -439,6 +438,7 @@ function shrinkBoundary(x, y, width, height){
         let yFirstOrder = Math.ceil(y/barWidth)
         let ySecOrder =  (Math.floor((y+height)/barWidth))
 
+        console.log(xFirstOrder, xSecOrder, yFirstOrder, ySecOrder)
         for (let i = xFirstOrder; i <= xSecOrder; i++){
             for (let j = yFirstOrder; j <= ySecOrder; j ++){
                 d3.selectAll("rect[count='image_"+ i + "_" + j + "']")
