@@ -6,7 +6,7 @@ let thresholdValue = 0.5
 let histogramThreshold = d3.scaleThreshold().domain([0.3, 0.4, 0.5, 0.6, 0.7]).range([30, 25, 20, 20, 15, 10])
 let filteredData, allData;
 let rects, bins, rectDrawn
-let xStep, barWidth
+let xStep, barWidth, yStep
 let translate = {
     x: [],
     y: [],
@@ -262,12 +262,15 @@ function updateCharts() {
     bins = generateBins(filteredData)
     bins.forEach((d, i) => d.id = topic + (thresholdValue * 100) + i)
     maxBin = d3.max(bins.map(d => d.length))
+    maxBin = maxBin < 3 ? 3 : maxBin;
 
-    y.domain([0, maxBin < 3 ? 3 : maxBin])
+    y.domain([0, maxBin])
     x.domain([thresholdValue, 1])
 
     console.log("bins: ", bins)
     console.log("maxbin: ", maxBin);
+
+    yStep = height/maxBin;
 
     xAxisGroup
         .transition()
@@ -281,7 +284,7 @@ function updateCharts() {
     ;
 
     xStep = x(bins[1].x1) - x(bins[1].x0)
-    barWidth = xStep- 12
+    barWidth = xStep - 12
 
     let prevOver
     let groups = mainGroup.selectAll("g.imgGroup")
@@ -298,9 +301,9 @@ function updateCharts() {
         .enter()
         .append("g")
         .attr("class", "imgGroup")
-        .attr("id", (d,i, a) => {
+        .attr("id", (d, i, a) => {
             // console.log(d, i, a)
-            return "group_" + (i+1)
+            return "group_" + (i + 1)
         })
         .attr("transform", d => {
             return "translate(" + x(d.x0) + "," + y(d.length) + ")"
@@ -335,13 +338,11 @@ function updateCharts() {
         .attr("height", barWidth)
         .attr("fill", "black")
         .attr("opacity", 0)
-        .attr("count", function(d, i, a) {
-        // let parentNode = (document.getElementById(d.ID).parentNode.id) // should not use this as this is not updated
+        .attr("count", function (d, i, a) {
+            // let parentNode = (document.getElementById(d.ID).parentNode.id) // should not use this as this is not updated
             let parentID = this.parentNode.getAttribute("id")
-            console.log(parentID)
-
-        return "image_" + parentID.split("_")[1] + "_" + (maxBin - a.length + i+1)
-    })
+            return "image_" + parentID.split("_")[1] + "_" + (maxBin - a.length + i + 1)
+        })
 
 
     overlayRect.on("mouseover", mouseoverImage)
@@ -365,7 +366,7 @@ function updateCharts() {
     pin.attr("opacity", 0)
 
 
-    function mouseoverImage(d) {
+    function mouseoverImage(d, i, a) {
         imageZoomed.attr('xlink:href', "MC2-Image-Data/" + d.Person + "/" + d.ID + ".jpg")
 
         zoomPanelDiv
@@ -428,25 +429,22 @@ function addImage() {
 
 }
 
-function shrinkBoundary(x, y, width, height){
-    if (width < xStep){
+function shrinkBoundary(x, y, width, height) {
+    if (width < xStep) {
         return
-    }
-    else {
-        let xFirstOrder = Math.ceil(x/xStep) + 1
-        let xSecOrder = d3.max([xFirstOrder, (Math.floor((x+width)/xStep))])
-        let yFirstOrder = Math.ceil(y/barWidth)
-        let ySecOrder =  (Math.floor((y+height)/barWidth))
+    } else {
+        let xFirstOrder = Math.ceil(x / xStep) + 1
+        let xSecOrder = d3.max([xFirstOrder, (Math.floor((x + width) / xStep))])
+        let yFirstOrder = Math.ceil(y / yStep) + 1
+        let ySecOrder = d3.max([yFirstOrder, (Math.floor((y + height) / yStep))])
 
         console.log(xFirstOrder, xSecOrder, yFirstOrder, ySecOrder)
-        for (let i = xFirstOrder; i <= xSecOrder; i++){
-            for (let j = yFirstOrder; j <= ySecOrder; j ++){
-                d3.selectAll("rect[count='image_"+ i + "_" + j + "']")
+        for (let i = xFirstOrder; i <= xSecOrder; i++) {
+            for (let j = yFirstOrder; j <= ySecOrder; j++) {
+                d3.selectAll("rect[count='image_" + i + "_" + j + "']")
                     .attr("fill", positive ? "#28A745" : "#DC3545")
                     .attr("opacity", 0.4)
             }
         }
-
-
     }
 }
