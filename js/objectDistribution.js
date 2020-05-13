@@ -1,6 +1,6 @@
 const main = "#main"
 let maxBin
-let topic = "cloudSign"
+let topic = "eyeball"
 
 let thresholdValue = 0.5
 let histogramThreshold = d3.scaleThreshold().domain([0.3, 0.4, 0.5, 0.6, 0.7]).range([30, 25, 20, 20, 15, 10])
@@ -448,3 +448,4 @@ function shrinkBoundary(x, y, width, height) {
         }
     }
 }
+
