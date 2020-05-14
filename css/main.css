@@ -24,6 +24,22 @@ body {
     z-index: 100;
 }
 
+.boxBlock {
+    display: table-cell;
+    padding: 5px;
+    box-sizing: content-box;
+    /*box-shadow: 3px 3px 3px #44444452;*/
+    background-image: -webkit-linear-gradient(left, #f6f6f6, #f1f1f1);
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px ;
+    transform-origin: 100% 100% 0;
+    -webkit-transform-origin: 100% 100% 0;
+    -ms-transform-origin: 100% 100% 0;
+    z-index: 100;
+}
+
 /* :::::::::::::::::::::: image dist. :::::::::::::::::::::: */
 svg.imageDist {
     position: absolute;
@@ -150,4 +166,13 @@ svg.imageDist {
     margin-top: 5px;
     margin-left: 5px;
     display: block;
+}
+
+/* ---------------- Label image -----------------*/
+.image-selection {
+    cursor: pointer;
+    display: flex;
+    font-size: 14px;
+    padding: 5px 5px 5px 20px;
+    border-bottom: 1px solid rgb(83, 95, 105);
 }
