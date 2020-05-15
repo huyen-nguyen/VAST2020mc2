@@ -1,7 +1,7 @@
 let main = "#mainDiv"
 let allData;
 let imageSelectionSize = {width: 300, eachHeight: 35}
-let labelSelectionSize = {width: 200}
+let labelSelectionSize = {width: 250}
 
 let imagesPerPage = 15, currentPage = 1;
 
@@ -26,12 +26,35 @@ let imageSelectionDiv = d3.select(main).append('div')
     .attr("class", "boxBlock")
     .style("width", imageSelectionSize.width + "px")
 // .style("height", "800px")
-
+// ----------- LABEL SELECTION ------------
 let labelSelectionDiv = d3.select(main).append("div")
     .attr("id", "labelSelection")
     .attr("class", "boxBlock labelSelection")
     .style("width", labelSelectionSize.width + "px")
 
+let detectedDiv = labelSelectionDiv.append("div")
+    .attr("class", "sectionWrapper")
+
+detectedDiv.append("div")
+    .attr("class", "sectionTitle")
+    .text("DETECTED")
+
+let labelSpace = detectedDiv.append("div")
+    .attr("class", "labelOption")
+
+let recommendDiv = labelSelectionDiv.append("div")
+    .attr("class", "sectionWrapper")
+
+recommendDiv.append("div")
+    .attr("class", "sectionTitle")
+    .attr("id", "recText")
+    .text("RECOMMENDED")
+    .style("top", (35) + "px")
+
+let recommendSpace = recommendDiv.append("div")
+    .attr("class", "labelOption")
+
+// ----------- DISPLAY IMAGE ---------------
 let imageDisplayDiv = d3.select(main).append('div')
     .attr("class", "imageDisplay")
 
@@ -43,6 +66,7 @@ imageDisplayDiv.append("div")
 
 let imageFrame = imageDisplayDiv.append("div")
     .attr("class", "imageFrame")
+
 
 init()
 
@@ -71,7 +95,10 @@ function drawImageSelection() {
             updateImage(bbox, d)
 
             //default rotation
-            image.attr("transform", "rotate(0" + "," + (width/2) + ", " + (height/2) +")")
+            image.attr("transform", "rotate(0" + "," + (width / 2) + ", " + (height / 2) + ")")
+
+            // add label
+            drawLabelSelection()
 
             d3.select(this).classed("selected", true)
             d3.select(prevDiv).classed("selected", false)
@@ -99,6 +126,106 @@ function drawImageSelection() {
 }
 
 function drawLabelSelection() {
+    let person = thisImage.split("_")[0]
+
+    d3.csv("MC2-Image-Data/" + person + "/" + thisImage + ".csv", function (error, data) {
+        if (error) throw error;
+        console.log(data)
+        let prevSelect = {}
+
+        let selection = labelSpace.selectAll(".detectedLabel")
+            .data(data.sort((a, b) => +b.Score - +a.Score), d => d.Label);
+
+        // EXIT
+        selection.exit()
+            .style("opacity", 1)
+            .transition()
+            .duration(500)
+            .style("opacity", 0)
+            .remove()
+
+        // UPDATE
+        selection
+            .classed("selectedLabel", false)
+            .transition()
+            .duration(500)
+            .style("top", (d, i) => ((i + 1) * 34) + "px")
+
+        // ENTER
+        selection
+            .enter()
+            .append("div")
+            .attr("class", "objectLabel detectedLabel")
+            .html(d => '<span>' + d.Label + '</span><span class="labelScore">' + (+d.Score).toFixed(2) + '</span>')
+            .style("top", (d, i) => ((i + 1) * 34) + "px")
+            .attr("opacity", 0)
+            .transition()
+            .duration(500)
+            .attr("opacity", 1)
+
+        // Rec position
+        d3.select("#recText")
+            .style("top", ((data.length + 1) * 34) + "px")
+            .attr("opacity", 0)
+            .transition()
+            .duration(500)
+            .attr("opacity", 1)
+
+        //    The rest of data
+        let detectedData = data.map(d => d.Label)
+        let recData = d3.shuffle(classes.filter(d => !detectedData.includes(d)))
+            .slice(0, Math.floor(Math.random() * 10) + 2)
+        let remainingData = classes.filter(d => ((!detectedData.includes(d)) && (!recData.includes(d))))
+
+    //    Add recommend labels
+
+        let recselection = recommendSpace.selectAll(".recLabel")
+            .data(recData, d => d);
+
+        // EXIT
+        recselection.exit()
+            .style("opacity", 1)
+            .transition()
+            .duration(500)
+            .style("opacity", 0)
+            .remove()
+
+        // UPDATE
+        recselection
+            .classed("selectedLabel", false)
+            .transition()
+            .duration(500)
+            .style("top", (d, i) => ((i + 1 + detectedData.length + 1) * 34) + "px")
+
+        // ENTER
+        recselection
+            .enter()
+            .append("div")
+            .attr("class", "objectLabel recLabel")
+            .html(d => d)
+            .style("top", (d, i) => ((i + 1 + detectedData.length + 1) * 34) + "px")
+            .attr("opacity", 0)
+            .transition()
+            .duration(500)
+            .attr("opacity", 1)
+
+        //    select on click
+        labelSelectionDiv.selectAll(".objectLabel")
+            .on("click", function (d) {
+                console.log("hi")
+                if (!prevSelect[d.Label]) {
+                    prevSelect[d.Label] = true
+                    d3.select(this).classed("selectedLabel", true)
+                } else {
+                    prevSelect[d.Label] = false
+                    d3.select(this).classed("selectedLabel", false)
+                }
+                console.log(prevSelect)
+            })
+    })
+
+
+
 
 }
 
@@ -113,8 +240,7 @@ function showImage() {
         .attr("id", "image")
         .attr("width", imageSize.width)
         .attr("height", imageSize.height)
-        .attr("transform", "rotate(0, "+ (width/2) + ", " + (height/2) +" )")
-
+        .attr("transform", "rotate(0, " + (width / 2) + ", " + (height / 2) + " )")
 
 //    buttons for specify
 
@@ -131,6 +257,7 @@ function showImage() {
         .attr('class', (d, i) => i ? "btn btn-sm specifiyBtn btn-light" : "btn btn-sm specifiyBtn btn-primary")
         .html(d => d)
         .on("click", function (d, i) {
+
             let thisBtn = d3.select(this)
             d3.selectAll(".specifiyBtn")
                 .classed("btn-light", true)
@@ -152,7 +279,7 @@ function showImage() {
         .attr("class", "fas fa-sync-alt fasIcon rotateBtn")
         .on("click", () => {
             countClick += 90
-            image.attr("transform", "rotate("+ countClick + "," + (width/2) + ", " + (height/2) +")")
+            image.attr("transform", "rotate(" + countClick + "," + (width / 2) + ", " + (height / 2) + ")")
         })
 }
 
