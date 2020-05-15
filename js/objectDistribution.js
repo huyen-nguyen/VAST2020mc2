@@ -7,11 +7,6 @@ let histogramThreshold = d3.scaleThreshold().domain([0.3, 0.4, 0.5, 0.6, 0.7]).r
 let filteredData, allData;
 let rects, bins, rectDrawn
 let xStep, barWidth, yStep
-let translate = {
-    x: [],
-    y: [],
-}
-
 let positive
 
 const biggerImgWidth = 450, biggerImgHeight = 360
