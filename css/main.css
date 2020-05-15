@@ -24,22 +24,6 @@ body {
     z-index: 100;
 }
 
-.boxBlock {
-    display: table-cell;
-    padding: 5px;
-    box-sizing: content-box;
-    /*box-shadow: 3px 3px 3px #44444452;*/
-    background-image: -webkit-linear-gradient(left, #f6f6f6, #f1f1f1);
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px ;
-    transform-origin: 100% 100% 0;
-    -webkit-transform-origin: 100% 100% 0;
-    -ms-transform-origin: 100% 100% 0;
-    z-index: 100;
-}
-
 /* :::::::::::::::::::::: image dist. :::::::::::::::::::::: */
 svg.imageDist {
     position: absolute;
@@ -148,7 +132,7 @@ svg.imageDist {
 
 /* Add a color to the active/current link */
 .topnav a.active {
-    background-color: rgb(18, 93, 164);
+    background-color: rgb(62, 164, 56);
     color: white;
 }
 
@@ -169,10 +153,75 @@ svg.imageDist {
 }
 
 /* ---------------- Label image -----------------*/
+#mainDiv {
+    display: table;
+}
+
+.boxBlock {
+    display: table-cell;
+    padding: 5px;
+    box-sizing: content-box;
+    box-shadow: 3px 3px 3px #44444452;
+    /*background-image: -webkit-linear-gradient(left, #f6f6f6, #f1f1f1);*/
+    background-color: #f7f7f7;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px ;
+    transform-origin: 100% 100% 0;
+    -webkit-transform-origin: 100% 100% 0;
+    -ms-transform-origin: 100% 100% 0;
+    z-index: 100;
+}
+
 .image-selection {
     cursor: pointer;
     display: flex;
     font-size: 14px;
     padding: 5px 5px 5px 20px;
     border-bottom: 1px solid rgb(83, 95, 105);
+}
+
+.image-selection:hover{
+    background-color: #e8e8e8;
+}
+
+.switchPage {
+    position: relative;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    font-size: 14px;
+    color: rgb(37, 49, 58);
+    margin-top: 100px;
+    /*padding: 0px 16px;*/
+    height: 30px;
+}
+
+.labelSelection {
+    position: relative;
+    left: 6px
+}
+
+.arrowTurnPage {
+    opacity: 0.6;
+    font-size: 20px;
+    position: absolute;
+}
+
+.arrowTurnPage:hover {
+    opacity: 1;
+    transition: 0.5s;
+}
+
+.imageDisplay {
+    display: table-cell;
+    position: relative;
+    width: unset;
+    height: unset;
+}
+
+.svgImageDisplay {
+    position: absolute;
+    left: 12px;
 }
