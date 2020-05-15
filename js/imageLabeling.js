@@ -5,11 +5,13 @@ let labelSelectionSize = {width: 200}
 
 let imagesPerPage = 15, currentPage = 1;
 
-let imageDisplaySize = {top: 10, right: 30, bottom: 40, left: 30},
-    width = 1000 - imageDisplaySize.left - imageDisplaySize.right,
-    height = 830 - imageDisplaySize.top - imageDisplaySize.bottom;
+const imageDisplaySize = {top: 30, right: 70, bottom: 30, left: 30},
+    width = 820 - imageDisplaySize.left - imageDisplaySize.right,
+    height = 700 - imageDisplaySize.top - imageDisplaySize.bottom;
 
-let imageSize = {width: 800, height: 800}
+let imageCPsize = {height: 60}
+
+let imageSize = {width: 720, height: 720}
 
 let controlPanelSize = {height: 60}
 
@@ -31,10 +33,25 @@ let labelSelectionDiv = d3.select(main).append("div")
 let imageDisplayDiv = d3.select(main).append('div')
     .attr("class", "imageDisplay")
 
+imageDisplayDiv.append("div")
+    .attr("id", "imageSpecified")
+    .attr("class", "boxBlock imageSpecified")
+    .style("width", width + "px")
+    .style("height", imageCPsize.height + "px")
 
-drawImageSelection()
-showImage()
+let imageFrame = imageDisplayDiv.append("div")
+    .attr("class", "imageFrame")
+
+init()
+
+function init(){
+    drawImageSelection()
+    showImage()
+}
+
 function drawImageSelection() {
+    let prevDiv;
+
     let chunks = array_chunks(images, imagesPerPage)
 
     imageSelectionDiv.selectAll(".image-selection")
@@ -49,8 +66,13 @@ function drawImageSelection() {
         .on("click", function (d) {
             console.log(d)
             let person = d.split("_")[0]
+
             d3.select("#image")
                 .attr('xlink:href', "MC2-Image-Data/" + person + "/" + d + ".jpg")
+
+            d3.select(this).classed("selected", true)
+            d3.select(prevDiv).classed("selected", false)
+            prevDiv = this;
         })
 
     let bottomDiv = imageSelectionDiv.append("div")
@@ -78,7 +100,7 @@ function drawLabelSelection() {
 }
 
 function showImage(){
-    let imageDisplaySvg = imageDisplayDiv.append("svg")
+    let imageDisplaySvg = imageFrame.append("svg")
         .attr("width", width + imageDisplaySize.left + imageDisplaySize.right)
         .attr("height", height + imageDisplaySize.top + imageDisplaySize.bottom)
         .attr("class", "svgImageDisplay")
@@ -88,6 +110,20 @@ function showImage(){
         .attr("id", "image")
         .attr("width", imageSize.width)
         .attr("height", imageSize.height)
+
+//    buttons for specify
+    d3.select("#imageSpecified")
+        .append("div")
+        .attr("class", "btnDiv")
+        .selectAll(".specifiyBtn")
+        .data(["Original", "Annotated"])
+        .enter()
+        .append("button")
+        .style("display", "inline")
+        .attr("type", "button")
+        .attr('class', (d,i) => i ? "btn btn-sm btn-light" : "btn btn-primary btn-sm")
+        .html(d => d)
+
 }
 function getPerson(str) {
     // sortedImages = images.sort((a,b) => +a.split("_")[1] - +b.split("_")[1]).sort((a,b) => {
