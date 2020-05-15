@@ -161,7 +161,7 @@ svg.imageDist {
     box-shadow: 3px 3px 3px #44444452;
     /*background-image: -webkit-linear-gradient(left, #f6f6f6, #f1f1f1);*/
     background-color: #f7f7f7;
-    border: 1px solid #ccc;
+    border: 1px solid #c4c4c4;
     border-radius: 3px;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px ;
@@ -181,6 +181,7 @@ svg.imageDist {
 
 .image-selection:hover{
     background-color: #e1e1e1;
+    transition: 0.1s;
 }
 
 .switchPage {
@@ -200,13 +201,13 @@ svg.imageDist {
     left: 6px
 }
 
-.arrowTurnPage {
-    opacity: 0.6;
+.fasIcon {
+    opacity: 0.5;
     font-size: 20px;
     position: absolute;
 }
 
-.arrowTurnPage:hover {
+.fasIcon:hover {
     opacity: 1;
     transition: 0.5s;
 }
@@ -232,6 +233,7 @@ svg.imageDist {
 .selected:hover {
     background-color: rgb(40, 118, 212);
     color: white;
+    transition: 0.3s;
 }
 
 .imageSpecified {
@@ -254,4 +256,10 @@ svg.imageDist {
     position: absolute;
     left: 40%;
     top: 20px;
+}
+
+.rotateBtn {
+    position: absolute;
+    right: 20px;
+    top: 35%;
 }

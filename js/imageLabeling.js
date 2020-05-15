@@ -5,15 +5,17 @@ let labelSelectionSize = {width: 200}
 
 let imagesPerPage = 15, currentPage = 1;
 
-const imageDisplaySize = {top: 30, right: 70, bottom: 30, left: 30},
-    width = 820 - imageDisplaySize.left - imageDisplaySize.right,
-    height = 700 - imageDisplaySize.top - imageDisplaySize.bottom;
+const imageDisplaySize = {top: 10, right: 10, bottom: 10, left: 10},
+    width = 740 - imageDisplaySize.left - imageDisplaySize.right,
+    height = 740 - imageDisplaySize.top - imageDisplaySize.bottom;
 
 let imageCPsize = {height: 60}
 
 let imageSize = {width: 720, height: 720}
 
 let controlPanelSize = {height: 60}
+
+let image, thisImage, bbox = false;
 
 const array_chunks = (array, chunk_size) => Array(Math.ceil(array.length / chunk_size)).fill().map((_, index) => index * chunk_size).map(begin => array.slice(begin, begin + chunk_size));
 
@@ -23,7 +25,7 @@ let imageSelectionDiv = d3.select(main).append('div')
     .attr("id", "imageSelection")
     .attr("class", "boxBlock")
     .style("width", imageSelectionSize.width + "px")
-    // .style("height", "800px")
+// .style("height", "800px")
 
 let labelSelectionDiv = d3.select(main).append("div")
     .attr("id", "labelSelection")
@@ -44,7 +46,7 @@ let imageFrame = imageDisplayDiv.append("div")
 
 init()
 
-function init(){
+function init() {
     drawImageSelection()
     showImage()
 }
@@ -64,11 +66,12 @@ function drawImageSelection() {
         .style("line-height", imageSelectionSize.eachHeight + "px")
         .text(d => d + ".jpg")
         .on("click", function (d) {
-            console.log(d)
-            let person = d.split("_")[0]
+            // update image
+            thisImage = d
+            updateImage(bbox, d)
 
-            d3.select("#image")
-                .attr('xlink:href', "MC2-Image-Data/" + person + "/" + d + ".jpg")
+            //default rotation
+            image.attr("transform", "rotate(0" + "," + (width/2) + ", " + (height/2) +")")
 
             d3.select(this).classed("selected", true)
             d3.select(prevDiv).classed("selected", false)
@@ -80,8 +83,9 @@ function drawImageSelection() {
 
     bottomDiv
         .append("i")
-        .attr("class", "fas fa-chevron-circle-left arrowTurnPage")
+        .attr("class", "fas fa-chevron-circle-left fasIcon")
         .style("left", "10px")
+
 
     let pageNumber = bottomDiv.append("span")
         .html("Page " + currentPage + " of " + Math.ceil(images.length / imagesPerPage))
@@ -90,28 +94,30 @@ function drawImageSelection() {
 
     bottomDiv
         .append("i")
-        .attr("class", "fas fa-chevron-circle-right arrowTurnPage")
+        .attr("class", "fas fa-chevron-circle-right fasIcon")
         .style("right", "10px")
-
 }
 
 function drawLabelSelection() {
 
 }
 
-function showImage(){
+function showImage() {
     let imageDisplaySvg = imageFrame.append("svg")
-        .attr("width", width + imageDisplaySize.left + imageDisplaySize.right)
-        .attr("height", height + imageDisplaySize.top + imageDisplaySize.bottom)
+        .attr("width", width)
+        .attr("height", height)
         .attr("class", "svgImageDisplay")
         .append("g")
 
-    let image = imageDisplaySvg.append('image')
+    image = imageDisplaySvg.append('image')
         .attr("id", "image")
         .attr("width", imageSize.width)
         .attr("height", imageSize.height)
+        .attr("transform", "rotate(0, "+ (width/2) + ", " + (height/2) +" )")
+
 
 //    buttons for specify
+
     d3.select("#imageSpecified")
         .append("div")
         .attr("class", "btnDiv")
@@ -121,10 +127,46 @@ function showImage(){
         .append("button")
         .style("display", "inline")
         .attr("type", "button")
-        .attr('class', (d,i) => i ? "btn btn-sm btn-light" : "btn btn-primary btn-sm")
+        .attr("id", d => "btn" + d)
+        .attr('class', (d, i) => i ? "btn btn-sm specifiyBtn btn-light" : "btn btn-sm specifiyBtn btn-primary")
         .html(d => d)
+        .on("click", function (d, i) {
+            let thisBtn = d3.select(this)
+            d3.selectAll(".specifiyBtn")
+                .classed("btn-light", true)
+                .classed("btn-primary", false)
+            thisBtn.classed("btn-primary", true)
+                .classed("btn-light", false)
+            bbox = !!i
+            console.log(bbox)
 
+            if (thisImage) {
+                updateImage(bbox, thisImage)
+            }
+
+        })
+
+    let countClick = 0
+    d3.select("#imageSpecified")
+        .append("i")
+        .attr("class", "fas fa-sync-alt fasIcon rotateBtn")
+        .on("click", () => {
+            countClick += 90
+            image.attr("transform", "rotate("+ countClick + "," + (width/2) + ", " + (height/2) +")")
+        })
 }
+
+function updateImage(bbox, d) {
+    let person = d.split("_")[0]
+
+    d3.select("#image")
+        .attr('xlink:href', bbox ? "MC2-Image-Data/" + person + "/" + d + "bbox.jpg" : "MC2-Image-Data/" + person + "/" + d + ".jpg")
+    // .attr("opacity", 0)
+    // .transition()
+    // .duration(100)
+    // .attr("opacity", 1)
+}
+
 function getPerson(str) {
     // sortedImages = images.sort((a,b) => +a.split("_")[1] - +b.split("_")[1]).sort((a,b) => {
     //     return getPerson(a) - getPerson(b)
