@@ -157,18 +157,17 @@ svg.imageDist {
 .boxBlock {
     display: table-cell;
     padding: 5px;
-    box-sizing: content-box;
     box-shadow: 3px 3px 3px #44444452;
     /*background-image: -webkit-linear-gradient(left, #f6f6f6, #f1f1f1);*/
-    background-color: #f7f7f7;
+    background-color: white;
     border: 1px solid #c4c4c4;
     border-radius: 3px;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px ;
+    box-sizing: content-box;
     transform-origin: 100% 100% 0;
     -webkit-transform-origin: 100% 100% 0;
     -ms-transform-origin: 100% 100% 0;
-    z-index: 100;
 }
 
 .image-selection {
@@ -197,6 +196,7 @@ svg.imageDist {
 }
 
 .labelSelection {
+    padding: 0;
     position: relative;
     left: 6px
 }
@@ -205,6 +205,7 @@ svg.imageDist {
     opacity: 0.5;
     font-size: 20px;
     position: absolute;
+    cursor:pointer
 }
 
 .fasIcon:hover {
@@ -215,13 +216,15 @@ svg.imageDist {
 .imageDisplay {
     display: table-cell;
     position: relative;
-    width: unset;
-    height: unset;
+    box-sizing: content-box;
+    transform-origin: 100% 100% 0;
+    -webkit-transform-origin: 100% 100% 0;
+    -ms-transform-origin: 100% 100% 0;
 }
 
 .svgImageDisplay {
     position: absolute;
-    left: 12px;
+    left: 10px;
     top: 100px
 }
 
@@ -262,4 +265,59 @@ svg.imageDist {
     position: absolute;
     right: 20px;
     top: 35%;
+}
+.sectionWrapper {
+    position: relative;
+}
+.sectionTitle {
+    position: absolute;
+    padding: 10px 0;
+    box-sizing: content-box;
+    background-color: #d4d4d4;
+    width: 100%;
+    transform-origin: 100% 100% 0;
+    -webkit-transform-origin: 100% 100% 0;
+    -ms-transform-origin: 100% 100% 0;
+    height: 14px;
+    line-height: 14px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.objectLabel {
+    position: absolute;
+    padding: 10px 0 10px 10px;
+    box-sizing: content-box;
+    width: -webkit-fill-available;
+    transform-origin: 100% 100% 0;
+    -webkit-transform-origin: 100% 100% 0;
+    -ms-transform-origin: 100% 100% 0;
+    /*text-align: center;*/
+    font-size: 14px;
+    border-bottom: 0.5px solid rgb(245, 245, 245);
+    height: 13px;
+    line-height: 13px;
+    background-color: white;
+}
+
+.objectLabel:hover {
+    background-color: #e6e6e6;
+    transition: 0.1s;
+    cursor: pointer;
+}
+
+.labelScore {
+    float: right;
+    color: #b4b4b4;
+    margin-right: 10px;
+}
+.selectedLabel {
+    background-color: rgb(40, 118, 212);
+    color: white;
+}
+
+.selectedLabel:hover {
+    background-color: rgb(40, 118, 212);
+    color: white;
+    transition: 0.3s;
 }
