@@ -1,0 +1,1 @@
+in minicard bridge doubles are halved
