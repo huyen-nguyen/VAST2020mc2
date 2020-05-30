@@ -131,7 +131,8 @@ d3.csv("data/newData2.csv", function (error, data_) {
     })
 
     console.log(testObj)
-    
+    console.log(occlusionObj)
+
     occlusionArr = d3.keys(occlusionObj).map(d => {
         return {
             pairName: d,
