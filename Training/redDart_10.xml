@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>redDart_10.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/redDart_10.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5184</width>
+		<height>3456</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>redDart</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1460</xmin>
+			<ymin>504</ymin>
+			<xmax>3881</xmax>
+			<ymax>3029</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>giftBag_4.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/giftBag_4.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>4322</width>
+		<height>3434</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>giftBag</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>304</xmin>
+			<ymin>981</ymin>
+			<xmax>4204</xmax>
+			<ymax>2994</ymax>
+		</bndbox>
+	</object>
+</annotation>

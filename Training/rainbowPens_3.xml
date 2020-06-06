@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>rainbowPens_3.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/rainbowPens_3.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5184</width>
+		<height>3456</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>rainbowPens</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1172</xmin>
+			<ymin>1388</ymin>
+			<xmax>4152</xmax>
+			<ymax>1913</ymax>
+		</bndbox>
+	</object>
+</annotation>

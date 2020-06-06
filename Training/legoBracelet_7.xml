@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>legoBracelet_7.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/legoBracelet_7.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>4307</width>
+		<height>2960</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>legoBracelet</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>2258</xmin>
+			<ymin>557</ymin>
+			<xmax>3206</xmax>
+			<ymax>1650</ymax>
+		</bndbox>
+	</object>
+</annotation>

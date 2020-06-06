@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>cupcakePaper_6.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/cupcakePaper_6.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5124</width>
+		<height>2961</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>cupcakePaper</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1460</xmin>
+			<ymin>266</ymin>
+			<xmax>3620</xmax>
+			<ymax>2186</ymax>
+		</bndbox>
+	</object>
+</annotation>

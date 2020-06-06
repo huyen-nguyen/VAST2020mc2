@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>yellowBalloon_9.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/yellowBalloon_9.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>4567</width>
+		<height>3400</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>yellowBalloon</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1445</xmin>
+			<ymin>577</ymin>
+			<xmax>3624</xmax>
+			<ymax>2830</ymax>
+		</bndbox>
+	</object>
+</annotation>

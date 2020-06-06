@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>vancouverCards_5.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/vancouverCards_5.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5184</width>
+		<height>3456</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>vancouverCards</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>327</xmin>
+			<ymin>300</ymin>
+			<xmax>4589</xmax>
+			<ymax>2767</ymax>
+		</bndbox>
+	</object>
+</annotation>

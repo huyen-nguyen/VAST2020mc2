@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>lavenderDie_2.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/lavenderDie_2.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5184</width>
+		<height>3456</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>lavenderDie</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>2135</xmin>
+			<ymin>1234</ymin>
+			<xmax>2818</xmax>
+			<ymax>1946</ymax>
+		</bndbox>
+	</object>
+</annotation>

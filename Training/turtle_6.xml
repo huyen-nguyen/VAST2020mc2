@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>turtle_6.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/turtle_6.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5058</width>
+		<height>1815</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>turtle</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>2103</xmin>
+			<ymin>101</ymin>
+			<xmax>3327</xmax>
+			<ymax>953</ymax>
+		</bndbox>
+	</object>
+</annotation>

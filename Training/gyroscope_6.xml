@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>gyroscope_6.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/gyroscope_6.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5184</width>
+		<height>3456</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>gyroscope</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1960</xmin>
+			<ymin>1150</ymin>
+			<xmax>2906</xmax>
+			<ymax>2509</ymax>
+		</bndbox>
+	</object>
+</annotation>

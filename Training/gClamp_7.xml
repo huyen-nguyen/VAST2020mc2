@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>gClamp_7.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/gClamp_7.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5184</width>
+		<height>3456</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>gClamp</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>556</xmin>
+			<ymin>1100</ymin>
+			<xmax>2747</xmax>
+			<ymax>3009</ymax>
+		</bndbox>
+	</object>
+</annotation>

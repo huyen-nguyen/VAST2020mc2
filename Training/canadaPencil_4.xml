@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>canadaPencil_4.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/canadaPencil_4.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5184</width>
+		<height>3456</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>canadaPencil</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>297</xmin>
+			<ymin>984</ymin>
+			<xmax>4635</xmax>
+			<ymax>2446</ymax>
+		</bndbox>
+	</object>
+</annotation>

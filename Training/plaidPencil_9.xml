@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>plaidPencil_9.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/plaidPencil_9.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>4194</width>
+		<height>3364</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>plaidPencil</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>2562</xmin>
+			<ymin>1170</ymin>
+			<xmax>2872</xmax>
+			<ymax>2144</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>pinkCandle_7.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/pinkCandle_7.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5143</width>
+		<height>2863</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>pinkCandle</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>2586</xmin>
+			<ymin>604</ymin>
+			<xmax>2990</xmax>
+			<ymax>1866</ymax>
+		</bndbox>
+	</object>
+</annotation>

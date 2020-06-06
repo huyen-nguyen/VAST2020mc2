@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>eyeball_12.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/eyeball_12.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5184</width>
+		<height>3456</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>eyeball</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1977</xmin>
+			<ymin>1379</ymin>
+			<xmax>3289</xmax>
+			<ymax>2813</ymax>
+		</bndbox>
+	</object>
+</annotation>

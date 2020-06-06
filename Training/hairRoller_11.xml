@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>hairRoller_11.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/hairRoller_11.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5123</width>
+		<height>2291</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>hairRoller</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>2075</xmin>
+			<ymin>1163</ymin>
+			<xmax>3119</xmax>
+			<ymax>1775</ymax>
+		</bndbox>
+	</object>
+</annotation>

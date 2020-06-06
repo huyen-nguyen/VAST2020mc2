@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>carabiner_5.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/carabiner_5.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5184</width>
+		<height>3456</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>carabiner</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1118</xmin>
+			<ymin>1200</ymin>
+			<xmax>3677</xmax>
+			<ymax>2484</ymax>
+		</bndbox>
+	</object>
+</annotation>

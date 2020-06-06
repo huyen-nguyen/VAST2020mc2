@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>redBow_12.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/redBow_12.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5184</width>
+		<height>3456</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>redBow</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>597</xmin>
+			<ymin>571</ymin>
+			<xmax>4872</xmax>
+			<ymax>3179</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>foamDart_12.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/foamDart_12.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5184</width>
+		<height>3456</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>foamDart</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>360</xmin>
+			<ymin>1513</ymin>
+			<xmax>3072</xmax>
+			<ymax>2534</ymax>
+		</bndbox>
+	</object>
+</annotation>
