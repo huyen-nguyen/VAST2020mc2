@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>redWhistle_10.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/redWhistle_10.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5184</width>
+		<height>3456</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>redWhistle</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1868</xmin>
+			<ymin>1392</ymin>
+			<xmax>3427</xmax>
+			<ymax>2234</ymax>
+		</bndbox>
+	</object>
+</annotation>

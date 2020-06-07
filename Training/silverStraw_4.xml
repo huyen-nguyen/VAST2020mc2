@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>silverStraw_4.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/silverStraw_4.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>3640</width>
+		<height>2876</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>silverStraw</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>2107</xmin>
+			<ymin>216</ymin>
+			<xmax>3190</xmax>
+			<ymax>2116</ymax>
+		</bndbox>
+	</object>
+</annotation>

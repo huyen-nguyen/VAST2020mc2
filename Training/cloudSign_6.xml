@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>cloudSign_6.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/cloudSign_6.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5184</width>
+		<height>3456</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>cloudSign</name>
+		<pose>Unspecified</pose>
+		<truncated>1</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1022</xmin>
+			<ymin>1</ymin>
+			<xmax>4089</xmax>
+			<ymax>3429</ymax>
+		</bndbox>
+	</object>
+</annotation>

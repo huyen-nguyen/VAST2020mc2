@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>stickerBox_8.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/stickerBox_8.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>4194</width>
+		<height>3438</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>stickerBox</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1819</xmin>
+			<ymin>945</ymin>
+			<xmax>2926</xmax>
+			<ymax>2024</ymax>
+		</bndbox>
+	</object>
+</annotation>

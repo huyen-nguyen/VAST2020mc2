@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>sign_5.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/sign_5.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5184</width>
+		<height>3456</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>sign</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>2102</xmin>
+			<ymin>167</ymin>
+			<xmax>3522</xmax>
+			<ymax>3350</ymax>
+		</bndbox>
+	</object>
+</annotation>

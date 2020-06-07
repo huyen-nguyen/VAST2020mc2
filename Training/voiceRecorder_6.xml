@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>voiceRecorder_6.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/voiceRecorder_6.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5184</width>
+		<height>3456</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>voiceRecorder</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1989</xmin>
+			<ymin>1246</ymin>
+			<xmax>2956</xmax>
+			<ymax>2196</ymax>
+		</bndbox>
+	</object>
+</annotation>

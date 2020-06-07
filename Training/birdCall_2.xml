@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>birdCall_2.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/birdCall_2.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5129</width>
+		<height>2829</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>birdCall</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1602</xmin>
+			<ymin>560</ymin>
+			<xmax>3542</xmax>
+			<ymax>2196</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>miniCards_4.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/miniCards_4.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5039</width>
+		<height>2221</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>miniCards</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>2755</xmin>
+			<ymin>960</ymin>
+			<xmax>3123</xmax>
+			<ymax>1440</ymax>
+		</bndbox>
+	</object>
+</annotation>

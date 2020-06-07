@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>yellowBag_8.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/yellowBag_8.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>4509</width>
+		<height>2865</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>yellowBag</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>691</xmin>
+			<ymin>376</ymin>
+			<xmax>3859</xmax>
+			<ymax>1862</ymax>
+		</bndbox>
+	</object>
+</annotation>

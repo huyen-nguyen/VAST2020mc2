@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>trophy_2.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/trophy_2.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5184</width>
+		<height>3456</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>trophy</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1427</xmin>
+			<ymin>663</ymin>
+			<xmax>2985</xmax>
+			<ymax>3259</ymax>
+		</bndbox>
+	</object>
+</annotation>

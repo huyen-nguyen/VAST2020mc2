@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>metalKey_8.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/metalKey_8.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5184</width>
+		<height>3456</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>metalKey</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1414</xmin>
+			<ymin>1600</ymin>
+			<xmax>3460</xmax>
+			<ymax>2567</ymax>
+		</bndbox>
+	</object>
+</annotation>

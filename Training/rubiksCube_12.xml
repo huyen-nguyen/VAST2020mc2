@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>rubiksCube_12.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/rubiksCube_12.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5184</width>
+		<height>3456</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>rubiksCube</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>2027</xmin>
+			<ymin>2092</ymin>
+			<xmax>2818</xmax>
+			<ymax>2804</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -92,11 +92,3 @@ svg.append("g")
     .attr("fill", "black")
     .text("Objects detected");
 
-d3.csv("data/newData2.csv", function (error, data_) {
-    if (error) throw error;
-
-    let data = data_.filter(d => d.Score >= 0.5)
-
-    dataF = d3.nest().key(d => d.Label).entries(data)
-    console.log(dataF)
-})

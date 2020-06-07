@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>blueSunglasses_5.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/blueSunglasses_5.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5184</width>
+		<height>3456</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>blueSunglasses</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1060</xmin>
+			<ymin>746</ymin>
+			<xmax>4047</xmax>
+			<ymax>2542</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>partyFavor_4.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/partyFavor_4.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5184</width>
+		<height>3456</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>partyFavor</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>2327</xmin>
+			<ymin>1484</ymin>
+			<xmax>3168</xmax>
+			<ymax>2842</ymax>
+		</bndbox>
+	</object>
+</annotation>

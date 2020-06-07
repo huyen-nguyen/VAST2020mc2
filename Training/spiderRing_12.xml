@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Training</folder>
+	<filename>spiderRing_12.jpg</filename>
+	<path>/Users/huyennguyen/Huyen/GitHub/VAST2020mc2/Training/spiderRing_12.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>5184</width>
+		<height>3456</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>spiderRing</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1268</xmin>
+			<ymin>629</ymin>
+			<xmax>2060</xmax>
+			<ymax>1542</ymax>
+		</bndbox>
+	</object>
+</annotation>
