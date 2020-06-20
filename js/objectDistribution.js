@@ -2,23 +2,32 @@ const main = "#main"
 let maxBin
 let topic = "eyeball"
 
-let thresholdValue = 0.5
+let thresholdValue = 0.4
 let histogramThreshold = d3.scaleThreshold().domain([0.3, 0.4, 0.5, 0.6, 0.7]).range([30, 25, 20, 20, 15, 10])
 let filteredData, allData;
 let rects, bins, rectDrawn
 let xStep, barWidth, yStep
 let positive
 
+let markedImg = []
+
+const titles = ["ID", "Score", "Classified", "Precision", "Recall"]
+let tableInit;
+
 const biggerImgWidth = 450, biggerImgHeight = 360
 
 // set the dimensions and margins of the graph
-const margin = {top: 10, right: 30, bottom: 40, left: 340},
+const margin = {top: 10, right: 30, bottom: 40, left: 350},
     width = 1660 - margin.left - margin.right,
     height = 830 - margin.top - margin.bottom;
 
 const zoomPanelMargin = {top: 20, right: 20, bottom: 20, left: 20},
     zoomPanelWidth = 350 - zoomPanelMargin.left - zoomPanelMargin.right,
     zoomPanelHeight = 350 - zoomPanelMargin.top - zoomPanelMargin.bottom;
+
+const scmargin = {top: 10, right: 10, bottom: 10, left: 40},
+    scwidth = 300 - scmargin.left - scmargin.right,
+    scheight = 200 - scmargin.top - scmargin.bottom;
 
 //    x-axis
 let x = d3.scaleLinear()
@@ -46,6 +55,49 @@ let svg = mainSVG
     .append("g")
     .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
+
+let scatChart = mainSVG
+    .append("g")
+    .attr("transform",
+        "translate(10,600)")
+;
+
+let scat = scatChart.append("g").attr("transform", "translate(" + scmargin.left + "," + scmargin.top + ")");
+
+scat.append("g")
+    .attr("class", "x axis");
+
+scat.append("g")
+    .attr("class", "y axis");
+
+scat
+    .append("text")
+    .attr("x", scwidth / 2 - 80)
+    .attr("y", scheight + scmargin.bottom + 20)
+    .attr("dx", "3.32em")
+    // .attr("dy", "0.3em")
+    .attr("fill", "#000")
+    .attr("text-anchor", "start")
+    .attr("font-size", "13px")
+    .attr("id", "recalltext")
+    // .text("Recall");
+
+scat
+    .append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 0 - scmargin.left - 10)
+    .attr("x", 0 - (scheight / 2))
+    .attr("dy", "1em")
+    .style("text-anchor", "middle")
+    .attr("font-size", "13px")
+    .attr("id", "pretext")
+    // .text("Precision");
+
+let scx = d3.scaleLinear()
+    .range([0, scwidth]);
+
+let scy = d3.scaleLinear()
+    .range([scheight, 0]);
 
 
 // Zoom panel --------------
@@ -147,7 +199,7 @@ thresholdDiv.append("input")
     .attr("type", "number")
     .attr("value", thresholdValue)
     .attr("step", "0.1")
-    .attr("min", "0.3")
+    .attr("min", "0.2")
     .attr("max", "1")
 // .on("change", thresholdChange);
 
@@ -207,6 +259,12 @@ leftPanel.append("text")
     .text("Categories:")
     .attr("class", "panelSelection")
 
+// ----------------- Table on left panel -----------------
+let tablePanel = d3.select(main)
+    .append("div")
+    .attr("id", "table-wrapper")
+    .append("table")
+
 // Handler for dropdown value change
 function dropdownChange() {
     topic = d3.select(this).property('value')
@@ -253,7 +311,18 @@ d3.csv("data/newData2.csv", function (error, data_) {
 
 function updateCharts() {
     filteredData = allData.filter(d => parseFloat(d.Score) >= thresholdValue).filter(d => d.Label === topic)
+    markedImg = JSON.parse(JSON.stringify(filteredData)).map((d) => {
+        return {
+            ID: d.ID,
+            Score: d.Score,
+            Image: d.Image
+        }
+    })
 
+    d3.select("table").selectAll("*").remove()
+    scat.selectAll(".point").remove("*")
+    scat.style("visibility", "hidden")
+    tableInit = false;
     bins = generateBins(filteredData)
     bins.forEach((d, i) => d.id = topic + (thresholdValue * 100) + i)
     maxBin = d3.max(bins.map(d => d.length))
@@ -262,10 +331,10 @@ function updateCharts() {
     y.domain([0, maxBin])
     x.domain([thresholdValue, 1])
 
-    console.log("bins: ", bins)
-    console.log("maxbin: ", maxBin);
+    // console.log("bins: ", bins)
+    // console.log("maxbin: ", maxBin);
 
-    yStep = height/maxBin;
+    yStep = height / maxBin;
 
     xAxisGroup
         .transition()
@@ -399,6 +468,8 @@ function btnOnClick(status) {
         .attr("fill", status ? "#28A745" : "#DC3545")
         .attr("opacity", 0.4)
     scoringDiv.style("visibility", "hidden");
+    markedImg.find(d => d.ID === clickID).Classified = status ? "TrueP" : "FalseP"
+    outClassified()
 }
 
 function generateBins(data) {
@@ -437,10 +508,101 @@ function shrinkBoundary(x, y, width, height) {
         for (let i = xFirstOrder; i <= xSecOrder; i++) {
             for (let j = yFirstOrder; j <= ySecOrder; j++) {
                 d3.selectAll("rect[count='image_" + i + "_" + j + "']")
-                    .attr("fill", positive ? "#28A745" : "#DC3545")
+                    .attr("fill", (d) => {
+                        markedImg.find(e => e.ID === d.ID).Classified = positive ? "TrueP" : "FalseP"
+                        return positive ? "#28A745" : "#DC3545"
+                    })
                     .attr("opacity", 0.4)
             }
         }
+        outClassified();
     }
 }
 
+function outClassified() {
+    let data = markedImg.filter(d => d.Classified).sort((a, b) => +b.Score - +a.Score)
+    let chartData = []
+    console.log(data)
+
+    let table = d3.select("table")
+
+    if (!tableInit) {
+
+        table.append('thead').append('tr')
+            .selectAll('th')
+            .data(titles).enter()
+            .append('th')
+            .attr("class", "th-data")
+            .text(d => d === "ID" ? "Associated Image" : d);
+
+        table.append('tbody').attr("id", "tb");
+
+        tableInit = true;
+    }
+    d3.select("tbody").selectAll("td").remove("*")
+    data.forEach(function (row) {
+        console.log(row)
+        let len = data.filter(d => +d.Score >= +row.Score).length;
+        let TP = data.filter(d => +d.Score >= +row.Score).filter(d => d.Classified === "TrueP").length
+
+        chartData.push({
+            precision: (TP / len),
+            recall: (TP / classTruth[topic])
+        })
+
+        return $("#tb").append('<tr>' +
+            '<td>' + row.Image + '</td>' +
+            '<td class="number">' + (+row.Score).toFixed(3) + '</td>' +
+            // '<td style="text-align: center; vertical-align: middle;" >' + personal_photo  + '</td>' +
+            // '<td style="text-align: center; vertical-align: middle;" >' + screenshot_photo  + '</td>' +
+            '<td >' + row.Classified + '</td>' +
+            '<td class="number">' + (TP / len).toFixed(3) + '</td>' +
+            '<td class="number">' + (TP / classTruth[topic]).toFixed(3) + '</td>' +
+            '</tr>');
+    });
+
+    console.log(chartData)
+
+    updateScat(chartData)
+
+}
+
+function updateScat(myData) {
+    scx.domain([0, 1]);
+    scy.domain([0, 1]);
+
+    let points = scat.selectAll(".point")
+        .data(myData); //update
+
+    let pointsEnter = points
+        .enter()
+        .append("circle")
+        .attr("class", "point");
+
+    points.merge(pointsEnter) //Enter + Update
+        .attr("cx", d => scx(d.recall))
+        .attr("cy", d => scy(d.precision))
+        .attr("r", 3)
+        .attr("stroke", "#444")
+        .attr("fill", "steelblue");
+
+    points.exit()
+        .remove();
+
+    scat.select(".x.axis")
+        .call(d3.axisBottom(scx))
+        .attr("transform",
+            "translate(0, " + scheight + ")");
+
+    scat.select(".y.axis")
+        .call(d3.axisLeft(scy));
+
+    scat.select("#recalltext")
+        .text("Recall")
+
+    scat.select("#pretext")
+        .text("Precision")
+
+    scat.style("visibility", "visible")
+
+}

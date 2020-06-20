@@ -1,6 +1,6 @@
 let main = "#mainDiv"
 let allData;
-let imageSelectionSize = {width: 300, eachHeight: 35}
+let imageSelectionSize = {width: 300, eachHeight: 40}
 let labelSelectionSize = {width: 250}
 
 let imagesPerPage = 15, currentPage = 1;
@@ -87,7 +87,7 @@ function drawImageSelection() {
         // .style("height", imageSelectionSize.eachHeight + "px")
         .attr("class", "image-selection")
         .style("height", imageSelectionSize.eachHeight + "px")
-        .style("line-height", imageSelectionSize.eachHeight + "px")
+        .style("line-height", (imageSelectionSize.eachHeight - 10 )+ "px")
         .text(d => d + ".jpg")
         .on("click", function (d) {
             // update image
