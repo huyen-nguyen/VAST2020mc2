@@ -332,7 +332,7 @@ svg.imageDist {
 {
     /*border: 1px solid green;*/
     width: 315px;
-    height: 400px;
+    height: 390px;
     overflow: auto;
     position: absolute;
     margin-top: 180px;
@@ -352,4 +352,17 @@ td {
 
 .number{
     text-align: right
+}
+
+/* ------ curve spec -------- */
+#curveSpec {
+    position: absolute;
+    top: 700px;
+    left: 200px;
+}
+
+.curveLabel {
+    display: block;
+    line-height: 0.1;
+    font-size: 13px;
 }

@@ -2,13 +2,13 @@ let groups = [], pairsObj = {}, pairsArr = [], occlusionObj = {}, occlusionArr =
 
 const iouThreshold = 0.4, secondaryThreshold = 0.4
 
-var svg2 = d3.select("body").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform",
-        "translate(" + margin.left + "," + margin.top + ")")
-    .attr("id", "svg2");
+// var svg2 = d3.select("body").append("svg")
+//     .attr("width", width + margin.left + margin.right)
+//     .attr("height", height + margin.top + margin.bottom)
+//     .append("g")
+//     .attr("transform",
+//         "translate(" + margin.left + "," + margin.top + ")")
+//     .attr("id", "svg2");
 
 // d3.csv("MC2-Image-Data/Person1/Person1_1.csv", function (error, data) {
 //     if (error) throw error;
@@ -16,9 +16,6 @@ var svg2 = d3.select("body").append("svg")
 //
 // })
 
-function pairToGroup(pairs, data) {
-
-}
 
 function iou(boxA, boxB) {
     // determine the (x, y)-coordinates of the intersection rectangle
@@ -65,9 +62,9 @@ function boxWithin(boxA, boxB) {
     }
 }
 
-d3.csv("data/newData2.csv", function (error, data_) {
+d3.csv("data/newData2.csv", function (error, predData) {
     if (error) throw error;
-    let imageData = d3.nest().key(d => d.Image).entries(data_)
+    let imageData = d3.nest().key(d => d.Image).entries(predData)
 
     let groups = []
     console.log(imageData)
@@ -108,46 +105,58 @@ d3.csv("data/newData2.csv", function (error, data_) {
 
         let visited = {}, thisGroup = []
         if (pairsInImage.length > 1) {
-            console.log(pairsInImage, d.key)
-            // console.log(compareTwoPairs(pairsInImage))
-            let pairLabels = pairsInImage.map(d => d.label)
-            groups.push(compareGroup(pairLabels))
+            console.log(1, pairsInImage)
+            let pairLabels = pairsInImage.map(d => {
+                return {
+                    label: d.label,
+                    image: d.boxA.Image
+                }
+            })
+            console.log(2, pairLabels)
+            let outputCompare = compareGroup(pairLabels)
+            console.log(3, outputCompare)
+            groups.push(outputCompare)
+
         }
 
     })
 
     console.log(groups)
 
-    let testGroup = [], testObj = {}
+    let groupObj = {}
     groups.forEach((d, i) => {
-        console.log(i)
-        d.forEach(e => {
-            if (!testObj[e.join("_")]){
-                testObj[e.join("_")] = 1;
+        // console.log(i)
+        d.groups.forEach(e => {
+            if (!groupObj[e.join("_")]){
+                groupObj[e.join("_")] = {};
+                groupObj[e.join("_")].count = 1;
+                groupObj[e.join("_")].images = [];
+                groupObj[e.join("_")].images.push(d.image)
             }
-            else testObj[e.join("_")] += 1
-            console.log(e)
+            else {
+                groupObj[e.join("_")].count += 1;
+                groupObj[e.join("_")].images.push(d.image)
+            }
+
+            // console.log(e)
         })
     })
 
-    console.log(testObj)
+    console.log(groupObj)
     console.log(occlusionObj)
 
-    occlusionArr = d3.keys(occlusionObj).map(d => {
-        return {
-            pairName: d,
-            count: occlusionObj[d].count,
-            images: occlusionObj[d].images,
+    console.log(objToArr(groupObj))
+    console.log(objToArr(occlusionObj))
+
+
+//    --------------------- end analysis of prediction set ---------------------
+    d3.csv("data/labels.csv", function (error, truthData) {
+        if (error) throw error
+        else {
+            console.log(truthData)
         }
-    }).sort((a, b) => b.count - a.count)
-
+    })
 })
-
-function recursive(data) {
-    for (let i = 0; i < data.length; i++) {
-
-    }
-}
 
 function compareTwoPairs(pairsInImage) {
     merge = []
@@ -169,7 +178,18 @@ function compareTwoPairs(pairsInImage) {
 
 }
 
-function compareGroup(pairLabel) {
+function objToArr(obj){
+    return d3.keys(obj).map(d => {
+        return {
+            pairName: d,
+            count: obj[d].count,
+            images: obj[d].images,
+        }
+    }).sort((a, b) => b.count - a.count)
+}
+function compareGroup(pairLabelInput) {
+    console.log(pairLabelInput)
+    let pairLabel = pairLabelInput.map(d => d.label)
     let merge = [], thisMerge
     for (let i = 0; i < pairLabel.length; i++) {
         for (let j = i + 1; j < pairLabel.length; j++) {
@@ -185,7 +205,10 @@ function compareGroup(pairLabel) {
         }
     }
 
-    return simplifyArray(merge)
+    return {
+        groups: simplifyArray(merge),
+        image: pairLabelInput[0].image
+    }
 }
 
 function simplifyArray(array) {

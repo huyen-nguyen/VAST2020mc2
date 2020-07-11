@@ -93,6 +93,8 @@ svg.append("g")
     .attr("height", function(d) { return height - y(d.value); })
     .attr("fill", function(d) {
         return d.key === "predict" ? blues(d.value) : reds(d.value); });
+        // return d.key === "predict" ? blues(400) : reds(100); });
+
 
 // append text overbar
 svg.selectAll(".count")
@@ -177,4 +179,5 @@ legend.append("text")
     .attr("x", width - 24)
     .attr("y", 9.5)
     .attr("dy", "0.32em")
-    .text(function(d) { return d === "predict" ? "prediction" : "truth"; });
+    .attr("font-size", "13px")
+    .text(function(d) { return d === "predict" ? "prediction, 4491 total" : "truth, 1370 total"; });

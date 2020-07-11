@@ -26,7 +26,7 @@ const zoomPanelMargin = {top: 20, right: 20, bottom: 20, left: 20},
     zoomPanelHeight = 350 - zoomPanelMargin.top - zoomPanelMargin.bottom;
 
 const scmargin = {top: 10, right: 10, bottom: 10, left: 40},
-    scwidth = 300 - scmargin.left - scmargin.right,
+    scwidth = 310 - scmargin.left - scmargin.right,
     scheight = 200 - scmargin.top - scmargin.bottom;
 
 //    x-axis
@@ -43,6 +43,7 @@ let leftPanel = d3.select(main)
     .attr("id", "leftPanel")
     .attr("class", "box")
 
+
 // append the svg object to the body of the page
 let mainSVG = d3.select(main)
     .append("svg")
@@ -50,6 +51,10 @@ let mainSVG = d3.select(main)
     .attr("height", height + margin.top + margin.bottom)
     .attr("class", "imageDist")
 
+// apply control panel
+let curveSpec = d3.select(main)
+    .append("div")
+    .attr("id", "curveSpec")
 
 let svg = mainSVG
     .append("g")
@@ -72,6 +77,18 @@ scat.append("g")
 
 scat
     .append("text")
+    .attr("x", 10)
+    .attr("y", -10)
+    .attr("dx", "3.32em")
+    // .attr("dy", "0.3em")
+    .attr("fill", "#000")
+    .attr("text-anchor", "start")
+    .attr("font-size", "13px")
+    .text("Precision - Recall curve")
+    .attr("font-weight", "bold");
+
+scat
+    .append("text")
     .attr("x", scwidth / 2 - 80)
     .attr("y", scheight + scmargin.bottom + 20)
     .attr("dx", "3.32em")
@@ -80,18 +97,51 @@ scat
     .attr("text-anchor", "start")
     .attr("font-size", "13px")
     .attr("id", "recalltext")
-    // .text("Recall");
+    .text("Recall");
 
 scat
     .append("text")
     .attr("transform", "rotate(-90)")
-    .attr("y", 0 - scmargin.left - 10)
+    .attr("y", 0 - scmargin.left)
     .attr("x", 0 - (scheight / 2))
     .attr("dy", "1em")
     .style("text-anchor", "middle")
     .attr("font-size", "13px")
     .attr("id", "pretext")
-    // .text("Precision");
+    .text("Precision");
+
+scat.append("path")
+    .attr("id", "prcurve")
+
+scat.append("path")
+    .attr("id", "interpolatedPRcurve")
+
+curveSpec.selectAll("label")
+    .data(["precision", "interpolation"])
+    .enter()
+    .append("label")
+    .attr("class", "curveLabel")
+    .insert("input")
+    .attr("id", (d, i) => i ? "interBox" : "precisionBox")
+    .attr("type", "checkbox")
+    .attr("checked", true)
+    .on("change", function(d,i){
+        d3.select("#prcurve")
+            .style("visibility", document.getElementById("precisionBox").checked? "visible" : "hidden")
+        d3.select("#interpolatedPRcurve")
+            .style("visibility", document.getElementById("interBox").checked? "visible" : "hidden")
+    })
+
+curveSpec.selectAll("label")
+    .append("span")
+    .html((d,i) => i ? " " + d + "<span style='color: red'> - - -</span>" : " " + d + "<span style='color: blue;'>" +
+        " ───</span>")
+
+curveSpec.append("div")
+    .style("font-size", "13px")
+    .text("AP: ")
+    .append("span")
+    .attr("id", "ap")
 
 let scx = d3.scaleLinear()
     .range([0, scwidth]);
@@ -322,6 +372,7 @@ function updateCharts() {
     d3.select("table").selectAll("*").remove()
     scat.selectAll(".point").remove("*")
     scat.style("visibility", "hidden")
+    curveSpec.style("visibility", "hidden")
     tableInit = false;
     bins = generateBins(filteredData)
     bins.forEach((d, i) => d.id = topic + (thresholdValue * 100) + i)
@@ -574,6 +625,7 @@ function updateScat(myData) {
     let points = scat.selectAll(".point")
         .data(myData); //update
 
+    console.log(myData)
     let pointsEnter = points
         .enter()
         .append("circle")
@@ -583,8 +635,8 @@ function updateScat(myData) {
         .attr("cx", d => scx(d.recall))
         .attr("cy", d => scy(d.precision))
         .attr("r", 3)
-        .attr("stroke", "#444")
-        .attr("fill", "steelblue");
+        .attr("stroke", "#878787")
+        .attr("fill", "yellow");
 
     points.exit()
         .remove();
@@ -597,12 +649,85 @@ function updateScat(myData) {
     scat.select(".y.axis")
         .call(d3.axisLeft(scy));
 
-    scat.select("#recalltext")
-        .text("Recall")
 
-    scat.select("#pretext")
-        .text("Precision")
+    d3.select("#prcurve")
+        .datum(myData)
+        .attr("fill", "none")
+        .attr("stroke", "blue")
+        .attr("stroke-width", 1.5)
+        .attr("d", d3.line()
+            .x(function(d) { return scx(d.recall) })
+            .y(function(d) { return scy(d.precision) })
+        )
+        .raise()
+
+    let interpolated = interpolate(myData)
+
+    d3.select("#interpolatedPRcurve")
+        .datum(interpolated)
+        .attr("fill", "none")
+        .attr("stroke", "red")
+        .attr("stroke-width", 1.5)
+        .attr("d", d3.line()
+            .x(function(d) { return scx(d.recall) })
+            .y(function(d) { return scy(d.precision) })
+        )
+        .style("stroke-dasharray", ("3, 3"))
+        .raise()
 
     scat.style("visibility", "visible")
+    curveSpec.style("visibility", "visible")
 
+
+    d3.select("#ap").text((getArea(interpolated)*100).toFixed(2) + "%")
+    console.log(getArea(interpolated))
+}
+
+function interpolate(array){
+    let interpolateArray = [];
+    let currentRecall, currentPrecision;
+
+    let sortedByRecall = array.sort((a,b) => +b.recall - +a.recall);
+
+    interpolateArray.push(sortedByRecall[0])
+    currentRecall = sortedByRecall[0].recall;
+    currentPrecision = sortedByRecall[0].precision;
+
+    for (let i = 0; i < sortedByRecall.length; i++) {
+        let thisPoint = sortedByRecall[i];
+        if (thisPoint.precision > currentPrecision) {
+            // push the intersection
+            interpolateArray.push({
+                recall: thisPoint.recall,
+                precision: currentPrecision,
+            })
+
+            // assign new recall and precision
+            currentPrecision = thisPoint.precision;
+
+            // push new point
+            interpolateArray.push(thisPoint)
+        }
+    }
+
+    // push last point
+    interpolateArray.push({
+        recall: 0,
+        precision: currentPrecision
+    })
+
+    return interpolateArray;
+}
+
+function getArea(array){
+    let area;
+    let points = array.map(d => {
+        return [d.recall, d.precision]
+    });
+
+    // add 2 more points at end of highest recall and (0,0)
+    points.push([0,0])
+    points.push([points[0][0], 0]);
+
+    return geometric.polygonArea(points)
 }
