@@ -1,6 +1,6 @@
 let main = "#mainDiv"
 let allData;
-let imageSelectionSize = {width: 300, eachHeight: 40}
+let imageSelectionSize = {width: 300, eachHeight: 43, height: 700}
 let labelSelectionSize = {width: 250}
 
 let imagesPerPage = 15, currentPage = 1;
@@ -17,6 +17,8 @@ let controlPanelSize = {height: 60}
 
 let image, thisImage, bbox = false;
 
+let currentPerson = "Person1"
+
 const array_chunks = (array, chunk_size) => Array(Math.ceil(array.length / chunk_size)).fill().map((_, index) => index * chunk_size).map(begin => array.slice(begin, begin + chunk_size));
 
 // let controlPanel = d3.select(main).append('div')
@@ -25,7 +27,38 @@ let imageSelectionDiv = d3.select(main).append('div')
     .attr("id", "imageSelection")
     .attr("class", "boxBlock")
     .style("width", imageSelectionSize.width + "px")
-// .style("height", "800px")
+.style("height", imageSelectionSize.height + "px")
+
+let select = imageSelectionDiv.append("div")
+    // .text("hi")
+
+let dropdown = select
+    .insert("select", "svg")
+    .attr("id", "personSelection")
+    .style("display", "block")
+    .style("float", "left")
+    .on("change", dropdownChange)
+
+dropdown.selectAll("option")
+    .data(person)
+    .enter()
+    .append("option")
+    .attr("class", "option")
+    .attr("value", d => d)
+    .html(d => d)
+
+new SlimSelect({
+    select: '#personSelection',
+});
+
+// Handler for dropdown value change
+function dropdownChange() {
+    currentPerson = d3.select(this).property('value')
+    console.log(currentPerson)
+    drawImageSelection()
+}
+
+
 // ----------- LABEL SELECTION ------------
 let labelSelectionDiv = d3.select(main).append("div")
     .attr("id", "labelSelection")
@@ -67,8 +100,11 @@ imageDisplayDiv.append("div")
 let imageFrame = imageDisplayDiv.append("div")
     .attr("class", "imageFrame")
 
+let similarFrame = d3.select().append("div")
+    .attr("class", "imageFrame")
 
 init()
+
 
 function init() {
     drawImageSelection()
@@ -77,10 +113,14 @@ function init() {
 
 function drawImageSelection() {
     let prevDiv;
+    let chunks = array_chunks(images.filter(d => d.includes(currentPerson+"_")), imagesPerPage)
 
-    let chunks = array_chunks(images, imagesPerPage)
+    imageSelectionDiv
+        .selectAll(".image-selection").remove()
+    imageSelectionDiv.selectAll("#bottomDiv").remove()
 
-    imageSelectionDiv.selectAll(".image-selection")
+    imageSelectionDiv
+        .selectAll(".image-selection")
         .data(chunks[currentPage - 1])
         .enter()
         .append("div")
@@ -106,7 +146,9 @@ function drawImageSelection() {
         })
 
     let bottomDiv = imageSelectionDiv.append("div")
+        .attr("id", "bottomDiv")
         .attr("class", "switchPage")
+        .style("margin-top", (imageSelectionSize.height - imageSelectionSize.eachHeight*chunks[currentPage - 1].length) + "px")
 
     bottomDiv
         .append("i")
@@ -114,8 +156,8 @@ function drawImageSelection() {
         .style("left", "10px")
 
 
-    let pageNumber = bottomDiv.append("span")
-        .html("Page " + currentPage + " of " + Math.ceil(images.length / imagesPerPage))
+    bottomDiv.append("span")
+        .html("Page " + currentPage + " of " + Math.ceil(images.filter(d => d.includes(currentPerson+"_")).length / imagesPerPage))
         .style("position", "absolute")
         .style("left", "35%")
 
@@ -132,6 +174,7 @@ function drawLabelSelection() {
         if (error) throw error;
         console.log(data)
         let prevSelect = {}
+
 
         let selection = labelSpace.selectAll(".detectedLabel")
             .data(data.sort((a, b) => +b.Score - +a.Score), d => d.Label);
@@ -179,6 +222,8 @@ function drawLabelSelection() {
 
     //    Add recommend labels
 
+        recData = getRecommend(data)
+
         let recselection = recommendSpace.selectAll(".recLabel")
             .data(recData, d => d);
 
@@ -212,7 +257,6 @@ function drawLabelSelection() {
         //    select on click
         labelSelectionDiv.selectAll(".objectLabel")
             .on("click", function (d) {
-                console.log("hi")
                 if (!prevSelect[d.Label]) {
                     prevSelect[d.Label] = true
                     d3.select(this).classed("selectedLabel", true)
@@ -265,7 +309,7 @@ function showImage() {
             thisBtn.classed("btn-primary", true)
                 .classed("btn-light", false)
             bbox = !!i
-            console.log(bbox)
+            // console.log(bbox)
 
             if (thisImage) {
                 updateImage(bbox, thisImage)
@@ -301,3 +345,6 @@ function getPerson(str) {
     return +str.split("_")[0].slice(6)
 }
 
+function showSimilarImage() {
+
+}

@@ -1,6 +1,6 @@
 let groups = [], pairsObj = {}, pairsArr = [], occlusionObj = {}, occlusionArr = []
 
-const iouThreshold = 0.4, secondaryThreshold = 0.4
+const iouThreshold = 0.2, secondaryThreshold = 0.4
 
 // var svg2 = d3.select("body").append("svg")
 //     .attr("width", width + margin.left + margin.right)
@@ -16,6 +16,7 @@ const iouThreshold = 0.4, secondaryThreshold = 0.4
 //
 // })
 
+let globalObj3 = {}
 
 function iou(boxA, boxB) {
     // determine the (x, y)-coordinates of the intersection rectangle
@@ -64,12 +65,12 @@ function boxWithin(boxA, boxB) {
 
 d3.csv("data/newData2.csv", function (error, predData) {
     if (error) throw error;
-    let imageData = d3.nest().key(d => d.Image).entries(predData)
+    // console.log("predData: ", predData)
+    let imagePredData = d3.nest().key(d => d.Image).entries(predData)
 
     let groups = []
-    console.log(imageData)
 
-    imageData.forEach((d, i) => {
+    imagePredData.forEach((d, i) => {
         let data = d.values;
         let pairsInImage = []
 
@@ -103,25 +104,21 @@ d3.csv("data/newData2.csv", function (error, predData) {
             }
         }
 
-        let visited = {}, thisGroup = []
         if (pairsInImage.length > 1) {
-            console.log(1, pairsInImage)
             let pairLabels = pairsInImage.map(d => {
                 return {
                     label: d.label,
                     image: d.boxA.Image
                 }
             })
-            console.log(2, pairLabels)
             let outputCompare = compareGroup(pairLabels)
-            console.log(3, outputCompare)
             groups.push(outputCompare)
 
         }
 
     })
 
-    console.log(groups)
+    // console.log(groups)
 
     let groupObj = {}
     groups.forEach((d, i) => {
@@ -142,19 +139,77 @@ d3.csv("data/newData2.csv", function (error, predData) {
         })
     })
 
-    console.log(groupObj)
-    console.log(occlusionObj)
+    // console.log(groupObj)
+    // console.log(occlusionObj)
 
-    console.log(objToArr(groupObj))
-    console.log(objToArr(occlusionObj))
+    let groupArr = objToArr(groupObj).filter(d => d.images.length > 1)
+    console.log("Groups: ", groupArr)
+    console.log("Occlusion: ",objToArr(occlusionObj))
 
 
 //    --------------------- end analysis of prediction set ---------------------
     d3.csv("data/labels.csv", function (error, truthData) {
         if (error) throw error
-        else {
-            console.log(truthData)
-        }
+        console.log("truthData: ", truthData)
+        let imageTruthData = d3.nest().key(d => d.Image).entries(truthData)
+
+        console.log(imagePredData)
+        console.log(imageTruthData)
+
+        let globalObj = {}, globalObj2 = {};
+        imageTruthData.forEach(d => {
+            // same key means same image looked at
+            let truthArr = d.values
+            let corresp = imagePredData.find(e => e.key === d.key)
+            // console.log(d.key,  "pred: ", corresp? corresp.values : "not found", "truth: ", d.values,)
+
+            if (corresp) {
+                corresp.values.forEach(p => {
+                    truthArr.forEach(t => {
+                        if (!globalObj[p.Label + "_" + t.Object]) {
+                            globalObj[p.Label + "_" + t.Object] = {}
+                            globalObj[p.Label + "_" + t.Object].count = 1
+                            globalObj[p.Label + "_" + t.Object].images = []
+                            globalObj[p.Label + "_" + t.Object].images.push(d.key)
+                            globalObj[p.Label + "_" + t.Object].scores = []
+                            globalObj[p.Label + "_" + t.Object].scores.push(+p.Score)
+                        }
+                        else {
+                            globalObj[p.Label + "_" + t.Object].count += 1
+                            globalObj[p.Label + "_" + t.Object].images.push(d.key)
+                            globalObj[p.Label + "_" + t.Object].scores.push(+p.Score)
+                        }
+
+                        // other structure
+                        if (!globalObj2[p.Label]) {
+                            globalObj2[p.Label] = {}
+                            globalObj2[p.Label][t.Object] = 1
+                        }
+                        else if (!globalObj2[p.Label][t.Object]) {
+                            globalObj2[p.Label][t.Object] = 1
+                        }
+                        else {
+                            globalObj2[p.Label][t.Object] += 1
+                        }
+                    })
+                })
+            }
+        })
+        
+        d3.keys(globalObj2).forEach(d => {
+            globalObj3[d] = []
+            globalObj3[d] = d3.keys(globalObj2[d]).map(e => {
+                return {
+                    des: e,
+                    count: globalObj2[d][e]
+                }
+            }).sort((a,b) => +b.count - +a.count)
+        })
+
+        console.log(globalObj)
+        console.log(globalObj3)
+        console.log(objToArr(globalObj))
+
     })
 })
 
@@ -181,14 +236,14 @@ function compareTwoPairs(pairsInImage) {
 function objToArr(obj){
     return d3.keys(obj).map(d => {
         return {
-            pairName: d,
+            name: d,
             count: obj[d].count,
             images: obj[d].images,
         }
     }).sort((a, b) => b.count - a.count)
 }
+
 function compareGroup(pairLabelInput) {
-    console.log(pairLabelInput)
     let pairLabel = pairLabelInput.map(d => d.label)
     let merge = [], thisMerge
     for (let i = 0; i < pairLabel.length; i++) {
@@ -225,4 +280,43 @@ function simplifyArray(array) {
     }
 
     return output.filter(d => d.length > 0).map(d => d.sort())
+}
+
+function getRecommend(array) {
+    let labels = array.map(d => d.Label)
+
+    console.log(globalObj3)
+
+    let bigArr = [], obj = {}
+    labels.forEach(d => {
+        bigArr = bigArr.concat(globalObj3[d])
+    })
+
+    console.log(bigArr)
+
+    bigArr.forEach(d => {
+        if (!obj[d.des]){
+            obj[d.des] = {}
+            obj[d.des].occurence = 1
+            obj[d.des].count = d.count
+        }
+        else {
+            obj[d.des].occurence += 1
+            obj[d.des].count += d.count
+        }
+    })
+
+    console.log(objToArr2(obj))
+    return objToArr2(obj).slice(0,10).map(d => d.name)
+
+}
+
+function objToArr2(obj){
+    return d3.keys(obj).map(d => {
+        return {
+            name: d,
+            count: obj[d].count,
+            occurence: obj[d].occurence,
+        }
+    }).sort((a, b) => b.occurence - a.occurence)
 }

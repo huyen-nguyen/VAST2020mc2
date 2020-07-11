@@ -158,6 +158,10 @@ svg.imageDist {
     display: table;
 }
 
+/*#imageSelection {*/
+/*    padding-top: 20px;*/
+/*}*/
+
 .boxBlock {
     display: table-cell;
     padding: 5px;
