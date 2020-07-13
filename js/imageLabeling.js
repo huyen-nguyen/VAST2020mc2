@@ -19,7 +19,9 @@ let image, thisImage, thisCaption, thisPerson, bbox = false;
 
 let currentPerson = "Person1"
 
-let globalSelection = {}, prevSelect = {}
+let globalSelection = {}, prevSelect = {}, tableInitLabel;
+
+const titlesLabel = ['Person', 'Image', 'Objects']
 
 const array_chunks = (array, chunk_size) => Array(Math.ceil(array.length / chunk_size)).fill().map((_, index) => index * chunk_size).map(begin => array.slice(begin, begin + chunk_size));
 
@@ -114,6 +116,13 @@ let imageCaption = imageDisplayDiv.append("div")
 
 let similarFrame = d3.select().append("div")
     .attr("class", "imageFrame")
+
+// -------- table ---------------------------
+let tablePanel = d3.select(main)
+    .append("div")
+    .attr("id", "table-wrapper-relabel")
+    .append("table")
+
 
 init()
 
@@ -397,7 +406,60 @@ function showImage() {
                 globalSelection[thisPerson][thisImage] = d3.keys(prevSelect).filter(d => prevSelect[d] === true).sort()
             }
             console.log(globalSelection, selectionObjToArr(globalSelection))
+            updateTable();
+
         })
+}
+
+function updateTable() {
+    let data = selectionObjToArr(globalSelection)
+
+    let table = d3.select("table")
+
+    // initiate table
+    if (!tableInitLabel) {
+        table.append('thead').append('tr')
+            .selectAll('th')
+            .data(titlesLabel).enter()
+            .append('th')
+            .attr("class", "th-data")
+            .text(d => d);
+
+        table.append('tbody').attr("id", "tb");
+
+        tableInitLabel = true;
+
+        d3.select("#mainDiv")
+            .append("button")
+            .style("display", "inline")
+            .attr("type", "button")
+            .attr('class', "btn btn-sm btn-success exportBtn")
+            .html("Export")
+            .on("click", function () {
+                download_csv(globalSelection)
+            })
+    }
+
+    d3.select("tbody").selectAll("td").remove("*")
+
+    data.forEach(function (row) {
+        console.log(row)
+        console.log(row.Objects)
+
+        return $("#tb").append('<tr>' +
+            '<td>' + row.Person + '</td>' +
+            '<td>' + (row.Image) + '</td>' +
+            '<td >' + stringifyArray(row.Objects) + '</td>' +
+
+            '</tr>');
+    });
+}
+
+function stringifyArray(arr) {
+    let str = "";
+    arr.forEach(d => str = str.concat(d) + '<br>')
+    console.log(str)
+    return str
 }
 
 function selectionObjToArr(obj){
@@ -405,13 +467,36 @@ function selectionObjToArr(obj){
     d3.keys(obj).forEach(person => {
         d3.keys(obj[person]).forEach(image => {
             arr.push({
-                person: person,
-                image: image,
-                objects: obj[person][image]
+                Person: person,
+                Image: image,
+                Objects: obj[person][image]
             })
         })
     })
 
+    arr.sort((a,b) => +a.Image.split("_")[1] - +b.Image.split("_")[1])
+        .sort((a,b) => +a.Person.slice(6) - +b.Person.slice(6))
+    return arr
+}
+
+function selectionToArrSingleLine(obj) {
+    let arr = []
+    d3.keys(obj).forEach(person => {
+        d3.keys(obj[person]).forEach(image => {
+            obj[person][image].forEach(obj => {
+                arr.push({
+                    Person: person,
+                    Image: image,
+                    Object: obj
+                })
+            })
+        })
+    })
+
+    arr.sort((a,b) => a.Object - b.Object)
+        .sort((a,b) => +a.Image.split("_")[1] - +b.Image.split("_")[1])
+        .sort((a,b) => +a.Person.slice(6) - +b.Person.slice(6))
+    console.log(arr)
     return arr
 }
 
@@ -436,6 +521,29 @@ function updateImage(bbox, thisImage) {
             imageCaption.style("visibility", "hidden")
         }
     })
+}
+
+function download_csv(data) {
+    let input = selectionToArrSingleLine(data)
+    console.log(input)
+    let keys = d3.keys(input[0])
+
+    let inputArr = input.map(d => {
+        return keys.map(e => d[e])
+    })
+
+    var csv = 'Person,Image,Object\n';
+    inputArr.forEach(function(row) {
+        csv += row.join(',');
+        csv += "\n";
+    });
+
+    console.log(csv);
+    var hiddenElement = document.createElement('a');
+    hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+    hiddenElement.target = '_blank';
+    hiddenElement.download = 'labels.csv';
+    hiddenElement.click();
 }
 
 function getPerson(str) {

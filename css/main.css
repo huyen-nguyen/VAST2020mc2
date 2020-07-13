@@ -358,6 +358,20 @@ svg.imageDist {
     left: 10px;
 }
 
+#table-wrapper-relabel
+{
+    /*border: 1px solid green;*/
+    width: 315px;
+    height: 800px;
+    overflow: auto;
+    position: absolute;
+    left: 1330px;
+}
+
+tr:nth-child(even) {background: #e8e8e8
+}
+tr:nth-child(odd) {background: #FFF}
+
 .th-data{
     width: 100px;
     font-size: 14px;
@@ -371,6 +385,12 @@ td {
 
 .number{
     text-align: right
+}
+
+.exportBtn {
+    top: 830px;
+    left: 1560px;
+    position: absolute;
 }
 
 /* ------ curve spec -------- */
