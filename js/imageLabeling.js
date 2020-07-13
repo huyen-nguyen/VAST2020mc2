@@ -51,10 +51,13 @@ new SlimSelect({
     select: '#personSelection',
 });
 
+let selections = imageSelectionDiv.append("div")
+
 // Handler for dropdown value change
 function dropdownChange() {
     currentPerson = d3.select(this).property('value')
     console.log(currentPerson)
+    currentPage = 1
     drawImageSelection()
 }
 
@@ -114,36 +117,10 @@ function init() {
 function drawImageSelection() {
     let prevDiv;
     let chunks = array_chunks(images.filter(d => d.includes(currentPerson+"_")), imagesPerPage)
-
-    imageSelectionDiv
-        .selectAll(".image-selection").remove()
+    let totalPage = Math.ceil(images.filter(d => d.includes(currentPerson+"_")).length / imagesPerPage)
     imageSelectionDiv.selectAll("#bottomDiv").remove()
 
-    imageSelectionDiv
-        .selectAll(".image-selection")
-        .data(chunks[currentPage - 1])
-        .enter()
-        .append("div")
-        // .style("height", imageSelectionSize.eachHeight + "px")
-        .attr("class", "image-selection")
-        .style("height", imageSelectionSize.eachHeight + "px")
-        .style("line-height", (imageSelectionSize.eachHeight - 10 )+ "px")
-        .text(d => d + ".jpg")
-        .on("click", function (d) {
-            // update image
-            thisImage = d
-            updateImage(bbox, d)
-
-            //default rotation
-            image.attr("transform", "rotate(0" + "," + (width / 2) + ", " + (height / 2) + ")")
-
-            // add label
-            drawLabelSelection()
-
-            d3.select(this).classed("selected", true)
-            d3.select(prevDiv).classed("selected", false)
-            prevDiv = this;
-        })
+    updateSelectionDiv()
 
     let bottomDiv = imageSelectionDiv.append("div")
         .attr("id", "bottomDiv")
@@ -154,17 +131,77 @@ function drawImageSelection() {
         .append("i")
         .attr("class", "fas fa-chevron-circle-left fasIcon")
         .style("left", "10px")
+        .attr("id", "prevBtn")
+        .on("click", function () {
+            if (currentPage > 1){
+                currentPage -= 1;
+                updateSelectionDiv()
+
+                d3.select("#pageText")
+                    .html("Page " + currentPage + " of " + totalPage)
+
+                bottomDiv
+                    .style("margin-top", (imageSelectionSize.height - imageSelectionSize.eachHeight*chunks[currentPage - 1].length) + "px")
+
+            }
+        })
 
 
-    bottomDiv.append("span")
-        .html("Page " + currentPage + " of " + Math.ceil(images.filter(d => d.includes(currentPerson+"_")).length / imagesPerPage))
+    bottomDiv.append("span").attr("id", "pageText")
+        .html("Page " + currentPage + " of " + totalPage)
         .style("position", "absolute")
         .style("left", "35%")
 
     bottomDiv
         .append("i")
         .attr("class", "fas fa-chevron-circle-right fasIcon")
+        .attr("id", "nextBtn")
         .style("right", "10px")
+        .on("click", function (d) {
+            if (currentPage < totalPage){
+                currentPage += 1;
+                updateSelectionDiv()
+
+                d3.select("#pageText")
+                    .html("Page " + currentPage + " of " + totalPage)
+
+                bottomDiv
+                    .style("margin-top", (imageSelectionSize.height - imageSelectionSize.eachHeight*chunks[currentPage - 1].length) + "px")
+
+            }
+        })
+
+    function updateSelectionDiv(){
+        selections
+            .selectAll(".image-selection").remove()
+
+        selections
+            .selectAll(".image-selection")
+            .data(chunks[currentPage - 1])
+            .enter()
+            .append("div")
+            // .style("height", imageSelectionSize.eachHeight + "px")
+            .attr("class", "image-selection")
+            .style("height", imageSelectionSize.eachHeight + "px")
+            .style("line-height", (imageSelectionSize.eachHeight - 10 )+ "px")
+            .text(d => d + ".jpg")
+            .on("click", function (d) {
+                // update image
+                thisImage = d
+                updateImage(bbox, d)
+
+                //default rotation
+                image.attr("transform", "rotate(0" + "," + (width / 2) + ", " + (height / 2) + ")")
+
+                // add label
+                drawLabelSelection()
+
+                d3.select(this).classed("selected", true)
+                d3.select(prevDiv).classed("selected", false)
+                prevDiv = this;
+            })
+
+    }
 }
 
 function drawLabelSelection() {
