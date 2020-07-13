@@ -79,7 +79,7 @@ let labelSpace = detectedDiv.append("div")
     .attr("class", "labelOption")
 
 let recommendDiv = labelSelectionDiv.append("div")
-    .attr("class", "sectionWrapper")
+    .attr("class", "sectionWrapper rec")
 
 recommendDiv.append("div")
     .attr("class", "sectionTitle")
@@ -87,8 +87,11 @@ recommendDiv.append("div")
     .text("RECOMMENDED")
     .style("top", (35) + "px")
 
-let recommendSpace = recommendDiv.append("div")
+let parDiv = recommendDiv.append("div").attr("id", "parentDiv")
+
+let recommendSpace = parDiv.append("div")
     .attr("class", "labelOption")
+    .append("div")
 
 // ----------- DISPLAY IMAGE ---------------
 let imageDisplayDiv = d3.select(main).append('div')
@@ -170,6 +173,7 @@ function drawImageSelection() {
 
             }
         })
+
 
     function updateSelectionDiv(){
         selections
@@ -259,8 +263,15 @@ function drawLabelSelection() {
 
     //    Add recommend labels
 
-        recData = getRecommend(data)
+        // recData = getRecommend(data)
 
+        recData = classes.filter(d => !detectedData.includes(d)).map(d => {
+            return {
+                Label: d
+            }
+        })
+
+        console.log(recData)
         let recselection = recommendSpace.selectAll(".recLabel")
             .data(recData, d => d);
 
@@ -284,7 +295,7 @@ function drawLabelSelection() {
             .enter()
             .append("div")
             .attr("class", "objectLabel recLabel")
-            .html(d => d)
+            .html(d => d.Label)
             .style("top", (d, i) => ((i + 1 + detectedData.length + 1) * 34) + "px")
             .attr("opacity", 0)
             .transition()
@@ -294,6 +305,7 @@ function drawLabelSelection() {
         //    select on click
         labelSelectionDiv.selectAll(".objectLabel")
             .on("click", function (d) {
+                console.log(d)
                 if (!prevSelect[d.Label]) {
                     prevSelect[d.Label] = true
                     d3.select(this).classed("selectedLabel", true)

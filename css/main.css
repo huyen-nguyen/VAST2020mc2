@@ -206,7 +206,9 @@ svg.imageDist {
 .labelSelection {
     padding: 0;
     position: relative;
-    left: 6px
+    left: 6px;
+    height: 700px;
+    overflow: auto;
 }
 
 .fasIcon {
@@ -330,6 +332,10 @@ svg.imageDist {
     transition: 0.3s;
 }
 
+.labelOption{
+    overflow: auto;
+    /*height: 500px*/
+}
 
 /* Table */
 #table-wrapper

@@ -307,7 +307,11 @@ function getRecommend(array) {
     })
 
     console.log(objToArr2(obj))
-    return objToArr2(obj).slice(0,10).map(d => d.name)
+    return objToArr2(obj).slice(0,10).map(d => d.name).map(d => {
+        return {
+            Label: d
+        }
+    })
 
 }
 
