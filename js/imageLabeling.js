@@ -15,9 +15,11 @@ let imageSize = {width: 720, height: 720}
 
 let controlPanelSize = {height: 60}
 
-let image, thisImage, thisCaption, bbox = false;
+let image, thisImage, thisCaption, thisPerson, bbox = false;
 
 let currentPerson = "Person1"
+
+let globalSelection = {}, prevSelect = {}
 
 const array_chunks = (array, chunk_size) => Array(Math.ceil(array.length / chunk_size)).fill().map((_, index) => index * chunk_size).map(begin => array.slice(begin, begin + chunk_size));
 
@@ -84,7 +86,7 @@ let recommendDiv = labelSelectionDiv.append("div")
 recommendDiv.append("div")
     .attr("class", "sectionTitle")
     .attr("id", "recText")
-    .text("RECOMMENDED")
+    .text("ALTERNATIVE")
     .style("top", (35) + "px")
 
 let parDiv = recommendDiv.append("div").attr("id", "parentDiv")
@@ -213,13 +215,11 @@ function drawImageSelection() {
 }
 
 function drawLabelSelection() {
-    let person = thisImage.split("_")[0]
+    thisPerson = thisImage.split("_")[0]
 
-    d3.csv("MC2-Image-Data/" + person + "/" + thisImage + ".csv", function (error, data) {
+    d3.csv("MC2-Image-Data/" + thisPerson + "/" + thisImage + ".csv", function (error, data) {
         if (error) throw error;
-        console.log(data)
-        let prevSelect = {}
-
+        prevSelect = {}
 
         let selection = labelSpace.selectAll(".detectedLabel")
             .data(data.sort((a, b) => +b.Score - +a.Score), d => d.Label);
@@ -261,21 +261,20 @@ function drawLabelSelection() {
 
         //    The rest of data
         let detectedData = data.map(d => d.Label)
-        let recData = d3.shuffle(classes.filter(d => !detectedData.includes(d)))
-            .slice(0, Math.floor(Math.random() * 10) + 2)
-        let remainingData = classes.filter(d => ((!detectedData.includes(d)) && (!recData.includes(d))))
+        // let recData = d3.shuffle(classes.filter(d => !detectedData.includes(d)))
+        //     .slice(0, Math.floor(Math.random() * 10) + 2)
+        // let remainingData = classes.filter(d => ((!detectedData.includes(d)) && (!recData.includes(d))))
 
     //    Add recommend labels
 
         // recData = getRecommend(data)
 
-        recData = classes.filter(d => !detectedData.includes(d)).map(d => {
+        let recData = classes.filter(d => !detectedData.includes(d)).map(d => {
             return {
                 Label: d
             }
         })
 
-        console.log(recData)
         let recselection = recommendSpace.selectAll(".recLabel")
             .data(recData, d => d);
 
@@ -309,7 +308,7 @@ function drawLabelSelection() {
         //    select on click
         labelSelectionDiv.selectAll(".objectLabel")
             .on("click", function (d) {
-                console.log(d)
+
                 if (!prevSelect[d.Label]) {
                     prevSelect[d.Label] = true
                     d3.select(this).classed("selectedLabel", true)
@@ -340,7 +339,6 @@ function showImage() {
         .attr("transform", "rotate(0, " + (width / 2) + ", " + (height / 2) + " )")
 
 //    buttons for specify
-
     d3.select("#imageSpecified")
         .append("div")
         .attr("class", "btnDiv")
@@ -366,8 +364,6 @@ function showImage() {
 
             if (thisImage) {
                 updateImage(bbox, thisImage)
-
-
             }
 
         })
@@ -380,6 +376,43 @@ function showImage() {
             countClick += 90
             image.attr("transform", "rotate(" + countClick + "," + (width / 2) + ", " + (height / 2) + ")")
         })
+
+    // save button
+    d3.select("#imageSpecified")
+        .append("button")
+        .style("display", "inline")
+        .attr("type", "button")
+        .attr('class', "btn btn-sm specifiyBtn btn-outline-secondary btnDiv")
+        .style("margin-left", "-280px")
+        .html("Save")
+        .on("click", function () {
+            console.log(prevSelect)
+
+            // save to global db
+            if (!globalSelection[thisPerson]){
+                globalSelection[thisPerson] = {}
+                globalSelection[thisPerson][thisImage] = d3.keys(prevSelect).filter(d => prevSelect[d] === true).sort()
+            }
+            else {
+                globalSelection[thisPerson][thisImage] = d3.keys(prevSelect).filter(d => prevSelect[d] === true).sort()
+            }
+            console.log(globalSelection, selectionObjToArr(globalSelection))
+        })
+}
+
+function selectionObjToArr(obj){
+    let arr = []
+    d3.keys(obj).forEach(person => {
+        d3.keys(obj[person]).forEach(image => {
+            arr.push({
+                person: person,
+                image: image,
+                objects: obj[person][image]
+            })
+        })
+    })
+
+    return arr
 }
 
 function updateImage(bbox, thisImage) {
@@ -391,7 +424,6 @@ function updateImage(bbox, thisImage) {
     // add caption
     d3.csv("caption.csv", function (error, captionData) {
         if (error) throw error;
-        console.log(captionData)
 
         thisCaption = captionData.find(d => d.Image === thisImage)
         if (thisCaption){
@@ -404,10 +436,6 @@ function updateImage(bbox, thisImage) {
             imageCaption.style("visibility", "hidden")
         }
     })
-    // .attr("opacity", 0)
-    // .transition()
-    // .duration(100)
-    // .attr("opacity", 1)
 }
 
 function getPerson(str) {
