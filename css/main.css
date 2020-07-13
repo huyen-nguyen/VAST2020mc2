@@ -258,6 +258,15 @@ svg.imageDist {
     border-radius: 0;
 
 }
+.imageCaption {
+    display: block;
+    position: absolute;
+    left: 12px;
+    top: 90px;
+    width: 720px;
+    box-shadow: none;
+    border: 1px solid #dcdcdd;
+}
 
 .imageFrame {
     display: block;

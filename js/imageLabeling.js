@@ -15,7 +15,7 @@ let imageSize = {width: 720, height: 720}
 
 let controlPanelSize = {height: 60}
 
-let image, thisImage, bbox = false;
+let image, thisImage, thisCaption, bbox = false;
 
 let currentPerson = "Person1"
 
@@ -106,6 +106,10 @@ imageDisplayDiv.append("div")
 let imageFrame = imageDisplayDiv.append("div")
     .attr("class", "imageFrame")
 
+let imageCaption = imageDisplayDiv.append("div")
+    .attr("class", "boxBlock imageCaption")
+    .style("visibility", "hidden")
+
 let similarFrame = d3.select().append("div")
     .attr("class", "imageFrame")
 
@@ -192,7 +196,7 @@ function drawImageSelection() {
             .on("click", function (d) {
                 // update image
                 thisImage = d
-                updateImage(bbox, d)
+                updateImage(bbox, thisImage)
 
                 //default rotation
                 image.attr("transform", "rotate(0" + "," + (width / 2) + ", " + (height / 2) + ")")
@@ -362,6 +366,8 @@ function showImage() {
 
             if (thisImage) {
                 updateImage(bbox, thisImage)
+
+
             }
 
         })
@@ -376,11 +382,28 @@ function showImage() {
         })
 }
 
-function updateImage(bbox, d) {
-    let person = d.split("_")[0]
+function updateImage(bbox, thisImage) {
+    let person = thisImage.split("_")[0]
 
     d3.select("#image")
-        .attr('xlink:href', bbox ? "MC2-Image-Data/" + person + "/" + d + "bbox.jpg" : "MC2-Image-Data/" + person + "/" + d + ".jpg")
+        .attr('xlink:href', bbox ? "MC2-Image-Data/" + person + "/" + thisImage + "bbox.jpg" : "MC2-Image-Data/" + person + "/" + thisImage + ".jpg")
+
+    // add caption
+    d3.csv("caption.csv", function (error, captionData) {
+        if (error) throw error;
+        console.log(captionData)
+
+        thisCaption = captionData.find(d => d.Image === thisImage)
+        if (thisCaption){
+            console.log(thisCaption)
+            imageCaption
+                .html(thisCaption.Caption)
+                .style("visibility", "visible")
+        }
+        else {
+            imageCaption.style("visibility", "hidden")
+        }
+    })
     // .attr("opacity", 0)
     // .transition()
     // .duration(100)
