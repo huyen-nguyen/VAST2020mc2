@@ -15,13 +15,13 @@ let imageSize = {width: 720, height: 720}
 
 let controlPanelSize = {height: 60}
 
-let image, thisImage, thisCaption, thisPerson, bbox = false;
+let image, thisImage, thisCaption, thisPerson,thisDifficult = null, bbox = false;
 
 let currentPerson = "Person1"
 
 let globalSelection = {}, prevSelect = {}, tableInitLabel;
 
-const titlesLabel = ['Person', 'Image', 'Objects']
+const titlesLabel = ['Person', 'Image', 'Objects', 'Difficult']
 
 const array_chunks = (array, chunk_size) => Array(Math.ceil(array.length / chunk_size)).fill().map((_, index) => index * chunk_size).map(begin => array.slice(begin, begin + chunk_size));
 
@@ -401,13 +401,33 @@ function showImage() {
             if (!globalSelection[thisPerson]){
                 globalSelection[thisPerson] = {}
                 globalSelection[thisPerson][thisImage] = d3.keys(prevSelect).filter(d => prevSelect[d] === true).sort()
+                globalSelection[thisPerson][thisImage].difficult = thisDifficult
+
             }
             else {
                 globalSelection[thisPerson][thisImage] = d3.keys(prevSelect).filter(d => prevSelect[d] === true).sort()
+                globalSelection[thisPerson][thisImage].difficult = thisDifficult
             }
             console.log(globalSelection, selectionObjToArr(globalSelection))
             updateTable();
 
+        })
+    d3.select("#imageSpecified")
+        .append("button")
+        .style("display", "inline")
+        .attr("type", "button")
+        .attr('class', "btn btn-sm specifiyBtn btn-outline-secondary btnDiv")
+        .style("margin-left", "-225px")
+        .html("Difficult")
+        .on("click", function () {
+            // not yet init
+            if ((!globalSelection[thisPerson][thisImage]) || (!globalSelection[thisPerson][thisImage].difficult)){
+                thisDifficult = true
+            }
+            else {
+                globalSelection[thisPerson][thisImage].difficult = false
+                thisDifficult = false
+            }
         })
 }
 
@@ -450,6 +470,7 @@ function updateTable() {
             '<td>' + row.Person + '</td>' +
             '<td>' + (row.Image) + '</td>' +
             '<td >' + stringifyArray(row.Objects) + '</td>' +
+            '<td >' + (row.Difficult ? "*" : "") + '</td>' +
 
             '</tr>');
     });
@@ -469,7 +490,8 @@ function selectionObjToArr(obj){
             arr.push({
                 Person: person,
                 Image: image,
-                Objects: obj[person][image]
+                Objects: obj[person][image],
+                Difficult: obj[person][image].difficult
             })
         })
     })
@@ -480,14 +502,17 @@ function selectionObjToArr(obj){
 }
 
 function selectionToArrSingleLine(obj) {
+    console.log(obj)
     let arr = []
     d3.keys(obj).forEach(person => {
         d3.keys(obj[person]).forEach(image => {
-            obj[person][image].forEach(obj => {
+            obj[person][image].forEach(object => {
+                console.log(obj[person][image])
                 arr.push({
                     Person: person,
                     Image: image,
-                    Object: obj
+                    Object: object,
+                    Difficult: !!obj[person][image].difficult
                 })
             })
         })
@@ -506,6 +531,7 @@ function updateImage(bbox, thisImage) {
     d3.select("#image")
         .attr('xlink:href', bbox ? "MC2-Image-Data/" + person + "/" + thisImage + "bbox.jpg" : "MC2-Image-Data/" + person + "/" + thisImage + ".jpg")
 
+    thisDifficult = null
     // add caption
     d3.csv("caption.csv", function (error, captionData) {
         if (error) throw error;
@@ -532,7 +558,7 @@ function download_csv(data) {
         return keys.map(e => d[e])
     })
 
-    var csv = 'Person,Image,Object\n';
+    var csv = 'Person,Image,Object,Difficult\n';
     inputArr.forEach(function(row) {
         csv += row.join(',');
         csv += "\n";
