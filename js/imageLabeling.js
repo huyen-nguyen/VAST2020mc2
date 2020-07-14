@@ -493,6 +493,7 @@ function selectionObjToArr(obj){
 
     arr.sort((a,b) => +a.Image.split("_")[1] - +b.Image.split("_")[1])
         .sort((a,b) => +a.Person.slice(6) - +b.Person.slice(6))
+    console.log(arr)
     return arr
 }
 
@@ -528,6 +529,7 @@ function updateImage(bbox, thisImage) {
     d3.csv("caption.csv", function (error, captionData) {
         if (error) throw error;
 
+        console.log(captionData)
         thisCaption = captionData.find(d => d.Image === thisImage)
         if (thisCaption){
             console.log(thisCaption)

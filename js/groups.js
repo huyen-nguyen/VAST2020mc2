@@ -148,69 +148,225 @@ d3.csv("data/newData2.csv", function (error, predData) {
 
 
 //    --------------------- end analysis of prediction set ---------------------
+})
     d3.csv("data/labels.csv", function (error, truthData) {
         if (error) throw error
         console.log("truthData: ", truthData)
-        let imageTruthData = d3.nest().key(d => d.Image).entries(truthData)
+        // let imageTruthData = d3.nest().key(d => d.Image).entries(truthData)
 
-        console.log(imagePredData)
-        console.log(imageTruthData)
+        // let groupedByPerson = d3.nest().key(d => d.Person).entries(truthData)
+        // console.log(groupedByPerson)
 
-        let globalObj = {}, globalObj2 = {};
-        imageTruthData.forEach(d => {
-            // same key means same image looked at
-            let truthArr = d.values
-            let corresp = imagePredData.find(e => e.key === d.key)
-            // console.log(d.key,  "pred: ", corresp? corresp.values : "not found", "truth: ", d.values,)
+        // let arr = [], obj = {}
 
-            if (corresp) {
-                corresp.values.forEach(p => {
-                    truthArr.forEach(t => {
-                        if (!globalObj[p.Label + "_" + t.Object]) {
-                            globalObj[p.Label + "_" + t.Object] = {}
-                            globalObj[p.Label + "_" + t.Object].count = 1
-                            globalObj[p.Label + "_" + t.Object].images = []
-                            globalObj[p.Label + "_" + t.Object].images.push(d.key)
-                            globalObj[p.Label + "_" + t.Object].scores = []
-                            globalObj[p.Label + "_" + t.Object].scores.push(+p.Score)
-                        }
-                        else {
-                            globalObj[p.Label + "_" + t.Object].count += 1
-                            globalObj[p.Label + "_" + t.Object].images.push(d.key)
-                            globalObj[p.Label + "_" + t.Object].scores.push(+p.Score)
-                        }
+        let imagePredData = d3.nest().key(d => d.Image).entries(truthData)
 
-                        // other structure
-                        if (!globalObj2[p.Label]) {
-                            globalObj2[p.Label] = {}
-                            globalObj2[p.Label][t.Object] = 1
-                        }
-                        else if (!globalObj2[p.Label][t.Object]) {
-                            globalObj2[p.Label][t.Object] = 1
-                        }
-                        else {
-                            globalObj2[p.Label][t.Object] += 1
-                        }
+        let groups = []
+
+        imagePredData.forEach((d, i) => {
+            let data = d.values;
+            let pairsInImage = []
+
+            for (let i = 0; i < data.length; i++) {
+                for (let j = i + 1; j < data.length; j++) {
+                    pairsInImage.push({
+                        label: data[i].Object + "_" + data[j].Object,
+                        boxA: data[i]
                     })
-                })
-            }
-        })
-        
-        d3.keys(globalObj2).forEach(d => {
-            globalObj3[d] = []
-            globalObj3[d] = d3.keys(globalObj2[d]).map(e => {
-                return {
-                    des: e,
-                    count: globalObj2[d][e]
                 }
-            }).sort((a,b) => +b.count - +a.count)
+            }
+
+            if (pairsInImage.length > 1) {
+                let pairLabels = pairsInImage.map(d => {
+                    return {
+                        label: d.label,
+                        image: d.boxA.Image
+                    }
+                })
+                let outputCompare = compareGroup(pairLabels)
+                groups.push(outputCompare)
+
+            }
+
         })
 
-        console.log(globalObj)
-        console.log(globalObj3)
-        console.log(objToArr(globalObj))
+        // console.log(groups)
+
+        let groupObj = {}
+        groups.forEach((d, i) => {
+            // console.log(i)
+            d.groups.forEach(e => {
+                if (!groupObj[e.join("_")]){
+                    groupObj[e.join("_")] = {};
+                    groupObj[e.join("_")].count = 1;
+                    groupObj[e.join("_")].images = [];
+                    groupObj[e.join("_")].images.push(d.image)
+                }
+                else {
+                    groupObj[e.join("_")].count += 1;
+                    groupObj[e.join("_")].images.push(d.image)
+                }
+
+                // console.log(e)
+            })
+        })
+
+        console.log(groupObj)
+        // console.log(occlusionObj)
+
+        let groupArr = objToArr(groupObj).filter(d => d.images.length > 1)
+        console.log("Groups: ", groupArr)
+        console.log("Occlusion: ",objToArr(occlusionObj))
+
+
+
+        // console.log(imagePredData)
+        // console.log(imageTruthData)
+        //
+        // let globalObj = {}, globalObj2 = {};
+        // imageTruthData.forEach(d => {
+        //     // same key means same image looked at
+        //     let truthArr = d.values
+        //     let corresp = imagePredData.find(e => e.key === d.key)
+        //     // console.log(d.key,  "pred: ", corresp? corresp.values : "not found", "truth: ", d.values,)
+        //
+        //     if (corresp) {
+        //         corresp.values.forEach(p => {
+        //             truthArr.forEach(t => {
+        //                 if (!globalObj[p.Label + "_" + t.Object]) {
+        //                     globalObj[p.Label + "_" + t.Object] = {}
+        //                     globalObj[p.Label + "_" + t.Object].count = 1
+        //                     globalObj[p.Label + "_" + t.Object].images = []
+        //                     globalObj[p.Label + "_" + t.Object].images.push(d.key)
+        //                     globalObj[p.Label + "_" + t.Object].scores = []
+        //                     globalObj[p.Label + "_" + t.Object].scores.push(+p.Score)
+        //                 }
+        //                 else {
+        //                     globalObj[p.Label + "_" + t.Object].count += 1
+        //                     globalObj[p.Label + "_" + t.Object].images.push(d.key)
+        //                     globalObj[p.Label + "_" + t.Object].scores.push(+p.Score)
+        //                 }
+        //
+        //                 // other structure
+        //                 if (!globalObj2[p.Label]) {
+        //                     globalObj2[p.Label] = {}
+        //                     globalObj2[p.Label][t.Object] = 1
+        //                 }
+        //                 else if (!globalObj2[p.Label][t.Object]) {
+        //                     globalObj2[p.Label][t.Object] = 1
+        //                 }
+        //                 else {
+        //                     globalObj2[p.Label][t.Object] += 1
+        //                 }
+        //             })
+        //         })
+        //     }
+        // })
+        //
+        // d3.keys(globalObj2).forEach(d => {
+        //     globalObj3[d] = []
+        //     globalObj3[d] = d3.keys(globalObj2[d]).map(e => {
+        //         return {
+        //             des: e,
+        //             count: globalObj2[d][e]
+        //         }
+        //     }).sort((a,b) => +b.count - +a.count)
+        // })
+        //
+        // console.log(globalObj)
+        // console.log(globalObj3)
+        // console.log(objToArr(globalObj))
 
     })
+
+
+d3.csv("data/labels.csv", function (error, truthData) {
+    if (error) throw error
+    console.log("truthData: ", truthData)
+    // let imageTruthData = d3.nest().key(d => d.Image).entries(truthData)
+
+    let groupedByPerson = d3.nest().key(d => d.Person).key(d => d.Object)
+        .entries(truthData)
+        .sort((a,b) => +a.key.slice(6) - +b.key.slice(6))
+    console.log(groupedByPerson)
+
+    let arr = [], obj = {}, objPerson = {}
+
+    for (let i = 0; i < groupedByPerson.length; i++){
+        for (let j = i+1; j < groupedByPerson.length; j ++){
+            if (i !== j){
+                let array1 = groupedByPerson[i].values.map(d => d.key);
+                let array2 = groupedByPerson[j].values.map(d => d.key);
+                let intersect = array1.filter(value => array2.includes(value)).sort().filter(d => d !== "none")
+                if (intersect.length > 0){
+                    objPerson[groupedByPerson[i].key + "_" + groupedByPerson[j].key] = intersect.length
+                    if (intersect.length > 1){
+                        for (let m = 0; m < intersect.length-1; m ++){
+                            for (let n = m+1; n < intersect.length; n++){
+                                if (!obj[intersect[m] + "_" + intersect[n]]){
+                                    obj[intersect[m] + "_" + intersect[n]] = {}
+                                    obj[intersect[m] + "_" + intersect[n]][groupedByPerson[i].key] = true;
+                                    obj[intersect[m] + "_" + intersect[n]][groupedByPerson[j].key] = true;
+                                }
+                                else {
+                                    obj[intersect[m] + "_" + intersect[n]][groupedByPerson[i].key] = true;
+                                    obj[intersect[m] + "_" + intersect[n]][groupedByPerson[j].key] = true;                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+
+    console.log(obj)
+
+    d3.keys(obj).forEach(d => {
+        let [source, target] = d.split("_")
+        arr.push({
+            "source": source,
+            "target": target,
+            "value": d3.keys(obj[d]).length
+        })
+    })
+    console.log(arr)
+
+    let arr2 = []
+    console.log(objPerson)
+
+    d3.keys(objPerson).forEach(d => {
+        let [source, target] = d.split("_")
+        arr2.push({
+            "source": source,
+            "target": target,
+            "value": objPerson[d]
+        })
+    })
+
+    console.log(arr2)
+
+    // truthData.forEach(d => {
+    //     if (d.Object !== "none"){
+    //         if (!obj[d.Person + "_" + d.Object]){
+    //             obj[d.Person + "_" + d.Object] = 1
+    //         }
+    //         else {
+    //             obj[d.Person + "_" + d.Object] += 1
+    //         }
+    //     }
+    // })
+    // console.log(obj)
+    // d3.keys(obj).forEach(d => {
+    //     let [Person, Object] = d.split("_")
+    //     arr.push({
+    //         "source": Person,
+    //         "target": Object,
+    //         "value": obj[d]
+    //     })
+    // })
+    //
+    // console.log(arr)
 })
 
 function compareTwoPairs(pairsInImage) {

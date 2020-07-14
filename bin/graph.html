@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+    .links line {
+        stroke: #999;
+
+    }
+
+    .nodes circle {
+        stroke: #fff;
+        stroke-width: 1.5px;
+    }
+
+    text {
+        font-family: sans-serif;
+        font-size: 10px;
+    }
+
+</style>
+<svg width="960" height="700"></svg>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+
+    var paramGroups = [
+        {name: 'chargeStrength', values: [-30, -80]},
+        {name: 'linkDistance', values: [30, -80]},
+        {name: 'linkStrength', values: [null, 0.25]},
+        {name: 'gravity', values: [0, 0.5]},
+        {name: 'iterations', values: [1, 2]},
+        {name: 'alphaDecay', values: [0, 0.0228, 0.05]},
+        {name: 'velocityDecay', values: [0.4, 0.8]}
+    ];
+
+    var svg = d3.select("svg"),
+        width = +svg.attr("width"),
+        height = +svg.attr("height");
+
+    var color = d3.scaleOrdinal(d3.schemeCategory20);
+
+    let nodeHasLinkObj = {};
+    let nodeHasLink;
+
+    var linkScale = d3.scaleLog().domain([1, 10]).range([0.2, 0.9])
+    var simulation = d3.forceSimulation()
+        .force("link", d3.forceLink()
+            .distance(function (l) {
+                let n1 = l.source, n2 = l.target;
+                // if (l.value === 1){
+                //     return 0
+                // }
+                if (n1.group === n2.group) {
+                    return 50
+                } else return 80
+
+            })
+            .strength(function (l) {
+                let n1 = l.source, n2 = l.target;
+                if (n1.group === n2.group) {
+                    return 0.4
+                } else return 0.1
+            })
+            .id(function (d) {
+                return d.id;
+            }).iterations(1))
+        .force("collide", d3.forceCollide()
+            .radius(30)
+            .strength(0.6)
+        )
+        .force("charge", d3.forceManyBody().strength(d => {
+            return linked(d) ? -1000 : -200
+        }))
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .force('x', d3.forceX(1).strength(d => {
+            if (d.group === "Person") {
+                if (linked(d)) return 0.2
+                else return 0.1
+            } else {
+                if (linked(d)) return 0.7
+                else return 0.1
+            }
+        }))
+        .force('y', d3.forceY(0).strength(0.3))
+    // .alphaDecay(0.0228)
+    // .velocityDecay(0.7)
+    // .alphaMin(0.3);
+
+    const keyArr = ["hairRoller", "stickerBox", "pinkEraser", "blueSunglasses",
+        "canadaPencil", "miniCards", "lavenderDie", "plaidPencil", "hairClip", "noisemaker",
+    ]
+
+    const selected = ["lavenderDie", "plaidPencil"]
+    // const selected = ["canadaPencil", "lavenderDie", "miniCards","plaidPencil"]
+
+    const PerArr = ["Person17", "Person31", "Person4", "Person6",
+        "Person40", "Person20"]
+    d3.json("graph.json", function (error, graph) {
+        if (error) throw error;
+        graph.newlinks = graph.links.filter(d => {
+            // if ((d.value > 2)){
+            //     return true
+            // }
+
+            if ((selected.includes(d.source)) && (selected.includes(d.target))) {
+                return true
+            } else if ((getType(d.source) === "Person") || (getType(d.target) === "Person")) {
+                if ((selected.includes(d.source)) || (selected.includes(d.target))) {
+                    return true
+                }
+            }
+
+        })
+        console.log(graph.newlinks)
+
+
+        graph.newlinks.forEach(link => {
+            if (!nodeHasLinkObj[link.source]){
+                nodeHasLinkObj[link.source] = 1
+            }
+            else {
+                nodeHasLinkObj[link.source] += 1
+            }
+            if (!nodeHasLinkObj[link.target]){
+                nodeHasLinkObj[link.target] = 1
+            }
+            else {
+                nodeHasLinkObj[link.target] += 1
+            }
+        });
+
+        nodeHasLink = d3.keys(nodeHasLinkObj)
+            // .filter(d => nodeHasLinkObj[d] > 38);
+
+        console.log(nodeHasLinkObj)
+        console.log(nodeHasLink)
+
+        count = 0
+        var link = svg.append("g")
+            .attr("class", "links")
+            .selectAll("line")
+            .data(graph.newlinks)
+            .enter().append("line")
+
+            .attr("stroke-width", function (d) {
+                if ((!linked2(d.source)) || (!linked2(d.target))) {
+                    return 0
+                }
+                else  {
+                    count += 1
+                    return d.value;
+                }
+            })
+            .style("stroke", function (d) {
+                let find = graph.newlinks
+                    .filter(l => (l.source === d.source) && (getType(l.source) === "Person"));
+                console.log(find)
+                if (find.length > 1){
+                    return "#143ebd"
+                }
+                else return "#999"
+            })
+            .style("stroke-opacity", function (d) {
+                let find = graph.newlinks
+                    .filter(l => (l.source === d.source) && (getType(l.source) === "Person"));
+                console.log(find)
+                if (find.length > 1){
+                    return 1
+                }
+                else
+                    return d3.scaleLinear().domain([1, 5]).range([0.3, 0.9])(d.value)
+            });
+
+        var node = svg.append("g")
+            .attr("class", "nodes")
+            .selectAll("g")
+            .data(graph.nodes)
+            .enter().append("g")
+
+        var circles = node.append("circle")
+            .attr("r", 5)
+            .attr("fill", function (d) {
+                return linked(d) ? color(d.group) : "none";
+            })
+            .style("visibility", function (d) {
+                return linked(d) ? "visible" : "hidden";
+            })
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
+
+        var lables = node.append("text")
+            .text(function (d) {
+                return d.id;
+            })
+            .style("visibility", function (d) {
+                return linked(d) ? "visible" : "hidden";
+            })
+            .attr('x', 6)
+            .attr('y', 3);
+
+        node.append("title")
+            .text(function (d) {
+                return d.id;
+            });
+
+        simulation
+            .nodes(graph.nodes)
+            .on("tick", ticked);
+
+        simulation.force("link")
+            .links(graph.links);
+
+        function ticked() {
+            link
+                .attr("x1", function (d) {
+                    return d.source.x;
+                })
+                .attr("y1", function (d) {
+                    return d.source.y;
+                })
+                .attr("x2", function (d) {
+                    return d.target.x;
+                })
+                .attr("y2", function (d) {
+                    return d.target.y;
+                });
+
+            node
+                .attr("transform", function (d) {
+                    return "translate(" + d.x + "," + d.y + ")";
+                })
+        }
+
+        function getType(id) {
+            return graph.nodes.find(d => d.id === id).group
+        }
+
+        function nodeDegree() {
+            let arr = [], obj = {};
+            // return nodes having degree > 7
+            let links = graph.links
+                .filter(d => (getType(d.source) === "Person") && (getType(d.target) === "Person"))
+            links.forEach(l => {
+
+            })
+
+            console.log(obj)
+        }
+    });
+
+    function dragstarted(d) {
+        if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
+
+    function dragged(d) {
+        d.fx = d3.event.x;
+        d.fy = d3.event.y;
+    }
+
+    function dragended(d) {
+        if (!d3.event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+    }
+
+    function linked(d) {
+        return nodeHasLink.indexOf(d.id) >= 0
+    }
+    function linked2(d) {
+        return nodeHasLink.indexOf(d) >= 0
+    }
+
+
+</script>
