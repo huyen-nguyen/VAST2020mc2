@@ -11,7 +11,7 @@ let positive
 
 let markedImg = []
 
-const titles = ["ID", "Score", "Classified", "Precision", "Recall"]
+const titles = ["Rank", "ID", "Score", "Classify", "Precision", "Recall"]
 let tableInit;
 
 const biggerImgWidth = 450, biggerImgHeight = 360
@@ -584,14 +584,14 @@ function outClassified() {
             .data(titles).enter()
             .append('th')
             .attr("class", "th-data")
-            .text(d => d === "ID" ? "Associated Image" : d);
+            .text(d => d === "ID" ? "Object in" : d);
 
         table.append('tbody').attr("id", "tb");
 
         tableInit = true;
     }
     d3.select("tbody").selectAll("td").remove("*")
-    data.forEach(function (row) {
+    data.forEach(function (row, index) {
         console.log(row)
         let len = data.filter(d => +d.Score >= +row.Score).length;
         let TP = data.filter(d => +d.Score >= +row.Score).filter(d => d.Classified === "TruePos.").length
@@ -602,6 +602,7 @@ function outClassified() {
         })
 
         return $("#tb").append('<tr>' +
+            '<td>' + (index+1) + '</td>' +
             '<td>' + row.Image + '</td>' +
             '<td class="number">' + (+row.Score).toFixed(3) + '</td>' +
             // '<td style="text-align: center; vertical-align: middle;" >' + personal_photo  + '</td>' +

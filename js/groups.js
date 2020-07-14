@@ -1,6 +1,6 @@
 let groups = [], pairsObj = {}, pairsArr = [], occlusionObj = {}, occlusionArr = []
-
-const iouThreshold = 0.2, secondaryThreshold = 0.4
+let occlusion;
+const iouThreshold = 0.5, secondaryThreshold = 0.4
 
 // var svg2 = d3.select("body").append("svg")
 //     .attr("width", width + margin.left + margin.right)
@@ -146,6 +146,9 @@ d3.csv("data/newData2.csv", function (error, predData) {
     console.log("Groups: ", groupArr)
     console.log("Occlusion: ",objToArr(occlusionObj))
 
+    occlusion = objToArr(occlusionObj).slice(0,20)
+
+    console.log(occlusion)
 
 //    --------------------- end analysis of prediction set ---------------------
 })
@@ -218,6 +221,7 @@ d3.csv("data/newData2.csv", function (error, predData) {
         console.log("Groups: ", groupArr)
         console.log("Occlusion: ",objToArr(occlusionObj))
 
+        occlusion = objToArr(occlusionObj)
 
 
         // console.log(imagePredData)
