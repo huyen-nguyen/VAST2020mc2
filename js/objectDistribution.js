@@ -519,7 +519,7 @@ function btnOnClick(status) {
         .attr("fill", status ? "#28A745" : "#DC3545")
         .attr("opacity", 0.4)
     scoringDiv.style("visibility", "hidden");
-    markedImg.find(d => d.ID === clickID).Classified = status ? "TrueP" : "FalseP"
+    markedImg.find(d => d.ID === clickID).Classified = status ? "TruePos." : "FalsePos."
     outClassified()
 }
 
@@ -560,7 +560,7 @@ function shrinkBoundary(x, y, width, height) {
             for (let j = yFirstOrder; j <= ySecOrder; j++) {
                 d3.selectAll("rect[count='image_" + i + "_" + j + "']")
                     .attr("fill", (d) => {
-                        markedImg.find(e => e.ID === d.ID).Classified = positive ? "TrueP" : "FalseP"
+                        markedImg.find(e => e.ID === d.ID).Classified = positive ? "TruePos." : "FalsePos."
                         return positive ? "#28A745" : "#DC3545"
                     })
                     .attr("opacity", 0.4)
@@ -594,7 +594,7 @@ function outClassified() {
     data.forEach(function (row) {
         console.log(row)
         let len = data.filter(d => +d.Score >= +row.Score).length;
-        let TP = data.filter(d => +d.Score >= +row.Score).filter(d => d.Classified === "TrueP").length
+        let TP = data.filter(d => +d.Score >= +row.Score).filter(d => d.Classified === "TruePos.").length
 
         chartData.push({
             precision: (TP / len),
