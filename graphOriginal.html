@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<style>
+    button {
+        position: absolute;
+    }
+
+    .node {
+        stroke: white;
+        stroke-width: 1px;
+    }
+
+    /*.link {*/
+    /*    stroke: gray;*/
+    /*}*/
+
+    #filter {
+        top: 17em;
+        left: 2em;
+    }
+
+    .menu{
+        position: absolute;
+        left: 570px;
+        top: 89px;
+    }
+    .menu2{
+        position: absolute;
+        left: 1068px;
+        top: 89px;
+    }
+    .selectButton {
+        position: absolute;
+        left: 700px;
+        top: 90px;
+    }
+    .showAllButton {
+        position: absolute;
+        left: 700px;
+        top: 142px;
+    }
+
+    .showSelectedButton {
+        position: absolute;
+        left: 700px;
+        top: 116px;
+    }
+
+    .referenceImg{
+        position: absolute;
+        left: 840px;
+        top: 26px;
+    }
+
+    .showSelectedPeopleButton {
+        position: absolute;
+        left: 1146px;
+        top: 116px;
+    }
+
+    .showAllPeopleButton {
+        position: absolute;
+        left: 1146px;
+        top: 142px;
+    }
+
+</style>
+<button type="button" class="filter-btn" id="filter" style = "font-family:monospace; font-size:14px">Filter Links</button>
+<head>
+
+    <select id="select1" class="menu" multiple="multiple" style = "font-family:monospace; font-size:14px">
+        <option value="birdCall">birdCall</option>
+        <option value="blueSunglasses">blueSunglasses</option>
+        <option value="brownDie">brownDie</option>
+        <option value="cactusPaper">cactusPaper</option>
+        <option value="canadaPencil">canadaPencil</option>
+        <option value="carabiner">carabiner</option>
+        <option value="cloudSign">cloudSign</option>
+        <option value="cowbell">cowbell</option>
+        <option value="cupcakePaper">cupcakePaper</option>
+        <option value="eyeball">eyeball</option>
+        <option value="foamDart">foamDart</option>
+        <option value="gClamp">gClamp</option>
+        <option value="giftBag">giftBag</option>
+        <option value="glassBead">glassBead</option>
+        <option value="gyroscope">gyroscope</option>
+        <option value="hairClip">hairClip</option>
+        <option value="hairRoller">hairRoller</option>
+        <option value="lavenderDie">lavenderDie</option>
+        <option value="legoBracelet">legoBracelet</option>
+        <option value="metalKey">metalKey</option>
+        <option value="miniCards">miniCards</option>
+        <option value="noisemaker">noisemaker</option>
+        <option value="paperPlate">paperPlate</option>
+        <option value="partyFavor">partyFavor</option>
+        <option value="pinkCandle">pinkCandle</option>
+        <option value="pinkEraser">pinkEraser</option>
+        <option value="plaidPencil">plaidPencil</option>
+        <option value="pumpkinNotes">pumpkinNotes</option>
+        <option value="rainbowPens">rainbowPens</option>
+        <option value="redBow">redBow</option>
+        <option value="redDart">redDart</option>
+        <option value="redWhistle">redWhistle</option>
+        <option value="rubiksCube">rubiksCube</option>
+        <option value="sign">sign</option>
+        <option value="silverStraw">silverStraw</option>
+        <option value="spiderRing">spiderRing</option>
+        <option value="stickerBox">stickerBox</option>
+        <option value="trophy">trophy</option>
+        <option value="turtle">turtle</option>
+        <option value="vancouverCards">vancouverCards</option>
+        <option value="voiceRecorder">voiceRecorder</option>
+        <option value="yellowBag">yellowBag</option>
+        <option value="yellowBalloon">yellowBalloon</option>
+    </select>
+    <select id="select2" class="menu2" multiple="multiple" style = "font-family:monospace; font-size:14px">
+        <option value="Person1">Person1</option>
+        <option value="Person2">Person2</option>
+        <option value="Person3">Person3</option>
+        <option value="Person4">Person4</option>
+        <option value="Person5">Person5</option>
+        <option value="Person6">Person6</option>
+        <option value="Person7">Person7</option>
+        <option value="Person8">Person8</option>
+        <option value="Person9">Person9</option>
+        <option value="Person10">Person10</option>
+        <option value="Person11">Person11</option>
+        <option value="Person12">Person12</option>
+        <option value="Person13">Person13</option>
+        <option value="Person14">Person14</option>
+        <option value="Person15">Person15</option>
+        <option value="Person16">Person16</option>
+        <option value="Person17">Person17</option>
+        <option value="Person18">Person18</option>
+        <option value="Person19">Person19</option>
+        <option value="Person20">Person20</option>
+        <option value="Person21">Person21</option>
+        <option value="Person22">Person22</option>
+        <option value="Person23">Person23</option>
+        <option value="Person24">Person24</option>
+        <option value="Person25">Person25</option>
+        <option value="Person26">Person26</option>
+        <option value="Person27">Person27</option>
+        <option value="Person28">Person28</option>
+        <option value="Person29">Person29</option>
+        <option value="Person30">Person30</option>
+        <option value="Person31">Person31</option>
+        <option value="Person32">Person32</option>
+        <option value="Person33">Person33</option>
+        <option value="Person34">Person34</option>
+        <option value="Person35">Person35</option>
+        <option value="Person36">Person36</option>
+        <option value="Person37">Person37</option>
+        <option value="Person38">Person38</option>
+        <option value="Person39">Person39</option>
+        <option value="Person40">Person40</option>
+    </select>
+    <button onclick="showReferenceImage()" class="selectButton" style = "font-family:monospace; font-size:14px">
+        Show Reference
+    </button>
+    <button onclick="showAllObjects()" class="showAllButton" style = "font-family:monospace; font-size:14px">
+        Show All
+    </button>
+    <button onclick="showSelectedObjects()" class="showSelectedButton" style = "font-family:monospace; font-size:14px">
+        Show Selected
+    </button>
+    <button onclick="showSelectedPeople()" class="showSelectedPeopleButton" style = "font-family:monospace; font-size:14px">
+        Show Selected People
+    </button>
+    <button onclick="showAllPeople()" class="showAllPeopleButton" style = "font-family:monospace; font-size:14px">
+        Show All People
+    </button>
+
+    <div id="theDiv" class="referenceImg"></div>
+    <h1>
+        Mini Challenge 2
+    </h1>
+    <h2>
+        <script src="https://d3js.org/d3.v5.js"></script>
+        <script src="https://unpkg.com/d3-simple-slider"></script>
+
+        <p style = "font-family:monospace; font-size:18px;" id="value">0</p>
+        <div id="slider"></div>
+
+        <script>
+            var slider = d3
+                .sliderHorizontal()
+                .min(0)
+                .max(1)
+                .step(.025)
+                .width(300)
+                .value(0)
+                .displayValue(false)
+                .on('onchange', (val) => {
+                    d3.select('#value').text(val.toFixed(3));
+                });
+
+            d3.select('#slider')
+                .append('svg')
+                .attr('width', 500)
+                .attr('height', 100)
+                .append('g')
+                .attr('transform', 'translate(30,30)')
+                .call(slider);
+
+
+        </script>
+
+
+    </h2>
+    <h3>
+
+    </h3>
+</head>
+<body>
+
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+<script>
+
+    //	data stores
+    var graph, store;
+
+    //	svg selection and sizing
+    var width = 1700,
+        height = 1500
+
+    var linkFilter = 0;
+    var objectsSelected = false;
+    var peopleSelected = false;
+    var selected;
+    var selected2;
+    var peopleGroupFilter = false;
+
+
+    var key1 = d3.select("svg")
+        .append("g");
+
+    key1.append("circle")
+        .attr("cx", 380)
+        .attr("cy", 10)
+        .attr("r", 8)
+        .style("fill", "#0000FF")
+        .on("click", function (){
+            if (typeFilterList.includes("#0000FF")) {
+                typeFilterList.splice(typeFilterList.indexOf("#0000FF"), 1);
+            } else {
+                typeFilterList.push("#0000FF");
+            }
+            filterPeople();
+        });
+
+    key1.append("text")
+        .attr("dx", 390)
+        .attr("dy", 14)
+        .style("font-size", "10px")
+        .text("Person");
+
+    var key2 = d3.select("svg")
+        .append("g");
+
+    key2.append("circle")
+        .attr("cx", 380)
+        .attr("cy", 30)
+        .attr("r", 8)
+        .style("fill", "#600");
+
+    key2.append("text")
+        .attr("dx", 390)
+        .attr("dy", 34)
+        .style("font-size", "10px")
+        .text("Object");
+
+    var key3 = d3.select("svg")
+        .append("g");
+
+    key3.append("circle")
+        .attr("cx", 380)
+        .attr("cy", 50)
+        .attr("r", 8)
+        .style("fill", "#D2B48C");
+
+    key3.append("text")
+        .attr("dx", 390)
+        .attr("dy", 54)
+        .style("font-size", "10px")
+        .text("Image");
+
+
+    //	svg selection and sizing
+    var svg = d3.select("svg")
+        .attr("width", width)
+        .attr("height", height);
+    radius = 3.5;
+
+    //	d3 color scales
+    var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+    var link = svg.append("g").selectAll(".link"),
+        node = svg.append("g").selectAll(".node");
+
+    //	force simulation initialization
+    var simulation = d3.forceSimulation()
+        .force("link", d3.forceLink()
+            .id(function(d) { return d.id; }).distance(70))
+        .force("charge", d3.forceManyBody()
+            .strength(function(d) { return -5;}))
+        .force("center", d3.forceCenter(width / 2.75, height / 3));
+
+    typeFilterList = [];
+
+    //	filter button event handlers
+    $(".filter-btn").on("click", function() {
+        linkFilter = document.getElementById("value").innerHTML
+        filter();
+        update();
+    });
+
+    //	data read and store
+    d3.json("graphOriginal.json", function(err, g) {
+        if (err) throw err;
+
+        var nodeByID = {};
+
+        g.nodes.forEach(function(n) {
+            nodeByID[n.id] = n;
+        });
+
+        g.links1.forEach(function(l) {
+            l.sourceGroup = nodeByID[l.source].group.toString();
+            l.targetGroup = nodeByID[l.target].group.toString();
+        });
+
+        store = g;
+        graph = {};
+        Object.keys(g).forEach(key=>graph[key] = store[key].map(d=>d))
+        // Object.keys(g).forEach(key=>store[k] = g[k])
+        // store = $.extend(true, {}, g);
+        update();
+    });
+
+    //	general update pattern for updating the graph
+    function update() {
+        //	UPDATE
+        node = node.data(graph.nodes, function(d) { return d.id;});
+
+        //	EXIT
+        node.exit().remove();
+        //	ENTER
+        var newNode = node.enter().append("g")
+            .on("mouseover", mouseover)
+            .on("mouseout", mouseout)
+            .on( 'click', function (d) {
+                document.getElementById('myVal').value = d.id;
+            })
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended)
+            );
+
+        newNode.append("circle")
+            .attr("class", "node")
+            .attr("r", radius)
+            .attr("fill", function(d) {return (d.group);});
+
+        newNode.append("title")
+            .text(function(d) {
+                if (d.img){
+                    return "group: " + d.group + "\n" + "id: " + d.id +"\n" +"img: " + d.img;
+                }
+                else {
+                    return "group: " + d.group + "\n" + "id: " + d.id;
+                }
+            });
+
+        var image_g = newNode.append('g').attr('class','image_g').attr('transform','scale(0.1)');
+        image_g.each(function(){
+            d3.select(this).datum()['Jake'] = d3.select(this);
+        })
+        image_g
+            .append("image")
+            .attr("xlink:href",  function(d) { return d.img;})
+            .attr("x", function(d) { return -50;})
+            .attr("y", function(d) { return -50;})
+            .attr("height", 100)
+            .attr("width", 100);
+
+
+        //	ENTER + UPDATE
+        node = node.merge(newNode);
+
+        //	UPDATE
+        link = link.data(graph.links1, function(d) { return d.id;});
+        //	EXIT
+        link.exit().remove();
+        //	ENTER
+        newLink = link.enter().append("line")
+            .on( 'mouseover' , function (d){
+                d3.select(this).attr("stroke-width", function (e) {
+                    if (e.value != 0){
+                        return e.value*5;
+                    }
+                    else return 2
+                })
+            })
+            .on( 'mouseout' , function (d){
+                d3.select(this).attr("stroke-width", function (e) {
+                    if (e.value != 0){
+                        return e.value*2;
+                    }
+                    else return 1
+                })
+            })
+            .on( 'click', function (d) {
+                document.getElementById('myVal').value = d.target.id;
+                d3.select("#myVal").datum(d)
+                var selectedlink = d3.select(this);
+                var image_g1 = selectedlink.datum().source['Jake']
+                    .attr('transform','scale(1)');
+                var image_g2= selectedlink.datum().target['Jake']
+                    .attr('transform','scale(1)');
+                var imgD = new Image();
+                imgD.src = d.source.img
+
+                var originalHeight = imgD.height;
+                var originalWidth = imgD.width;
+
+                image_g1
+                    .append("rect")
+                    .attr("x", d.x*(100/originalWidth) - 50)
+                    .attr("y", d.y*(100/originalHeight) - 50)
+                    .attr("width", d.width*(100/originalWidth))
+                    .attr("height", d.height*(100/originalHeight))
+                    .attr("stroke", "red")
+                    .attr("stroke-width", 2)
+                    .attr("fill", "none")
+                //console.log(selectedlink.datum())
+
+            })
+            .attr("class", "link")
+            .attr("stroke-width", function(d) {
+                if ((d.value != 1) && (d.value != 0)){
+                    return d.value*2
+                }
+                else if (d.value === 0){
+                    return 1
+                }})
+            .attr("stroke", function(d) {
+                if (d.value < 1 && d.value > .9) {
+                    return "#000000"
+                }
+                else if (d.value < .9 && d.value > .8) {
+                    return "#111111"
+                }
+                else if (d.value < .8 && d.value > .7) {
+                    return "#222222"
+                }
+                else if (d.value < .7 && d.value > .6) {
+                    return "#333333"
+                }
+                else if (d.value < .6 && d.value > .5) {
+                    return "#444444"
+                }
+                else if (d.value < .5 && d.value > .4) {
+                    return "#555555"
+                }
+                else if (d.value < .4 && d.value > .3) {
+                    return "#666666"
+                }
+                else if (d.value < .3 && d.value > .2) {
+                    return "#777777"
+                }
+                else if (d.value < .2 && d.value > .1) {
+                    return "#888888"
+                }
+                else { return "#999999"}
+
+            });
+
+        newLink.append("title")
+            .text(function(d) { return "source: " + d.source + "\n" + "target: " + d.target + "\n" + "value: " + d.value; });
+        //	ENTER + UPDATE
+        link = link.merge(newLink);
+
+        //	update simulation nodes, links, and alpha
+        simulation
+            .nodes(graph.nodes)
+            .on("tick", ticked);
+
+        simulation.force("link")
+            .links(graph.links1);
+
+        simulation.alpha(1).alphaTarget(0).restart();
+    }
+
+    function submitted() {
+        var link = d3.select("#myVal").datum();
+        link.souce = link.source.id;
+        var new_target = d3.select("#myVal").node().value;
+        if (graph.nodes.find(d=>d.id===new_target)){
+            link.target = new_target;
+            link.value = 1;
+            if (new_target == "none") {
+                link.value = 0;
+            }
+            update();
+        }else{
+            alert('Item does not exist in our data!')
+            // may be add new node?
+        }
+    }
+
+    //	drag event handlers
+    function dragstarted(d) {
+        if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
+
+    function dragged(d) {
+        d.fx = d3.event.x;
+        d.fy = d3.event.y;
+    }
+
+    function dragended(d) {
+        if (!d3.event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+    }
+
+    //	tick event handler without a bounded box
+    function ticked() {
+        node
+            // .attr("cx", function(d) { return d.x = Math.max(radius, Math.min(width - radius, d.x)); })
+            // .attr("cy", function(d) { return d.y = Math.max(radius, Math.min(height - radius, d.y)); });
+            .attr("cx", function(d) { return d.x; })
+            .attr("cy", function(d) { return d.y; })
+            .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+
+
+        link
+            .attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; });
+    }
+
+    function mouseover() {
+        var image_g = d3.select(this).select('g.image_g')
+            .attr('transform','scale(1)');
+    }
+
+    function mouseout() {
+        d3.select(this).select('g.image_g')
+            .attr('transform','scale(0.1)')
+        d3.selectAll('g.image_g rect').remove()
+    }
+
+    function filter() {
+        if (!(objectsSelected) && !(peopleSelected)){
+            graph.links1 = store.links1.filter(function (l) {
+                if (!(typeFilterList.includes(l.sourceGroup) || typeFilterList.includes(l.targetGroup)) && (linkFilter <= l.value)) {
+                    l.filtered = false;
+                    return true;
+                } else if ((typeFilterList.includes(l.sourceGroup) || typeFilterList.includes(l.targetGroup)) && (linkFilter > l.value)) {
+                    l.filtered = true;
+                    return false;
+                }
+            });
+        }
+
+        else if (objectsSelected && !(peopleSelected)){
+            store.nodes.forEach(function (n) {
+                n.filtered = true;
+            })
+
+            store.links1.forEach(function (l) {
+                if((selected.includes(l.target.id) && (linkFilter <= l.value))){
+                    l.filtered = false;
+                    l.source.filtered = false;
+                }
+                else{
+                    l.filtered = true;
+                    l.target.filtered = true;
+                }
+            })
+
+            store.links1.forEach(function (l) {
+                if(!(l.target.filtered) && (l.target.group == "#D2B48C")){
+                    l.filtered = false;
+                    l.source.filtered = false;
+                }
+            })
+
+            graph.links1 = store.links1.filter(function (l) {
+                if (!(l.filtered)) {
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            });
+
+            graph.nodes = store.nodes.filter(function(n) {
+                if ((selected.includes(n.id)) || (n.filtered == false)) {
+                    n.filtered = false;
+                    return true;
+                }
+                else{
+                    n.filtered = true;
+                    return false;
+                }
+            });
+        }
+        else if (!(objectsSelected) && (peopleSelected)){
+            store.nodes.forEach(function (n) {
+                if((selected2.includes(n.id))){
+                    n.filtered = false;
+                }
+                else{
+                    n.filtered = true;
+                }
+            })
+
+            store.links1.forEach(function (l) {
+                if((!(l.source.filtered) && (linkFilter <= l.value))){
+                    l.filtered = false;
+                    l.target.filtered = false;
+                }
+                else{
+                    l.filtered = true;
+                }
+            })
+
+            store.links1.forEach(function (l) {
+                if((!(l.source.filtered) && (linkFilter <= l.value))){
+                    l.filtered = false;
+                    l.target.filtered = false;
+                }
+                else{
+                    l.filtered = true;
+                }
+            })
+
+            graph.links1 = store.links1.filter(function (l) {
+                if (!(l.filtered)) {
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            });
+
+            graph.nodes = store.nodes.filter(function (n) {
+                if (!(n.filtered)) {
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            });
+        }
+        else if ((objectsSelected) && (peopleSelected)){
+            store.nodes.forEach(function (n){
+                n.filtered = true;
+            })
+
+
+            store.links1.forEach(function (l) {
+                l.filtered = true;
+            })
+
+
+            store.links1.forEach(function (l) {
+                if((l.target.group == "#D2B48C") && (selected2.includes(l.source.id))){
+                    l.target.filtered1 = true;
+                    l.source.filtered1 = true;
+                }
+                else if ((l.target.group == "#D2B48C") && !(selected2.includes(l.source.id))){
+                    console.log(l.source.id)
+                    console.log(l.target.id)
+                    l.source.filtered = true;
+                    l.target.filtered = true;
+                }
+            })
+
+            store.links1.forEach(function (l) {
+                if((l.source.group == "#D2B48C") && (selected.includes(l.target.id))){
+                    l.target.filtered2 = true;
+                    l.source.filtered2 = true;
+                }
+                else if ((l.source.group == "#D2B48C") && !(selected.includes(l.target.id))){
+                    l.source.filtered = true;
+                    l.target.filtered = true;
+                }
+            })
+
+            store.nodes.forEach(function (n){
+                if ((n.filtered1) && (n.filtered2)){
+                    n.filtered = false;
+                }
+                else{
+                    n.filtered = true;
+                }
+            })
+
+            store.links1.forEach(function (l) {
+                if( (!l.target.filtered) && (l.target.group == "#D2B48C") && (selected2.includes(l.source.id))){
+                    l.source.filtered = false;
+                }
+                else if ((!l.source.filtered) && (l.source.group == "#D2B48C") && (selected.includes(l.target.id))){
+                    l.target.filtered = false;
+                }
+            })
+
+            store.links1.forEach(function (l) {
+                if ((!l.target.filtered) && (!l.source.filtered) && (linkFilter <= l.value)) {
+                    l.filtered = false;
+                }
+            })
+
+            graph.links1 = store.links1.filter(function (l) {
+                if (!(l.filtered)) {
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            });
+
+            graph.nodes = store.nodes.filter(function (n) {
+                if (!(n.filtered)) {
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            });
+        }
+        update();
+    }
+
+    function showReferenceImage() {
+        //document.getElementById('theDiv').remove()
+        selectElement =
+            document.querySelector('#select1');
+
+        output = "MC2-Image-Data/TrainingImages/" + selectElement.value + "/" + selectElement.value + "_2.jpg";
+
+
+        var dv = document.getElementById('theDiv');
+        while (dv.hasChildNodes()) {
+            dv.removeChild(dv.lastChild);
+        }
+
+        var img = document.createElement("IMG");
+        img.src = output;
+        img.height = 140
+        img.width = 220
+        document.getElementById('theDiv').append(img);
+    }
+
+    function showAllObjects() {
+        graph.nodes = store.nodes;
+        graph.links1 = store.links1.filter(function (l) {
+            if (!(typeFilterList.includes(l.sourceGroup) || typeFilterList.includes(l.targetGroup)) && (linkFilter <= l.value)) {
+                l.filtered = false;
+                return true;
+            } else if ((typeFilterList.includes(l.sourceGroup) || typeFilterList.includes(l.targetGroup)) && (linkFilter > l.value)) {
+                l.filtered = true;
+                return false;
+            }
+        });
+        objectsSelected = false;
+        update();
+    }
+
+
+    function filterPeople() {
+        //console.log(typeFilterList)
+        if((!objectsSelected) && (!peopleGroupFilter)){
+            graph.nodes = store.nodes.filter(function(n) {
+                if (!typeFilterList.includes(n.group)) {
+                    n.filtered = false;
+                    return true;
+                }else if (typeFilterList.includes(n.group)) {
+                    n.filtered = true;
+                    return false;
+                }
+            });
+            graph.links1 = store.links1.filter(function (l) {
+                if (!(typeFilterList.includes(l.sourceGroup) || typeFilterList.includes(l.targetGroup)) && (linkFilter <= l.value)) {
+                    l.filtered = false;
+                    return true;
+                } else if ((typeFilterList.includes(l.sourceGroup) || typeFilterList.includes(l.targetGroup)) && (linkFilter > l.value)) {
+                    l.filtered = true;
+                    return false;
+                }
+            });
+            peopleGroupFilter = true;
+        }
+        else if((objectsSelected) && (!peopleGroupFilter)){
+            store.nodes.forEach(function (n) {
+                n.filtered = true;
+            })
+
+            store.links1.forEach(function (l) {
+                if((selected.includes(l.target.id) && (linkFilter <= l.value))){
+                    l.filtered = false;
+                    l.source.filtered = false;
+                }
+                else{
+                    l.filtered = true;
+                    l.target.filtered = true;
+                }
+            })
+
+            graph.links1 = store.links1.filter(function (l) {
+                if (!(l.filtered)) {
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            });
+
+            graph.nodes = store.nodes.filter(function(n) {
+                if ((selected.includes(n.id)) || (!n.filtered)) {
+                    n.filtered = false;
+                    return true;
+                }
+                else{
+                    n.filtered = true;
+                    return false;
+                }
+            });
+            peopleGroupFilter = true;
+        }
+        else if((objectsSelected) && (peopleGroupFilter)){
+            showSelectedObjects();
+            peopleGroupFilter = false;
+        }
+        else if(!(objectsSelected) && (peopleGroupFilter)){
+            showAllObjects();
+            peopleGroupFilter = false;
+        }
+
+        update();
+
+    }
+
+    function showSelectedObjects() {
+        var checked = document.querySelectorAll('#select1 :checked');
+        selected = [...checked].map(option => option.value);
+
+        if (!peopleSelected){
+            store.nodes.forEach(function (n) {
+                n.filtered = true;
+            })
+
+            store.links1.forEach(function (l) {
+                if((selected.includes(l.target.id) && (linkFilter <= l.value))){
+                    l.filtered = false;
+                    l.source.filtered = false;
+                }
+                else{
+                    l.filtered = true;
+                    l.target.filtered = true;
+                }
+            })
+
+            store.links1.forEach(function (l) {
+                if(!(l.target.filtered) && (l.target.group == "#D2B48C")){
+                    l.filtered = false;
+                    l.source.filtered = false;
+                }
+            })
+
+            graph.links1 = store.links1.filter(function (l) {
+                if (!(l.filtered)) {
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            });
+
+            graph.nodes = store.nodes.filter(function(n) {
+                if ((selected.includes(n.id)) || (n.filtered == false)) {
+                    n.filtered = false;
+                    return true;
+                }
+                else{
+                    n.filtered = true;
+                    return false;
+                }
+            });
+        }
+        else if (peopleSelected){
+            store.nodes.forEach(function (n){
+                n.filtered = true;
+            })
+
+
+            store.links1.forEach(function (l) {
+                l.filtered = true;
+            })
+
+            store.links1.forEach(function (l) {
+                if((l.target.group == "#D2B48C") && (selected2.includes(l.source.id))){
+                    l.target.filtered1 = true;
+                    l.source.filtered1 = true;
+                }
+                else if ((l.target.group == "#D2B48C") && !(selected2.includes(l.source.id))){
+                    console.log(l.source.id)
+                    console.log(l.target.id)
+                    l.source.filtered = true;
+                    l.target.filtered = true;
+                }
+            })
+
+            store.links1.forEach(function (l) {
+                if((l.source.group == "#D2B48C") && (selected.includes(l.target.id))){
+                    l.target.filtered2 = true;
+                    l.source.filtered2 = true;
+                }
+                else if ((l.source.group == "#D2B48C") && !(selected.includes(l.target.id))){
+                    l.source.filtered = true;
+                    l.target.filtered = true;
+                }
+            })
+
+            store.nodes.forEach(function (n){
+                if ((n.filtered1) && (n.filtered2)){
+                    n.filtered = false;
+                }
+                else{
+                    n.filtered = true;
+                }
+            })
+
+            store.links1.forEach(function (l) {
+                if( (!l.target.filtered) && (l.target.group == "#D2B48C") && (selected2.includes(l.source.id))){
+                    l.source.filtered = false;
+                }
+                else if ((!l.source.filtered) && (l.source.group == "#D2B48C") && (selected.includes(l.target.id))){
+                    l.target.filtered = false;
+                }
+            })
+
+            store.links1.forEach(function (l) {
+                if ((!l.target.filtered) && (!l.source.filtered) && (linkFilter <= l.value)) {
+                    l.filtered = false;
+                }
+            })
+
+            graph.links1 = store.links1.filter(function (l) {
+                if (!(l.filtered)) {
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            });
+
+            graph.nodes = store.nodes.filter(function (n) {
+                if (!(n.filtered)) {
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            });
+        }
+        objectsSelected = true;
+        update();
+    }
+
+    function showSelectedPeople() {
+        var checked2 = document.querySelectorAll('#select2 :checked');
+        selected2 = [...checked2].map(option => option.value);;
+
+        if (!(objectsSelected)){
+            store.nodes.forEach(function (n) {
+                if((selected2.includes(n.id))){
+                    n.filtered = false;
+                }
+                else{
+                    n.filtered = true;
+                }
+            })
+
+            store.links1.forEach(function (l) {
+                if((!(l.source.filtered) && (linkFilter <= l.value))){
+                    l.filtered = false;
+                    l.target.filtered = false;
+                }
+                else{
+                    l.filtered = true;
+                }
+            })
+
+            store.links1.forEach(function (l) {
+                if((!(l.source.filtered) && (linkFilter <= l.value))){
+                    l.filtered = false;
+                    l.target.filtered = false;
+                }
+                else{
+                    l.filtered = true;
+                }
+            })
+
+            graph.links1 = store.links1.filter(function (l) {
+                if (!(l.filtered)) {
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            });
+
+            graph.nodes = store.nodes.filter(function (n) {
+                if (!(n.filtered)) {
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            });
+        }
+        else if(objectsSelected){
+            store.nodes.forEach(function (n){
+                n.filtered = true;
+            })
+
+            store.links1.forEach(function (l) {
+                l.filtered = true;
+            })
+
+            store.links1.forEach(function (l) {
+                if((l.target.group == "#D2B48C") && (selected2.includes(l.source.id))){
+                    l.target.filtered1 = true;
+                    l.source.filtered1 = true;
+                }
+                else if ((l.target.group == "#D2B48C") && !(selected2.includes(l.source.id))){
+                    console.log(l.source.id)
+                    console.log(l.target.id)
+                    l.source.filtered = true;
+                    l.target.filtered = true;
+                }
+            })
+
+            store.links1.forEach(function (l) {
+                if((l.source.group == "#D2B48C") && (selected.includes(l.target.id))){
+                    l.target.filtered2 = true;
+                    l.source.filtered2 = true;
+                }
+                else if ((l.source.group == "#D2B48C") && !(selected.includes(l.target.id))){
+                    l.source.filtered = true;
+                    l.target.filtered = true;
+                }
+            })
+
+            store.nodes.forEach(function (n){
+                if ((n.filtered1) && (n.filtered2)){
+                    n.filtered = false;
+                }
+                else{
+                    n.filtered = true;
+                }
+            })
+
+            store.links1.forEach(function (l) {
+                if( (!l.target.filtered) && (l.target.group == "#D2B48C") && (selected2.includes(l.source.id))){
+                    l.source.filtered = false;
+                }
+                else if ((!l.source.filtered) && (l.source.group == "#D2B48C") && (selected.includes(l.target.id))){
+                    l.target.filtered = false;
+                }
+            })
+
+            store.links1.forEach(function (l) {
+                if ((!l.target.filtered) && (!l.source.filtered) && (linkFilter <= l.value)) {
+                    l.filtered = false;
+                }
+            })
+
+            graph.links1 = store.links1.filter(function (l) {
+                if (!(l.filtered)) {
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            });
+
+            graph.nodes = store.nodes.filter(function (n) {
+                if (!(n.filtered)) {
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            });
+        }
+        peopleSelected = true;
+        update();
+    }
+
+    function showAllPeople() {
+        if (!(objectsSelected)){
+            graph.nodes = store.nodes;
+            graph.links1 = store.links1.filter(function (l) {
+                if (!(typeFilterList.includes(l.sourceGroup) || typeFilterList.includes(l.targetGroup)) && (linkFilter <= l.value)) {
+                    l.filtered = false;
+                    return true;
+                } else if ((typeFilterList.includes(l.sourceGroup) || typeFilterList.includes(l.targetGroup)) && (linkFilter > l.value)) {
+                    l.filtered = true;
+                    return false;
+                }
+            });
+        }
+        else if (objectsSelected){
+            var checked = document.querySelectorAll('#select1 :checked');
+            selected = [...checked].map(option => option.value);
+            store.nodes.forEach(function (n) {
+                n.filtered = true;
+            })
+            store.links1.forEach(function (l) {
+                if((selected.includes(l.target.id) && (linkFilter <= l.value))){
+                    l.filtered = false;
+                    l.source.filtered = false;
+                }
+                else{
+                    l.filtered = true;
+                    l.target.filtered = true;
+                }
+            })
+
+            store.links1.forEach(function (l) {
+                if(!(l.target.filtered) && (l.target.group == "#D2B48C")){
+                    l.filtered = false;
+                    l.source.filtered = false;
+                }
+            })
+
+            graph.links1 = store.links1.filter(function (l) {
+                if (!(l.filtered)) {
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            });
+
+            graph.nodes = store.nodes.filter(function(n) {
+                if ((selected.includes(n.id)) || !(n.filtered)) {
+                    n.filtered = false;
+                    return true;
+                }
+                else{
+                    n.filtered = true;
+                    return false;
+                }
+            });
+        }
+        peopleSelected = false;
+        update();
+    }
+
+</script>
+</body>

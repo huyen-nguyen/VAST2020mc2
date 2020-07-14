@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+
+</style>
+<head>
+    <meta charset="UTF-8">
+    <title>Object Distribution Matrix</title>
+
+</head>
+<body>
+<script src="https://d3js.org/d3.v4.js"></script>
+<script src="https://d3js.org/d3-queue.v3.min.js"></script>
+<div id="my_dataviz"></div>
+<script>
+
+    // set the dimensions and margins of the graph
+    var margin = {top: 40, right: 180, bottom: 180, left: 180},
+        width = 1200 - margin.left - margin.right,
+        height = 1060 - margin.top - margin.bottom;
+
+    // append the svg object to the body of the page
+    var svg = d3.select("#my_dataviz")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("class", "matrix")
+        .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+
+    var original = d3.select("svg")
+        .append("g");
+
+    var originalToggle = true;
+
+    original.append("circle")
+        .attr("cx", 145)
+        .attr("cy", 22)
+        .attr("r", 8)
+        .on("click", function(){
+            if (originalToggle && correctedToggle){
+                d3.selectAll("circle.original").attr("display", "none")
+                d3.selectAll("circle.corrected").attr("display", "inline")
+                d3.selectAll("g.bothStats").attr("display", "none")
+                d3.selectAll("g.originalStats").attr("display", "none")
+                d3.selectAll("g.correctedStats").attr("display", "inline")
+                d3.selectAll("g.mainObjects").attr("display", "none")
+                originalToggle = false;
+            }
+            else if (!originalToggle && correctedToggle){
+                d3.selectAll("circle.original").attr("display", "inline")
+                d3.selectAll("circle.corrected").attr("display", "inline")
+                d3.selectAll("g.bothStats").attr("display", "inline")
+                d3.selectAll("g.originalStats").attr("display", "none")
+                d3.selectAll("g.correctedStats").attr("display", "none")
+                d3.selectAll("g.mainObjects").attr("display", "none")
+                originalToggle = true;
+            }
+
+            else if (originalToggle && !correctedToggle){
+                d3.selectAll("circle.original").attr("display", "none")
+                d3.selectAll("circle.corrected").attr("display", "none")
+                d3.selectAll("g.bothStats").attr("display", "none")
+                d3.selectAll("g.originalStats").attr("display", "none")
+                d3.selectAll("g.correctedStats").attr("display", "none")
+                d3.selectAll("g.mainObjects").attr("display", "inline")
+                originalToggle = false;
+            }
+
+            else if (!originalToggle && !correctedToggle){
+                d3.selectAll("circle.original").attr("display", "inline")
+                d3.selectAll("circle.corrected").attr("display", "none")
+                d3.selectAll("g.bothStats").attr("display", "none")
+                d3.selectAll("g.originalStats").attr("display", "inline")
+                d3.selectAll("g.correctedStats").attr("display", "none")
+                d3.selectAll("g.mainObjects").attr("display", "none")
+                originalToggle = true;
+            }
+        })
+        .style("fill", "#600");
+
+    original.append("text")
+        .attr("dx", 135)
+        .attr("dy",27)
+        .style("font-size", "15px")
+        .attr("text-anchor", "end")
+        .text("Original");
+
+    var corrected = d3.select("svg")
+        .append("g");
+
+    var correctedToggle = true;
+
+    corrected.append("circle")
+        .attr("cx", 166)
+        .attr("cy", 22)
+        .attr("r", 8)
+        .on("click", function(){
+            if (correctedToggle && originalToggle){
+                d3.selectAll("circle.corrected").attr("display", "none")
+                d3.selectAll("circle.original").attr("display", "inline")
+                d3.selectAll("g.bothStats").attr("display", "none")
+                d3.selectAll("g.originalStats").attr("display", "inline")
+                d3.selectAll("g.correctedStats").attr("display", "none")
+                d3.selectAll("g.mainObjects").attr("display", "none")
+                correctedToggle = false;
+            }
+            else if (!correctedToggle && originalToggle){
+                d3.selectAll("circle.corrected").attr("display", "inline")
+                d3.selectAll("circle.original").attr("display", "inline")
+                d3.selectAll("g.bothStats").attr("display", "inline")
+                d3.selectAll("g.originalStats").attr("display", "none")
+                d3.selectAll("g.correctedStats").attr("display", "none")
+                d3.selectAll("g.mainObjects").attr("display", "none")
+                correctedToggle = true;
+            }
+            else if (correctedToggle && !originalToggle){
+                d3.selectAll("circle.corrected").attr("display", "none")
+                d3.selectAll("circle.original").attr("display", "none")
+                d3.selectAll("g.bothStats").attr("display", "none")
+                d3.selectAll("g.originalStats").attr("display", "none")
+                d3.selectAll("g.correctedStats").attr("display", "none")
+                d3.selectAll("g.mainObjects").attr("display", "inline")
+                correctedToggle = false;
+            }
+
+            else if (!correctedToggle && !originalToggle){
+                d3.selectAll("circle.corrected").attr("display", "inline")
+                d3.selectAll("circle.original").attr("display", "none")
+                d3.selectAll("g.bothStats").attr("display", "none")
+                d3.selectAll("g.originalStats").attr("display", "none")
+                d3.selectAll("g.correctedStats").attr("display", "inline")
+                d3.selectAll("g.mainObjects").attr("display", "none")
+                correctedToggle = true;
+            }
+        })
+
+        .style("fill", "#0a4");
+
+    corrected.append("text")
+        .attr("dx", 175)
+        .attr("dy", 27)
+        .style("font-size", "15px")
+        .text("Corrected");
+
+    var keyDivider = d3.select("svg")
+        .append("g");
+
+    keyDivider.append("text")
+        .attr("dx", 153)
+        .attr("dy", 29)
+        .style("font-size", "20px")
+        .text("/");
+
+
+    // Labels of row and columns
+    // objects with at least 8 people
+    //var objects = ['noisemaker', 'rainbowPens', 'miniCards', 'pinkEraser', 'metalKey', 'blueSunglasses', 'lavenderDie', 'rubiksCube', 'canadaPencil'];
+    //var objects = ['miniCards', 'blueSunglasses', 'lavenderDie', 'metalKey', 'pinkEraser', 'canadaPencil', 'noisemaker', 'rainbowPens', 'rubiksCube', 'eyeball', 'foamDart', 'gClamp', 'hairClip', 'legoBracelet', 'redWhistle', 'voiceRecorder', 'yellowBag', 'birdCall', 'cactusPaper', 'carabiner', 'cloudSign', 'giftBag', 'glassBead', 'hairRoller', 'paperPlate', 'partyFavor', 'pinkCandle', 'plaidPencil', 'pumpkinNotes', 'redBow', 'sign', 'silverStraw', 'trophy', 'turtle', 'yellowBalloon', 'brownDie', 'cowbell', 'cupcakePaper', 'gyroscope', 'stickerBox', 'vancouverCards', 'redDart', 'spiderRing'];
+    //orderByOriginalCount
+    var objects = ['eyeball', 'cloudSign', 'sign', 'pinkCandle', 'blueSunglasses', 'birdCall', 'yellowBag', 'pumpkinNotes', 'hairClip', 'lavenderDie', 'redWhistle', 'cupcakePaper', 'metalKey', 'canadaPencil', 'stickerBox', 'partyFavor', 'trophy', 'silverStraw', 'yellowBalloon', 'noisemaker', 'paperPlate', 'vancouverCards', 'miniCards', 'pinkEraser', 'rainbowPens', 'rubiksCube', 'foamDart', 'gClamp', 'legoBracelet', 'voiceRecorder', 'cactusPaper', 'carabiner', 'giftBag', 'glassBead', 'hairRoller', 'plaidPencil', 'redBow', 'turtle', 'brownDie', 'cowbell', 'gyroscope', 'redDart', 'spiderRing'];
+    //1var persons = ['Person4', 'Person6', 'Person17', 'Person31', 'Person20', 'Person40', 'Person7', 'Person22', 'Person8', 'Person26', 'Person9', 'Person27', 'Person10', 'Person24', 'Person11', 'Person12', 'Person13', 'Person25', 'Person14', 'Person32', 'Person15', 'Person19', 'Person16', 'Person18', 'Person1', 'Person2', 'Person3', 'Person11', 'Person5', 'Person15', 'Person21', 'Person32', 'Person23', 'Person31', 'Person28', 'Person38', 'Person29', 'Person40', 'Person30', 'Person38', 'Person34', 'Person39', 'Person33', 'Person34', 'Person35', 'Person36', 'Person37', 'Person38'];
+    //ordered
+    // var persons = ['Person5', 'Person40', 'Person36', 'Person35', 'Person34', 'Person33', 'Person32', 'Person31', 'Person30', 'Person29', 'Person28', 'Person27', 'Person23', 'Person18', 'Person11', 'Person8', 'Person1', 'Person26', 'Person14', 'Person37', 'Person19', 'Person15', 'Person22', 'Person7', 'Person25', 'Person13', 'Person39', 'Person24', 'Person10', 'Person4', 'Person6', 'Person21', 'Person20', 'Person17', 'Person2', 'Person3', 'Person12', 'Person16', 'Person38', 'Person9']
+    //matrix1
+    // var persons = ['Person34', 'Person33', 'Person32', 'Person23', 'Person17', 'Person13', 'Person4', 'Person3', 'Person1', 'Person2', 'Person5', 'Person6', 'Person7', 'Person8', 'Person9', 'Person10', 'Person11', 'Person12', 'Person14', 'Person15', 'Person16', 'Person18', 'Person19', 'Person20', 'Person21', 'Person22', 'Person24', 'Person25', 'Person26', 'Person27', 'Person28', 'Person29', 'Person30', 'Person31', 'Person35', 'Person36', 'Person37', 'Person38', 'Person39', 'Person40'];
+    //canadaPenciloriginal
+    //var persons = ['Person2', 'Person3', 'Person4', 'Person5', 'Person6', 'Person7', 'Person9', 'Person10', 'Person11', 'Person12', 'Person13', 'Person14', 'Person17', 'Person19', 'Person20', 'Person23', 'Person24', 'Person25', 'Person26', 'Person28', 'Person29', 'Person30', 'Person31', 'Person32', 'Person33', 'Person34', 'Person35', 'Person36', 'Person37', 'Person38', 'Person39', 'Person1', 'Person8', 'Person15', 'Person16', 'Person18', 'Person21', 'Person22', 'Person27', 'Person40'];
+    //canadaPencilcorrected
+    //var persons = ['Person14', 'Person15', 'Person22', 'Person25', 'Person35', 'Person39', 'Person4', 'Person7', 'Person1', 'Person2', 'Person3', 'Person5', 'Person6', 'Person8', 'Person9', 'Person10', 'Person11', 'Person12', 'Person13', 'Person16', 'Person17', 'Person18', 'Person19', 'Person20', 'Person21', 'Person23', 'Person24', 'Person26', 'Person27', 'Person28', 'Person29', 'Person30', 'Person31', 'Person32', 'Person33', 'Person34', 'Person36', 'Person37', 'Person38', 'Person40'];
+    //canadaPencilcorrectedthenoriginal
+    //var persons = ['Person15', 'Person22', 'Person4', 'Person7', 'Person14', 'Person25', 'Person35', 'Person39', 'Person2', 'Person3', 'Person5', 'Person6', 'Person9', 'Person10', 'Person11', 'Person12', 'Person13', 'Person17', 'Person19', 'Person20', 'Person23', 'Person24', 'Person26', 'Person28', 'Person29', 'Person30', 'Person31', 'Person32', 'Person33', 'Person34', 'Person36', 'Person37', 'Person38', 'Person1', 'Person8', 'Person16', 'Person18', 'Person21', 'Person27', 'Person40'];
+    //noisemaker
+    // var persons = ['Person1', 'Person11', 'Person20', 'Person2', 'Person12', 'Person15', 'Person36', 'Person37', 'Person3', 'Person4', 'Person5', 'Person10', 'Person14', 'Person17', 'Person23', 'Person25', 'Person30', 'Person34', 'Person39', 'Person6', 'Person7', 'Person8', 'Person9', 'Person13', 'Person16', 'Person18', 'Person19', 'Person21', 'Person22', 'Person24', 'Person26', 'Person27', 'Person28', 'Person29', 'Person31', 'Person32', 'Person33', 'Person35', 'Person38', 'Person40'];
+    //numOfOriginalObjects
+    //var persons = ['Person23', 'Person33', 'Person13', 'Person34', 'Person32', 'Person17', 'Person5', 'Person6', 'Person37', 'Person4', 'Person25', 'Person3', 'Person20', 'Person9', 'Person10', 'Person11', 'Person7', 'Person2', 'Person30', 'Person29', 'Person14', 'Person24', 'Person1', 'Person39', 'Person15', 'Person12', 'Person19', 'Person36', 'Person35', 'Person38', 'Person16', 'Person18', 'Person40', 'Person27', 'Person22', 'Person8', 'Person28', 'Person26', 'Person31', 'Person21'];
+    //1->40
+    var persons = ['Person1', 'Person2', 'Person3', 'Person4', 'Person5', 'Person6', 'Person7', 'Person8', 'Person9', 'Person10', 'Person11', 'Person12', 'Person13', 'Person14', 'Person15', 'Person16', 'Person17', 'Person18', 'Person19', 'Person20', 'Person21', 'Person22', 'Person23', 'Person24', 'Person25', 'Person26', 'Person27', 'Person28', 'Person29', 'Person30', 'Person31', 'Person32', 'Person33', 'Person34', 'Person35', 'Person36', 'Person37', 'Person38', 'Person39', 'Person40'];
+    //rainbowPens
+    //var persons = ['Person1', 'Person3', 'Person11', 'Person17', 'Person23', 'Person30', 'Person31', 'Person38', 'Person2', 'Person4', 'Person5', 'Person6', 'Person7', 'Person8', 'Person9', 'Person10', 'Person12', 'Person13', 'Person14', 'Person15', 'Person16', 'Person18', 'Person19', 'Person20', 'Person21', 'Person22', 'Person24', 'Person25', 'Person26', 'Person27', 'Person28', 'Person29', 'Person32', 'Person33', 'Person34', 'Person35', 'Person36', 'Person37', 'Person39', 'Person40'];
+
+
+    // Build X scales and axis:
+    var x = d3.scaleBand()
+        .range([ 0, width ])
+        .domain(persons)
+
+    svg.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x))
+        .attr('stroke-opacity','.1')
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("transform", "rotate(-50)");
+
+    // Build Y scales and axis:
+    var y = d3.scaleBand()
+        .range([ height, 0 ])
+        .domain(objects)
+        //.padding(0.05);
+
+    svg.append("g")
+        .call(d3.axisLeft(y))
+        .attr("class", "mainObjects")
+        .attr('stroke-opacity','.1');
+
+    var xAxisGrid = d3.axisBottom(x)
+        .tickSize(-height)
+        .tickFormat('')
+        .ticks(10);
+    var yAxisGrid = d3.axisLeft(y)
+        .tickSize(-width)
+        .tickFormat('')
+        .ticks(10);
+
+    svg.append('g')
+        .attr('class', 'x axis-grid')
+        .attr('transform', 'translate(0,' + height + ')')
+        .call(xAxisGrid)
+        .attr('stroke-opacity','0');
+    svg.append('g')
+        .attr('class', 'y axis-grid')
+        .call(yAxisGrid)
+        .attr('stroke-opacity','0');
+
+    //Read the data
+    d3.csv("objectDistributionOriginal2.csv", function(data) {
+
+        svg.selectAll('circle.original')
+            .data(data, function(d) {return d.item+':'+d.person;})
+            .enter()
+            .append("circle")
+            //.attr("x", function(d) { return x(d.item) })
+            //.attr("y", function(d) { return y(d.person) })
+            //.attr("width", function(d) { return x.bandwidth()- (1/d.quantity)*10})
+            //.attr("height", function(d) { return y.bandwidth()- (1/d.quantity)*10})
+            .attr("class", "original")
+            .attr("cx", function(d) { return x(d.person) + x.bandwidth()/2 })
+            .attr("cy", function(d) { return y(d.item) + y.bandwidth()/2 })
+            .attr("r", function(d) { return ((d.quantity/4)+3) })
+            //.on("mouseover", function(d) { console.log(d.quantity) })
+            .style("fill", "#600")
+            .style("opacity", function (d)  { return d.opq});
+    })
+
+    d3.csv("objectDistributionCorrected.csv", function(data) {
+
+        svg.selectAll("circle.corrected")
+            .data(data, function(d) {return d.item+':'+d.person;})
+            .enter()
+            .append("rect")
+            .attr("x", function(d) { return x(d.person) + (((1/d.quantity)*10)/2) })
+            .attr("y", function(d) { return y(d.item) + (((1/d.quantity)*10)/2)})
+            // .attr("width", function(d) { return x.bandwidth()- (1/d.quantity)*10})
+            // .attr("height", function(d) { return y.bandwidth()- (1/d.quantity)*10})
+            .attr("width", function(d) { return x.bandwidth()- (1/d.quantity)*10})
+            .attr("height", function(d) { return y.bandwidth()- (1/d.quantity)*10})
+            .attr("class", "corrected")
+            //.attr("cx", function(d) { return x(d.person) + x.bandwidth()/2 })
+            //.attr("cy", function(d) { return y(d.item) + y.bandwidth()/2 })
+            //.attr("r", function(d) { return ((d.quantity/4)+2) })
+            //.style("stroke-width", '2')
+            //.style("stroke", "#0a4")
+            .style("fill", "#0a4")
+            .style("opacity", ".5");
+    })
+
+    var objectCounterCorrected = {}
+    var objectCounterOriginal = {}
+
+    objects.forEach(function (d) {
+        objectCounterOriginal[d] = 0
+        objectCounterCorrected[d] = 0
+    })
+
+    var countCorrected = [];
+    var countOriginal = [];
+
+    var objectCorrectedStats = [];
+    var objectOriginalStats = [];
+    var objectBothStats = [];
+
+
+    d3.csv("objectDistributionCorrected.csv", function(data) {
+        data.forEach(function (d) {
+            objectCounterCorrected[d.item] += parseInt(d.quantity);
+        })
+        Object.keys(objectCounterCorrected).forEach(function(key) {
+            countCorrected.push(objectCounterCorrected[key].toString());
+        });
+
+
+        objects.forEach(function (key) {
+            objectCorrectedStats.push(key+" ["+objectCounterCorrected[key]+"]");
+        })
+
+        displayCorrectedStats();
+
+        //displayCorrectedStats(objectCorrectedStats);
+
+
+
+    });
+
+    d3.csv("objectDistributionOriginal.csv", function(data) {
+        data.forEach(function (d) {
+            objectCounterOriginal[d.item] += parseInt(d.quantity);
+        })
+        Object.keys(objectCounterOriginal).forEach(function(key) {
+            countOriginal.push(objectCounterOriginal[key].toString());
+        });
+        //displayOriginalStats(countOriginal);
+        objects.forEach(function (key) {
+            objectOriginalStats.push(key+" ["+objectCounterOriginal[key]+"]");
+        })
+
+        objects.forEach(function (key) {
+            objectBothStats.push(key+" ["+objectCounterOriginal[key]+"/"+objectCounterCorrected[key]+"]");
+        })
+
+        displayOriginalStats();
+
+        displayBothStats();
+
+
+    });
+
+
+
+    function displayCorrectedStats(){
+        var y2 = d3.scaleBand()
+            .range([ height, 0 ])
+            .domain(objectCorrectedStats)
+
+
+        svg.append("g")
+            .attr("class", "correctedStats")
+            .call(d3.axisLeft(y2))
+            .attr('stroke-opacity','.1')
+            .attr('display', 'none');
+    }
+
+    function displayOriginalStats(){
+        var y3 = d3.scaleBand()
+            .range([ height, 0 ])
+            .domain(objectOriginalStats)
+            //.style("font-size", "14px")
+
+        svg.append("g")
+            .attr("class", "originalStats")
+            .call(d3.axisLeft(y3))
+            .attr('stroke-opacity','.1')
+            .attr('display', 'none');
+    }
+
+    function displayBothStats(){
+        var y4 = d3.scaleBand()
+            .range([ height, 0 ])
+            .domain(objectBothStats)
+        //.style("font-size", "14px")
+
+
+        svg.append("g")
+            .attr("class", "bothStats")
+            .call(d3.axisLeft(y4))
+            .attr('stroke-opacity','.1');
+
+        d3.selectAll("g.mainObjects").attr("display", "none");
+    }
+
+
+
+
+
+</script>
+
+</body>
+</html>
