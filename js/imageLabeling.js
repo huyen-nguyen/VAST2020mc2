@@ -60,7 +60,6 @@ let selections = imageSelectionDiv.append("div")
 // Handler for dropdown value change
 function dropdownChange() {
     currentPerson = d3.select(this).property('value')
-    console.log(currentPerson)
     currentPage = 1
     drawImageSelection()
 }
@@ -284,8 +283,9 @@ function drawLabelSelection() {
             }
         })
 
+        console.log(detectedData, recData)
         let recselection = recommendSpace.selectAll(".recLabel")
-            .data(recData, d => d);
+            .data(recData, d => d.Label);
 
         // EXIT
         recselection.exit()
@@ -325,7 +325,7 @@ function drawLabelSelection() {
                     prevSelect[d.Label] = false
                     d3.select(this).classed("selectedLabel", false)
                 }
-                console.log(prevSelect)
+                // console.log(prevSelect)
             })
     })
 
@@ -395,7 +395,6 @@ function showImage() {
         .style("margin-left", "-280px")
         .html("Save")
         .on("click", function () {
-            console.log(prevSelect)
 
             // save to global db
             if (!globalSelection[thisPerson]){
@@ -408,7 +407,7 @@ function showImage() {
                 globalSelection[thisPerson][thisImage] = d3.keys(prevSelect).filter(d => prevSelect[d] === true).sort()
                 globalSelection[thisPerson][thisImage].difficult = thisDifficult
             }
-            console.log(globalSelection, selectionObjToArr(globalSelection))
+            // console.log(globalSelection, selectionObjToArr(globalSelection))
             updateTable();
 
         })
@@ -463,9 +462,6 @@ function updateTable() {
     d3.select("tbody").selectAll("td").remove("*")
 
     data.forEach(function (row) {
-        console.log(row)
-        console.log(row.Objects)
-
         return $("#tb").append('<tr>' +
             '<td>' + row.Person + '</td>' +
             '<td>' + (row.Image) + '</td>' +
@@ -479,7 +475,6 @@ function updateTable() {
 function stringifyArray(arr) {
     let str = "";
     arr.forEach(d => str = str.concat(d) + '<br>')
-    console.log(str)
     return str
 }
 
@@ -502,12 +497,10 @@ function selectionObjToArr(obj){
 }
 
 function selectionToArrSingleLine(obj) {
-    console.log(obj)
     let arr = []
     d3.keys(obj).forEach(person => {
         d3.keys(obj[person]).forEach(image => {
             obj[person][image].forEach(object => {
-                console.log(obj[person][image])
                 arr.push({
                     Person: person,
                     Image: image,
@@ -521,7 +514,6 @@ function selectionToArrSingleLine(obj) {
     arr.sort((a,b) => a.Object - b.Object)
         .sort((a,b) => +a.Image.split("_")[1] - +b.Image.split("_")[1])
         .sort((a,b) => +a.Person.slice(6) - +b.Person.slice(6))
-    console.log(arr)
     return arr
 }
 
@@ -551,7 +543,6 @@ function updateImage(bbox, thisImage) {
 
 function download_csv(data) {
     let input = selectionToArrSingleLine(data)
-    console.log(input)
     let keys = d3.keys(input[0])
 
     let inputArr = input.map(d => {
