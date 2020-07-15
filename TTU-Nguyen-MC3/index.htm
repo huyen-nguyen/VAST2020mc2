@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TTU VAST2020MC2</title>
+    <style>
+        @import "styles.css";
+    </style>
+</head>
+<body>
+<page size="AH">
+    <div class="pageContent">
+        <!--        <img src="images/ttu.jpg" class="ttu">-->
+        <!--        <img src="images/idvl.png" class="idvl">-->
+        <div class="title">
+            Entry Name: <span style="font-weight: bold">"TTU-Nguyen-MC2"<br>
+            VAST Challenge 2020<br>
+            <span style="text-decoration: underline">Mini-Challenge 2<br><br></span> </span>
+        </div>
+
+        <h4><span>Team Members:</span></h4>
+        <span>Huyen N. Nguyen<sup>1</sup>, IDV Lab, Texas Tech University, </span><span><a
+            href="mailto:huyen.nguyen@ttu.edu">huyen.nguyen@ttu.edu</a>&nbsp;&nbsp; PRIMARY<br></span>
+        <span>Jake Gonzalez<sup>1</sup>, IDV Lab, Texas Tech University, </span><span><a
+            href="mailto:Jake.Gonzalez@ttu.edu">
+        jake.gonzalez@ttu.edu</a>&nbsp;&nbsp; <br></span>
+        <span>Jian Guo, IDV Lab, Texas Tech University, </span><span><a href="mailto:jian.guo@ttu.edu">jian
+        .guo@ttu.edu</a>&nbsp;&nbsp; <br></span>
+        <span>Ngan V.T. Nguyen, IDV Lab, Texas Tech University, </span><span><a href="mailto:Ngan.V.T.Nguyen@ttu.edu">
+       ngan.v.t.nguyen@ttu.edu</a>&nbsp;&nbsp; <br></span>
+        <span>Tommy Dang, IDV Lab, Texas Tech University, </span><span><a href="mailto:tommy.dang@ttu.edu">tommy.dang@ttu.edu</a></span>
+
+        <h4>Student Team: <span style="font-weight: normal">YES</span></h4>
+        <h4>Tools Used:</h4>
+        <span>HTML, CSS, JavaScript<br> D3.js <br> Demos: </span><span><a
+            href="https://huyen-nguyen.github.io/VAST2020mc2/">https://huyen-nguyen.github.io/VAST2020mc2/</a>
+        Release 1.0.0
+    </span>
+
+        <h4>Approximately how many hours were spent working on this submission in total?</h4>
+        <span>320 hours.</span>
+
+        <h4>May we post your submission in the Visual Analytics Benchmark Repository after VAST Challenge 2019 is
+            complete?<span style="font-weight: normal"> YES</span></h4>
+
+        <h4>Video</h4>
+        <span>
+            <a href="https://huyen-nguyen.github.io/VAST2020mc2/">https://huyen-nguyen.github.io/VAST2020mc2/</a>
+        </span><br><br>
+        <span style="font-size: 12px"><sup>1</sup>Huyen N. Nguyen and Jake Gonzalez contributed equally to this work.</span>
+        <hr>
+
+        <!--        <h3>System Overview</h3>-->
+
+        <h3>Questions</h3>
+        <div> Given the images and text files as well as machine learning outputs, use visual analytics to answer the
+            questions below to improve and understand machine learning outputs and track provenance, uncertainty, and
+            confidence in machine learning results. Ultimately, you must link multiple data types to identify the group
+            CGCS is seeking.
+            <br><br></div>
+
+        <div class="question"><b>Question 1</b> – Examine the outputs from the model – either from the detection results
+            provided or
+            the results from a model you chose. Which objects were identified well by the model and which were not?
+            Please limit your answer to 5 images and 250 words.
+        </div>
+        <br>
+
+        <b>1.1. Examine the classifier from the classifier results provided</b><br>
+
+        There are total 43 classes in the training set; in the classifier results there are only 22 classes detected.
+        There is no detection for any of the remaining classes.<br><br>
+
+        Figure 1 shows the summary of 4491 detected objects found (in red), classified in only 22 classes. However, the
+        number of true objects (1370) is less than 1/3 of detected objects and distributed quite evenly among all 43
+        classes. The number of true detections is higher on the right side (in green): 731/1370 = 53%. That means the
+        machine learning model <b>missed out at least 53%</b> of the objects, hence not a good model.
+
+        <img src="images/overview.png" class="full">
+        <p class="caption"><span>Figure 1. Distribution overview</span></p>
+
+
+        In Figure 2, we put all images, objects, and persons in the forced-directed layout where persons connect to all
+        of their images and images connect to their objects. We can easily notice the 21 objects which are not labeled
+        in the challenge data.
+        <img src="images/2-force.png" class="sf">
+        <p class="caption"><span>Figure 2. Objects not classified in original data.</span></p>
+        <br>
+        <b>1.2. Which objects classified well and which more poorly by the machine learning algorithm?</b><br>
+
+        We use Average Precision (AP) — precision averaged across all recall values, to evaluate the performance for
+        each classifier. Then we compare AP between different object detectors to rank them. By interpolating all
+        points, AP can be interpreted as an approximated area under the curve (AUC) of the Precision x Recall curve
+        (PASCAL VOC challenge). A higher value means higher accuracy on detection.
+        <br><br>
+        The process for getting AP is demonstrated in Figure 3: As user marks TP/FP, the table and Precision-Recall
+        curve automatically update, calculate the AUC to approximate AP.
+
+        <img src="images/3-markTP.png" class="full">
+        <p class="caption"><span>Figure 3: Process of getting AP for each class.</span></p>
+
+        <b>The classifiers that cannot detect objects (23 → 43 in Fig. 1): Zero detections</b><br>
+        For each of the 21 classes with zero detections:<br>
+
+        - True Positive = 0, False Positive = 0<br>
+        - False Negative ≥ 1<br>
+
+        Hence, Precision = 0 and Recall = 0, AP = 0: These objects classified poorly.<br>
+
+        We consider the penalty for classifier that missed out more objects: From Figure 1, rainbowPens missed out the
+        biggest number of objects (86) — that is the worst classifier.
+        <br><br>
+
+        <b>Ranking from best to worst classifier</b><br>
+        We first rank by AP; for the poorer classifiers, we rank by <b>penalty on number of missing objects.</b><br><br>
+
+        <img src="images/4-rank.png" class="half">
+        <p class="caption"><span>Figure 4: Ranking classifiers from best to worst.</span></p>
+
+        As shown in Figure 5, the sign was one of the objects with the highest number of classifications. however, it
+        had 1/9 correct classification at a confidence score of at least 0.7.<br><br>
+
+        <img src="images/5-score.png" class="half">
+        <p class="caption"><span>Figure 5: Sign detections with confidence ≥ 0.7</span></p>
+
+
+        <br><br>
+        <div class="question"><b>Question 2</b> – Demonstrate your process for using visual analytics to correct for
+            classification
+            errors in the results. How do you represent confidence and uncertainty? How could the correction process be
+            made more efficient? Please limit your answer to 10 images and 500 words.
+        </div>
+        <br>
+        <b>2.1. Demonstrate the process for correcting classification errors using visual analytics.</b><br>
+
+        Figure 6 describes the platform for correcting classification errors. The detected labels are listed and sorted
+        by confidence scores. <br><br>
+
+        <img src="images/6-annotated.png" class="full">
+        <p class="caption"><span>Figure 6: Platform for correcting classification errors</span></p><br>
+
+        Panel A: Image list in descending order. User can select Person from the dropdown list.<br><br>
+
+        Panel B: Label list, divided in 2 sections. The Detected section includes all the detected labels from the
+        prediction in image, sorted by confidence score. The Alternative section includes all the other labels, sorted
+        (A-Z). The sorted order help users to select the desire labels fast. User can de-select if wrongly select
+        labels.<br><br>
+
+        Panel C: Image display frame. After selecting labels, user can press "Save" to update to the table in Panel D.
+        This frame includes 2 modes for displaying images: Original and Annotated — with labels, bounding boxes and
+        confidence score. This helps users easily see prediction on the image.<br><br>
+
+        Panel D: Correction result. The result from "Save" action is updated on the table, sorted by Person and Image.
+        For later use, users can Export the result to CSV format.<br><br>
+
+        <b>2.2. Represent confidence and uncertainty</b><br>
+
+        From the model perspective:<br>
+
+        The Detected panel B shows the confidence scores from the challenge. The manual correction gives the detection
+        confidence score 1.<br>
+
+        The uncertainty can come from the bounding boxes coordinates. As the bounding box coordinates may vary compared
+        to the fit box around the object, we can visualize the bounding boxes with edges in an acceptable range. We
+        evaluate the true positive/false positive by if the bounding box can capture the essence of the object. Figure 7
+        presents the uncertainty on bounding boxes.<br><br>
+
+        From the human perspective:<br>
+
+        Uncertainty can come from subjective assessment of user. If user is not sure about their correction for an
+        example, user can mark "Difficult" on that image before "Save".<br><br>
+
+
+        <img src="images/7.png" class="half">
+        <p class="caption"><span>Figure 7</span></p><br>
+
+        Figure 8 shows the overview of confidence scores per object vs. person, provided by the challenge. The blue
+        violins show the summary distributions of confidence scores (from 0 to 1) for objects (rows) and persons
+        (columns). In this matrix, rows and columns have ordered by the average confidence score (the black vertical bar
+        inside the violins): highest confidence objects are listed first.<br>
+
+        <img src="images/8.png" class="full">
+        <p class="caption"><span>Figure 8</span></p><br>
+
+        The next figure shows the updated matrix after the correction process. The true labels are highlighted in the
+        green boxes: bigger boxes indicate more objects have been corrected into this classification. We notice that
+        the all 21 zero classification objects (on the top) have received the correct classifications.<br>
+
+        <img src="images/9.png" class="full">
+        <p class="caption"><span>Figure 9</span></p><br>
+
+        <b>2.3. How could correction process be made more efficient?</b><br>
+
+        The correction can be use to mark similar images at the same time when they have the same
+        characteristic.<br><br>
+
+        1) Occlusion: Figure below shows the occlusion in the detection result. The occlusion means that we may found
+        these objects together, with one side the bounding box of the other. Having the detection in this manner can
+        help users quickly identify two objects at a time.
+        <br><br>
+        There are 124 cases with the pinkCandle within the sign; however, there is no such case in the groundtruth. This
+        may stem from the shape of the handle of the sign and the pinkCandle are lookalike.
+
+        <img src="images/10.png" class="sf">
+        <p class="caption"><span>Figure 10: Top 20 occlusion found in detection</span></p><br>
+
+        2) Similarity in bounding boxes Intersection-over-Union (IoU)<br>
+
+        Two images can be considered to have similar objects if they share a same set of detections which are highly
+        overlapping. We chose threshold 0.5 for IoU.
+
+        The figure below presents the top 12 common labels having overlapping with threshold 0.5, and corresponding 10
+        images for group pumpkinNotes_yellowBag_yellowBalloon. We can see that 6/10 images are about yellowBalloon. So
+        if we correct 1 of them as yellowBalloon, there are 5 other images that can be automatically corrected right.
+
+        <img src="images/11.png" class="full">
+        <p class="caption"><span>Figure 11: Top 12 common labels having IoU over 0.5 (left) and the corresponding 10 images for group pumpkinNotes_yellowBag_yellowBalloon: (not in order) Person32_49, Person3_2, Person3_19, Person3_18, Person3_20, Person3_15, Person3_17, Person36_3, Person23_64, Person12_12.
+</span></p><br>
+
+
+
+        <div class="question"><b>Question 3</b> – Characterize the distribution of objects across the forty people.<br>
+            a. Which people have which objects?  Please limit your answer to 8 images and 250 words<br><br>
+
+            The following two networks show the distribution of objects across the 40 people using predicted data and ground truth data respectively.
+<br>
+            For the network of predicted data on the left, the opacity of the links represents the mean confidence score of an object and the thickness of the links represent the total number of objects detected.
+            <br>
+            For the network of ground truth data on the right, the thickness of the links represents the total number of objects a person owns.
+
+            <img src="images/12.jpg" class="sf">
+            <p class="caption"><span>Figure 12: Left: network for predicted data;  Right: network for ground truth data</span></p><br>
+
+            Take person 17 as an example, by comparing the two networks we can see that this person is predicted
+            to have 20 objects, while actually he/she has only 6 objects -- Figure 12.
+
+            <img src="images/13.jpg" class="sf">
+            <p class="caption"><span>Figure 13</span></p><br>
+
+
+            Person 23 is also predicted to have 20 objects, but actually he/she only has 6 objects. It can be indicated that the model given did not predict very well.
+
+            <br><br>
+
+            A matrix was developed to visualize the distribution of objects in the given data and corrected data. The brown points represent the original data with the opacity determined by the average of confidence scores for the object detected in a person's images, and the size of the circle depending on the number of occurrences the object was detected. The green squares represent the corrected data where the square size is calculated based on the number of occurrences an object appeared in a person's images.
+
+            <img src="images/14.png" class="half">
+            <p class="caption"><span>Figure 14: Object distribution matrix.</span></p><br>
+
+            In the original data, there were many occurrences of the canadaPencil, but when comparing that to the
+            corrected data only 8 people actually had images containing the canadaPencil.<br><br>
+
+            <img src="images/15.png" class="half">
+            <p class="caption"><span>Figure 15: CanadaPencil object distribution.</span></p><br>
+
+
+
+
+            <br>
+            <div class="question"> b.  Identify groups of people that have object(s) in common. Please limit your answer
+                to
+                10 images and 500
+                words.
+            </div>
+            <br><br>
+            Using the matrix visualization to analyze the corrected results, there are some patterns that emerge from
+            the data. For example we can see groups of people in the list have similar objects based on where that
+            person is in the list. For example only people 1-6 have images that contain the yellowBalloon.<br><br>
+
+            <img src="images/16.png" class="half">
+            <p class="caption"><span>Figure 16: Yellow balloon object distribution.</span></p><br>
+
+            Similarly for the cactusPaper object, only person7-12 have images that contain the object.<br>
+
+            <img src="images/17.png" class="half">
+            <p class="caption"><span>Figure 17: CactusPaper object distribution.</span></p><br>
+
+
+            For the turtle with people31-36.
+
+            <img src="images/18.png" class="half">
+            <p class="caption"><span>Figure 18: Turtle object distribution.</span></p><br>
+
+            And for the redDart with person37-40.
+
+            <img src="images/19.png" class="half">
+            <p class="caption"><span>Figure 19: redDart object distribution.</span></p><br>
+
+            In the next image with the corrected data, we can see that the group containing images with the
+            canadaPencil also have images with other objects like the brownDie, blueSunglasses, miniCards, and trophy
+            that some of the members of this group also share.<br><br>
+
+            <img src="images/20.png" class="half">
+            <p class="caption"><span>Figure 20: Network between People (Blue nodes) and Objects (Yellow nodes). The images are for imaging reference for the Objects.</span></p><br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div class="question"><b>Question 4</b> – Which group do you think is the most likely group with the
+                “totem”?
+                What is
+                your rationale for that
+                assessment? Please limit your response to 5 images and 300 words.
+            </div>
+            <br>
+
+            Given the description that 8 individuals are responsible for the cyber event, we aim to find objects that
+            are shared among 8 or more people. By examining the ground truth network, we have found that 9 objects
+            (shared by at least 8 persons) are likely to be the totem:<br><br>
+
+            <img src="images/21.jpg" class="full">
+            <p class="caption"><span>Figure 21</span></p><br>
+
+            Objects shared among 8 people and their IDs:<br>
+
+            - rainbowPens: 1, 3, 11, 17, 23, 30, 31, 38;<br>
+            - rubicsCube: 4, 6, 8, 17, 21, 30, 34, 38;<br>
+            - canadaPencil: 4, 7, 14, 15, 22, 25, 35, 39;<br><br>
+
+            Objects shared among 9 people and their IDs:<br>
+
+            - noiseMaker: 1, 2, 11, 12, 15, 20, 27, 36, 37;<br>
+            - pinkEraser: 1, 5, 9, 15, 18, 19, 28, 33, 40;<br>
+            - blueSunglasses: 2, 7, 9, 13, 17, 22, 27, 31, 39;<br>
+            - lavenderDie: 2, 4, 6, 10, 16, 18, 21, 29, 36;<br><br>
+
+            Objects shared among 10 people and their IDs:<br>
+
+            - metalKey: 2, 8, 9, 16, 18, 20, 25, 30, 32, 40;<br>
+            - miniCards: 1, 4, 6, 10, 13, 14, 24, 25, 32, 39.<br><br>
+
+            We filtered our matrix to focus on these 9 objects. The number on top of each green box show how many
+            time an object has been shared by a person. Only two last rows (blueSunglasses and canadianPencil) have
+            more than 2 corrected appearances on all 8 related persons.<br><br>
+
+
+            <img src="images/22.png" class="sf">
+            <p class="caption"><span>Figure 22</span></p><br>
+
+            We concluded the group that includes people 4, 7, 14, 15, 22, 25, 35, 39 who all share the canadaPencil object is the group with the "totem". In the original data the canadaPencil is an object that does not have a high accuracy rate with the provided object detection model, and thus makes the identification of the group with this object more difficult.
+            <br><br>
+
+            <img src="images/23.png" class="full">
+            <p class="caption"><span>Figure 23</span></p><br>
+
+            Also when looking at the corrected results, we can see that there are also other objects that connect these group members together even though they might not all share that object. There were 31 total people found to have the canadaPencil with the results provided. When comparing this to the corrected data, we can see that out of that 31 people only 6 people had images containing that object. There were also 2 other group members that were said to not have the canadaPencil in any images in the provided results.
+            <br><br>
+
+            <img src="images/24.png" class="half">
+            <p class="caption"><span>Figure 24: Network of all people who are connected through canadaPencil object.</span></p><br>
+
+            This image is a subgraph of all of the objects that were found in the images of people who shared the canadaPencil and shows what other objects connect the group members to each other. This image shows the 4 most popular objects that the group with the canadaPencil shared. And how they form a connection with the other members of the group.
+
+            <br>
+
+            <img src="images/25.png" class="half">
+            <p class="caption"><span>Figure 25: Network of top objects found with people who also have canadaPencil.
+                .</span></p><br>
+
+            The group that CGCS is seeking is a subgroup of 8 people. There are 4  that owned by only 8 people:
+            canadaPencil, rainbowPens, noisemaker and rubiksCube. During the communication via images in that group,
+            each person should have at least 2 images, representing sending-receiving signals. Among those 4 objects,
+            only canadaPencil owners have 2 or more images per person, while the rest includes owners have 1
+            image.<br><br>
+            <img src="images/26.png" class="half">
+            <p class="caption"><span>Figure 26: Actual images from the 8 persons contain the canadaPencil in the corrected classifications.
+                .</span></p><br>
+
+
+
+
+            <div class="question"><b>Question 5</b> – Process question: Did you choose to use the object recognition
+                model
+                results
+                provided or use your own
+                machine learning algorithm? Why did you make that choice? What was the biggest challenge you faced? 
+                Please
+                limit your response to 3 images and 300 words.
+            </div>
+            <br>
+
+            We use the object recognition model results provided and the ground truth resulted from the correction
+            process. We select this direction because we can gather perspective from the prediction model — to track
+            governance and present the machine learning model result, as well as having the correct standard — for
+            any comparison and evaluation on the predicted data.<br><br>
+
+            The biggest challenge we faced is the low accuracy of the predicted model. When looking at Person33's results, it can be seen that only the red whistle was correctly detected in the images. All other objects detected in the person's images did not appear in the corrected data set. Likewise, the redWhistle was the only object in the corrected dataset that also appeared in the results provided.
+            <img src="images/27.png" class="half">
+            <p class="caption"><span>Figure 27: Classification discrepancy of Person33's original and corrected data
+                .</span></p><br>
+
+        </div>
+</page>
+</body>
+</html>

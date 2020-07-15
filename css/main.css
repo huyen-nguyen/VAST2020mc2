@@ -112,20 +112,19 @@ svg.imageDist {
 
 .topnav h4 {
     display: inline-block;
-    padding-top: 20px;
     padding-left: 10px;
     font-weight: bold;
+    /*font-size: 20px;*/
 }
 
 /* Style the links inside the navigation bar */
 .topnav a {
-    margin: 8px 0 8px 0;
+    margin: 8px 0 3px 0;
     float: right;
     color: #071126;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
-    font-size: 17px;
     border-radius: 4px
 }
 
@@ -374,7 +373,7 @@ svg.imageDist {
     font-size: 14px;
 }
 
-tr:nth-child(even) {background: #e8e8e8
+tr:nth-child(even) {background: #f3f3f3
 }
 tr:nth-child(odd) {background: #FFF}
 

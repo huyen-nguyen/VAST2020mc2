@@ -30,11 +30,19 @@ var svg = d3.select("body").append("svg")
 
 let maxValuePred = d3.max(overviewClasses, d => d.predict), maxValueTruth = d3.max(overviewClasses, d => d.truth)
 
-let blues = d3.scaleSequential(d3.interpolateBlues)
-    .domain([-100, maxValuePred])
+let blues = d3.scaleSequential(d3.interpolateReds)
+    .domain([-200, maxValuePred+20])
 
-let reds = d3.scaleSequential(d3.interpolateReds)
-    .domain([-30, maxValueTruth*2])
+let reds = d3.scaleSequential(d3.interpolateGreens)
+    .domain([-40, maxValueTruth+20])
+
+blues = d3.scaleLinear()
+    .range(["#ffffff", "#600"])
+    .domain([-200, maxValuePred]);
+
+reds = d3.scaleLinear()
+    .range(["#ffffff", "#007000"])
+    .domain([-40, maxValueTruth])
 
 //  ------ new ------
 
@@ -109,7 +117,7 @@ svg.selectAll(".count")
     .attr("y", function (d) {
         return (classesCount[d] ? y(classesCount[d]) : 0) - 5;
     })
-    .attr("fill", "blue")
+    .attr("fill", blues(400))
     .attr("font-size", "11px")
     .attr("text-anchor", "middle")
 
@@ -126,7 +134,7 @@ svg.selectAll(".countRed")
     .attr("y", function (d) {
         return (classTruth[d] ? y(classTruth[d]) : 0) - 5;
     })
-    .attr("fill", "red")
+    .attr("fill", "green")
     .attr("font-size", "11px")
     .attr("text-anchor", "middle")
 
@@ -170,8 +178,8 @@ legend.append("rect")
     .attr("x", width - 17)
     .attr("width", 15)
     .attr("height", 15)
-    .attr("fill",  d => d === "predict" ? blues(400) : reds(100))
-    .attr("stroke", d => d === "predict" ? blues(400) : reds(100))
+    .attr("fill",  d => d === "predict" ? blues(460) : reds(80))
+    .attr("stroke", d => d === "predict" ? blues(460) : reds(80))
     .attr("stroke-width",2)
     // .on("click",function(d) { update(d) });
 
