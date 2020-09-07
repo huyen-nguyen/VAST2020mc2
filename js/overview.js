@@ -1,6 +1,6 @@
 // set the dimensions and margins of the graph
 var margin = {top: 20, right: 20, bottom: 80, left: 40},
-    width = 1700 - margin.left - margin.right,
+    width = 2200 - margin.left - margin.right,
     height = 550 - margin.top - margin.bottom;
 
 // // set the ranges
@@ -188,4 +188,4 @@ legend.append("text")
     .attr("y", 9.5)
     .attr("dy", "0.32em")
     .attr("font-size", "13px")
-    .text(function(d) { return d === "predict" ? "prediction, 4491 total" : "truth, 1370 total"; });
+    .text(function(d) { return d === "predict" ? "original, 4491 total" : "corrected, 1370 total"; });
