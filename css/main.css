@@ -119,7 +119,7 @@ svg.imageDist {
 
 /* Style the links inside the navigation bar */
 .topnav a {
-    margin: 8px 0 3px 0;
+    margin: 10px 0 -8px 0;
     float: right;
     color: #071126;
     text-align: center;
